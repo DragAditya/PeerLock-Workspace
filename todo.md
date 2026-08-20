@@ -62,3 +62,4 @@
 - [x] Replace large remote-selection highlights with a slim blinking collaborator caret in the peer’s chosen colour and no visible name label.
 - [x] Update onboarding terminology and placeholder to use Username rather than the existing personal-name example.
 - [x] Run functional, TypeScript, production-build, and visual verification for the focused collaboration visual refinement.
+- [x] Create prompt.md with a complete technology-agnostic functional specification for recreating Peerlock without visual-design instructions.
