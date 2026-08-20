@@ -36,3 +36,9 @@
 - [x] Improve global navigation, editor, settings, and collaboration surfaces with clearer hierarchy, consistent spacing, and accessible modern motion.
 - [x] Add peer chat timestamps, emoji reactions, and active-participant mentions that synchronize through the Yjs room document without an application-server message store.
 - [x] Run type checking, full tests, production build validation, and desktop/mobile visual regression checks before releasing the repair.
+- [x] Inspect the available Gemini integration path and configure a secure server-side API key without exposing it to the browser.
+- [x] Add an AI formatting workflow that sends user-approved document text to Gemini and safely applies the returned formatted document only after confirmation.
+- [x] Add resilient AI states for empty documents, unavailable credentials, request errors, timeouts, loading, preview, cancellation, and local-only fallback formatting.
+- [x] Replace the current visual system with a premium, cohesive glass workspace using a deliberate paired light/dark palette, restrained translucency, depth, and responsive layout hierarchy.
+- [x] Redesign the onboarding, shell, dashboard, editor, settings, and collaboration surfaces to use the new visual system consistently.
+- [x] Run AI-focused unit tests, type checking, production build validation, and desktop/mobile visual review before publishing the upgrade.

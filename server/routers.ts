@@ -2,6 +2,9 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { formatDocumentWithGemini } from "./geminiFormatter";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -14,6 +17,16 @@ export const appRouter = router({
       return {
         success: true,
       } as const;
+    }),
+  }),
+  ai: router({
+    formatDocument: publicProcedure.input(z.object({ documentText: z.string().min(1).max(16_000), instruction: z.string().max(600), consent: z.literal(true) })).mutation(async ({ input }) => {
+      try {
+        const markdown = await formatDocumentWithGemini(input.documentText, input.instruction);
+        return { markdown };
+      } catch (error) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: error instanceof Error ? error.message : "AI formatting could not be completed." });
+      }
     }),
   }),
 
