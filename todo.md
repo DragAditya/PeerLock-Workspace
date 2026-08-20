@@ -53,3 +53,8 @@
 - [x] Add a clear editor control, policy status badge, confirmation copy, and settings affordance for changing the document’s AI privacy policy.
 - [x] Enforce the disabled policy in the Gemini formatting request boundary so the server refuses AI formatting for protected documents.
 - [x] Add Vitest coverage for policy persistence and blocked AI formatting requests, then run full validation before publishing.
+- [x] Rebuild the dark-first visual language across every application surface with an ownable Peerlock art direction, refined typography, cinematic depth, and purposeful visual storytelling.
+- [x] Rework light mode as a genuinely balanced complementary experience with controlled contrast, layered glass surfaces, and no washed-out white treatment.
+- [x] Upgrade navigation, dashboard, editor, settings, presence, peer topology, and chat with cohesive spacing, hierarchy, micro-interactions, and responsive motion.
+- [x] Refine remote collaboration cursors into unobtrusive colour-only caret bars and compact identity chips that never obstruct technical writing.
+- [x] Capture desktop and mobile visual reviews of the redesigned product, then run the full test suite, type check, and production build before publishing.
