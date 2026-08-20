@@ -110,7 +110,7 @@ export default function EditorPage() {
 
           <aside className="space-y-4">
             <ConnectionGraph peers={collaboration.peers} connectionState={collaboration.connectionState} directPeerCount={collaboration.directPeerCount} roomCapacity={collaboration.roomCapacity} />
-            {collaboration.ydoc && <RoomChat ydoc={collaboration.ydoc} profile={profile} enabled={collaboration.isCollaborative} />}
+            {collaboration.ydoc && <RoomChat ydoc={collaboration.ydoc} profile={profile} peers={collaboration.peers} enabled={collaboration.isCollaborative} />}
             <section className="rounded-2xl border border-white/[0.09] bg-[#111722]/84 p-4">
               <div className="flex items-center justify-between"><div><h3 className="text-sm font-semibold text-[#E7ECF6]">Presence</h3><p className="mt-1 text-[11px] text-[#7B889E]">Awareness is ephemeral</p></div><span className="flex items-center gap-1 text-[11px] text-[#7FE6CA]"><Users className="h-3.5 w-3.5" />{collaboration.peers.length}/10</span></div>
               <div className="mt-3 space-y-2.5">{collaboration.peers.map(peer => <div key={peer.clientId} className="flex items-center gap-2.5"><span className="grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-[#091018]" style={{ backgroundColor: peer.color }}>{peer.name.slice(0, 1).toUpperCase()}</span><span className="min-w-0 flex-1 truncate text-xs font-medium text-[#D7DEEA]">{peer.name}{peer.isLocal ? " (you)" : ""}</span><span className={`h-1.5 w-1.5 rounded-full ${peer.isDirect ? "bg-[#78E7C6]" : "bg-[#F4C477]"}`} /></div>)}</div>

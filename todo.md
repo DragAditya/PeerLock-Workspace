@@ -30,3 +30,9 @@
 - [x] Replace long private room routes with a concise code-and-fragment invite format while retaining the private secret outside HTTP requests.
 - [x] Add Vitest coverage for chat models, automatic formatting helpers, profile-completion logic, and concise invite handling.
 - [x] Re-run type checking, unit tests, and desktop/mobile visual verification for the enhanced product.
+- [x] Investigate and fix the deployed `TypeError: ae is not a function` runtime error triggered after sending a room chat message.
+- [x] Add defensive handling and tests for chat-message updates, reactions, and peer activity so malformed or outdated shared values cannot crash the UI.
+- [x] Replace the current light-theme overrides with a cohesive, premium light visual system and preserve an equally polished dark mode.
+- [x] Improve global navigation, editor, settings, and collaboration surfaces with clearer hierarchy, consistent spacing, and accessible modern motion.
+- [x] Add peer chat timestamps, emoji reactions, and active-participant mentions that synchronize through the Yjs room document without an application-server message store.
+- [x] Run type checking, full tests, production build validation, and desktop/mobile visual regression checks before releasing the repair.
