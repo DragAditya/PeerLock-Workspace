@@ -112,7 +112,7 @@ export default function EditorPage() {
   const StatusIcon = details.icon;
 
   return <AppShell>
-    <div className={`editor-deck ultra-editor-deck mx-auto max-w-[1540px] ${focusMode ? "editor-deck-focus" : ""}`}>
+    <div className={`editor-deck ultra-editor-deck relay-editor mx-auto max-w-[1540px] ${focusMode ? "editor-deck-focus" : ""}`}>
       <header className="editor-command-head ultra-editor-head mb-4">
         <div className="flex flex-wrap items-center gap-3">
           <button onClick={() => setLocation("/")} className="editor-back flex h-8 items-center gap-1 px-2 text-xs"><ChevronLeft className="h-3.5 w-3.5" />VAULT</button><span className="editor-head-rule hidden h-4 w-px sm:block" />

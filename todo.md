@@ -70,10 +70,20 @@
 - [x] Rebuild Settings, Report, Study, and collaboration-panel page structures with command-deck compositions rather than relying only on inherited surface styling.
 - [x] Capture post-redesign desktop and mobile verification for the core workspace routes after completing their page-level redesigns.
 - [x] Capture and verify fresh desktop and mobile screenshots for the redesigned editor route and collaboration-panel layout.
-- [ ] Verify the command-deck editor and collaboration panels from a real local profile and valid document route after first-use onboarding is completed.
+- [x] Verify the command-deck editor and collaboration panels from a real local profile and valid document route after first-use onboarding is completed.
 - [x] Add an advanced document command strip with word count, reading time, local save state, focus mode, and contextual document actions.
 - [x] Add richer peer collaboration controls, including a compact active-peer rail, room activity feed, and quick access to privacy and invitation status.
 - [x] Add browser-local document intelligence for outline navigation, document insights, and writing progress without storing content on the application server.
 - [x] Optimize the authenticated editor’s mobile composition so primary writing actions stay prominent while collaboration panels remain easy to scan.
 - [x] Wire the local save-status badge to real IndexedDB/Yjs persistence readiness rather than a timer-based approximation.
-- [ ] Run full functional, type, production-build, and live-editor visual validation for the ultra-workspace upgrade.
+- [x] Run full functional, type, production-build, and live-editor visual validation for the ultra-workspace upgrade.
+- [x] Study the supplied design references and define an original editorial, motion-aware Peerlock art direction without copying their protected expression.
+- [x] Replace the command-deck navigation, page frame, typography, color system, and responsive interaction model with the new Peerlock visual system.
+- [x] Rebuild the authenticated vault and editor compositions around the new visual language while preserving all encrypted local-first features.
+- [x] Rebuild onboarding, settings, report, and study experiences so the entire product shares the new design direction.
+- [x] Add purposeful responsive motion and polish across the redesigned product without compromising accessibility or editor performance.
+- [x] Substantially rebuild the report and briefing component structures so their layouts clearly use the new relay system rather than only inherited structures with restyling.
+- [x] Add and verify reduced-motion safeguards for the new relay, onboarding, vault, and editor interactions.
+- [x] Verify the redesigned relay experience with reduced motion enabled and resolve any remaining non-essential motion.
+- [x] Run comprehensive functional, responsive, type, test, build, and live visual validation for the final complete redesign.
+- [x] Verify the authenticated editor’s peer rail, activity feed, mesh view, chat, and privacy panels in a real browser at desktop and mobile breakpoints.
