@@ -1,4 +1,5 @@
 import { opaqueRoomName } from "@/features/room/invite";
+import { ROOM_MAX_REMOTE_CONNECTIONS } from "@/features/room/capacity";
 import type { LocalProfile, WorkspaceDocument } from "@/features/workspace/types";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { WebrtcProvider } from "y-webrtc";
@@ -26,7 +27,7 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
     let cancelled = false;
     void opaqueRoomName(document.roomCode, document.roomSecret).then(room => {
       if (cancelled) return;
-      const nextProvider = new WebrtcProvider(room, ydoc, { password: document.roomSecret, maxConns: 9 }); providerRef.current = nextProvider; setProvider(nextProvider);
+      const nextProvider = new WebrtcProvider(room, ydoc, { password: document.roomSecret, maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
       nextProvider.awareness.setLocalStateField("user", { name: profile.name, color: profile.color, id: profile.id });
       const updatePeers = () => setPeers(Array.from(nextProvider.awareness.getStates().entries()).map(([id, state]) => ({ id, name: (state.user as { name?: string } | undefined)?.name ?? "Anonymous peer", color: (state.user as { color?: string } | undefined)?.color ?? "#607064" })));
       nextProvider.awareness.on("change", updatePeers); nextProvider.on("status", event => setConnection(event.connected ? "connected" : "connecting")); updatePeers();

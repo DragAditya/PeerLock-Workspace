@@ -99,8 +99,11 @@
 - [x] Rebuild the clean-slate document studio with a Tiptap and Yjs rich-text editor, Markdown shortcuts, syntax-highlighted code blocks, and production-quality editing states.
 - [x] Add awareness-based participant controls, visible ten-peer capacity handling, and a real peer-topology and connection-state view to the clean-slate room console.
 - [x] Run two-context multi-peer browser validation for WebRTC document synchronization, replicated chat, presence updates, room capacity, and connection states.
-- [ ] Add a real connection-state topology module and robust capacity controls, then browser-verify connecting, connected, and ten-peer-capacity UI states.
-- [ ] Re-run multi-peer browser validation covering document sync, replicated chat, presence, topology state, and capacity behavior.
+- [x] Add a real connection-state topology module and robust capacity controls, then browser-verify connecting, connected, and ten-peer-capacity UI states.
+- [x] Re-run multi-peer browser validation covering document sync, replicated chat, presence, topology state, and capacity behavior.
+- [x] Remove the development-only capacity preview and validate ten-peer capacity, topology, and connection-state behavior in an actual room or a deterministic isolated-provider test.
+- [x] Add deterministic integration coverage for rendered room topology outputs at connecting, connected, and ten-peer capacity states without relying on the sandbox mesh.
+- [x] Optimize the new primary collaboration dock and rich-editor controls for the clean-slate mobile studio layout.
 - [x] Diagnose and fix the rapid concurrent-edit synchronization failure reported after initial successful peer sync.
 - [x] Move live chat, peer activity, and collaboration status into the primary studio rather than hiding them in the room console.
 - [x] Add a complete visible formatting toolset and document actions to the primary editing workflow.

@@ -1,7 +1,9 @@
 import type { PeerPresence } from "@/features/editor/usePeerDocument";
+import { isRoomAtCapacity } from "./capacity";
+import React from "react";
 
 export function roomState(connection: string, peerCount: number) {
-  if (peerCount >= 10) return { label: "Room at capacity", detail: "This room has reached its ten-person peer limit.", tone: "capacity" };
+  if (isRoomAtCapacity(peerCount)) return { label: "Room at capacity", detail: "This room has reached its ten-person peer limit.", tone: "capacity" };
   if (connection === "connected") return { label: "Mesh connected", detail: "Peers are exchanging encrypted CRDT updates directly.", tone: "connected" };
   if (connection === "connecting") return { label: "Establishing mesh", detail: "Waiting for an invited peer to complete the encrypted connection.", tone: "connecting" };
   return { label: "Local replica", detail: "This document is persisted locally and has no open peer room.", tone: "local" };
