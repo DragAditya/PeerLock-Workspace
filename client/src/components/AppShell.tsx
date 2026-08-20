@@ -1,12 +1,11 @@
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { BookOpen, FilePlus2, FileText, GraduationCap, LockKeyhole, Moon, PanelLeftClose, Plus, Settings2, ShieldCheck, Sun, X } from "lucide-react";
+import { BookOpen, FilePlus2, FileText, GraduationCap, LockKeyhole, PanelLeftClose, Plus, Settings2, ShieldCheck, X } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { ProfileDialog } from "./ProfileDialog";
 import { PeerlockMark } from "./PeerlockMark";
 import { privacyCopy } from "@/lib/privacy";
-import { useTheme } from "@/contexts/ThemeContext";
 
 const navItems = [
   { label: "Workspaces", path: "/", icon: FileText },
@@ -27,7 +26,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { documents, createDocument } = useWorkspace();
-  const { theme, toggleTheme } = useTheme();
 
   const handleCreateDocument = async () => {
     const document = await createDocument();
@@ -41,7 +39,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className={`app-shell theme-${theme} min-h-screen`}>
+    <div className="app-shell theme-dark min-h-screen">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="peer-ambient peer-ambient-one" />
         <div className="peer-ambient peer-ambient-two" />
@@ -134,9 +132,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <FilePlus2 className="h-3.5 w-3.5" />
             IndexedDB local vault
           </div>
-          <button onClick={toggleTheme} className="peer-theme-toggle grid h-9 w-9 place-items-center rounded-xl" aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`} title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}>
-            {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          </button>
         </header>
         <div className="px-4 py-5 sm:px-7 sm:py-7 lg:px-9 lg:py-8">{children}</div>
       </main>

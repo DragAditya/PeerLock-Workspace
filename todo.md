@@ -58,3 +58,7 @@
 - [x] Upgrade navigation, dashboard, editor, settings, presence, peer topology, and chat with cohesive spacing, hierarchy, micro-interactions, and responsive motion.
 - [x] Refine remote collaboration cursors into unobtrusive colour-only caret bars and compact identity chips that never obstruct technical writing.
 - [x] Capture desktop and mobile visual reviews of the redesigned product, then run the full test suite, type check, and production build before publishing.
+- [x] Remove the light-theme option and enforce the dark workspace appearance throughout the application.
+- [x] Replace large remote-selection highlights with a slim blinking collaborator caret in the peer’s chosen colour and no visible name label.
+- [x] Update onboarding terminology and placeholder to use Username rather than the existing personal-name example.
+- [x] Run functional, TypeScript, production-build, and visual verification for the focused collaboration visual refinement.
