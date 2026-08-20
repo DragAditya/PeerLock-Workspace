@@ -87,3 +87,12 @@
 - [x] Verify the redesigned relay experience with reduced motion enabled and resolve any remaining non-essential motion.
 - [x] Run comprehensive functional, responsive, type, test, build, and live visual validation for the final complete redesign.
 - [x] Verify the authenticated editor’s peer rail, activity feed, mesh view, chat, and privacy panels in a real browser at desktop and mobile breakpoints.
+- [x] Preserve the functional specification and privacy boundaries required for a clean-slate Peerlock rebuild.
+- [x] Remove the current application feature implementation and replace it with a new structural foundation rather than styling over existing pages.
+- [x] Rebuild the workspace hub, onboarding, document model, and encrypted peer-room entry flow from the new architecture.
+- [x] Add explicit validation and recovery states for invalid room codes, invalid secrets, and failed room opening in the clean-slate room-entry flow.
+- [x] Re-run functional validation for the rebuilt hub, onboarding, document model, and room-entry flow after adding recovery handling.
+- [x] Verify the HubPage manual room-join recovery UI for invalid room codes, invalid secrets, and failed room-opening behavior in a real browser.
+- [x] Add and browser-verify a true failed room-opening recovery path beyond invalid manual input.
+- [ ] Rebuild the editor, real-time collaboration controls, local persistence, export, AI privacy boundary, and academic materials from the new architecture.
+- [ ] Validate and publish the new clean-slate Peerlock implementation across desktop, mobile, local persistence, and peer-room paths.
