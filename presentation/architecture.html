@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #E6FFFA; color: #234E52; position: relative; font-family: 'Source Serif 4', Georgia, serif; }
+    .head { padding: 48px 72px 0; display: flex; justify-content: space-between; align-items: end; }
+    .kicker, h1, h2, .mono { font-family: 'DM Mono', monospace; font-weight: 600; }
+    .kicker { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #C53030; }
+    h1 { margin-top: 13px; font-size: 35px; letter-spacing: -1.6px; }
+    .page { font-family: 'DM Mono', monospace; font-size: 14px; color: #285E61; }
+    .rule { margin: 21px 72px 0; width: 1136px; height: 8px; background: #C53030; }
+    .body { padding: 36px 72px 0; display: flex; gap: 42px; }
+    .diagram { width: 760px; height: 474px; position: relative; background: #D8F5EE; border-top: 3px solid #234E52; }
+    .diagram-label { position: absolute; left: 24px; top: 17px; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 1px; color: #285E61; }
+    .node { width: 190px; height: 94px; position: absolute; background: #234E52; color: #E6FFFA; padding: 15px 14px 0; }
+    .node b { font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: .3px; display: block; }
+    .node span { display: block; margin-top: 9px; font-size: 14px; line-height: 1.18; color: #D2F4ED; }
+    .a { left: 59px; top: 96px; } .b { right: 54px; top: 96px; } .c { left: 285px; bottom: 52px; }
+    .connector { position: absolute; height: 3px; background: #285E61; transform-origin: left center; }
+    .ab { left: 249px; top: 142px; width: 270px; } .ac { left: 171px; top: 191px; width: 250px; transform: rotate(57deg); } .bc { left: 588px; top: 190px; width: 250px; transform: rotate(123deg); }
+    .line-label { position: absolute; font-family: 'DM Mono', monospace; font-size: 10px; background: #E6FFFA; padding: 3px 5px; color: #285E61; }
+    .label-ab { left: 332px; top: 122px; } .label-ac { left: 195px; top: 274px; transform: rotate(57deg); } .label-bc { left: 515px; top: 273px; transform: rotate(-57deg); }
+    .signal { position: absolute; left: 254px; top: 243px; width: 252px; height: 78px; border: 3px dashed #C53030; background: #E6FFFA; padding: 13px 17px 0; }
+    .signal b { font-family: 'DM Mono', monospace; font-size: 12px; color: #C53030; } .signal p { margin-top: 5px; font-size: 13px; color: #285E61; }
+    .side { width: 332px; padding-top: 7px; }
+    .side h2 { font-size: 15px; letter-spacing: .4px; color: #C53030; }
+    .claim { margin-top: 22px; font-size: 24px; line-height: 1.27; color: #234E52; }
+    .side p { margin-top: 22px; font-size: 16px; line-height: 1.44; color: #285E61; }
+    .fact { margin-top: 24px; border-top: 3px solid #234E52; padding-top: 12px; font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.5; color: #285E61; }
+    .fact strong { color: #C53030; }
+    .footer { position: absolute; left: 72px; bottom: 27px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .5px; color: #285E61; }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <header class="head"><div><p class="kicker">02 / System design</p><h1>Architecture and trust boundary</h1></div><p class="page">P2P WORKSPACE · 03</p></header>
+    <div class="rule"></div>
+    <main class="body">
+      <section class="diagram">
+        <p class="diagram-label">DOCUMENT-CONTENT PATH</p>
+        <span class="connector ab"></span><span class="connector ac"></span><span class="connector bc"></span>
+        <span class="line-label label-ab">ENCRYPTED WEBRTC</span><span class="line-label label-ac">DIRECT UPDATE</span><span class="line-label label-bc">DIRECT UPDATE</span>
+        <div class="node a"><b>PEER A / BROWSER</b><span>Tiptap<br>Y.Doc + IndexedDB</span></div>
+        <div class="node b"><b>PEER B / BROWSER</b><span>Tiptap<br>Y.Doc + IndexedDB</span></div>
+        <div class="node c"><b>PEER C / BROWSER</b><span>Tiptap<br>Y.Doc + IndexedDB</span></div>
+        <div class="signal"><b>SIGNALING RELAY</b><p>Temporary connection establishment only.<br>Not a document store.</p></div>
+      </section>
+      <aside class="side"><h2>Key boundary</h2><p class="claim">The application host serves the interface, not the document.</p><p>Every participant holds an independent local replica. After connection setup, mergeable Yjs updates travel through direct WebRTC channels between peers.</p><p class="fact"><strong>QUALIFICATION /</strong><br>Signaling and network services may observe connection-level metadata; this is not a claim of anonymity.</p></aside>
+    </main>
+    <p class="footer">BROWSER REPLICA = EDITOR STATE + CRDT STATE + LOCAL PERSISTENCE</p>
+  </div>
+</body>
+</html>

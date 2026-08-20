@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #E6FFFA; color: #234E52; position: relative; font-family: 'Source Serif 4', Georgia, serif; }
+    .top { padding: 52px 72px 0; display: flex; align-items: end; justify-content: space-between; }
+    .kicker, .mini, h2, .num { font-family: 'DM Mono', monospace; font-weight: 600; text-transform: uppercase; }
+    .kicker { font-size: 13px; letter-spacing: 1.4px; color: #C53030; }
+    h1 { margin-top: 14px; font-family: 'DM Mono', monospace; font-size: 35px; line-height: 1.15; letter-spacing: -1.7px; }
+    .page { font-family: 'DM Mono', monospace; color: #285E61; font-size: 14px; }
+    .red-rule { height: 8px; background: #C53030; margin: 22px 72px 0; }
+    .content { display: flex; gap: 42px; padding: 42px 72px 0; }
+    .column { width: 547px; min-height: 454px; border-top: 3px solid #234E52; padding-top: 22px; position: relative; }
+    .column:before { content: ''; position: absolute; left: 0; top: 0; width: 42px; height: 42px; border-left: 7px solid #C53030; border-top: 7px solid #C53030; transform: translateY(-3px); }
+    h2 { font-size: 16px; letter-spacing: .4px; padding-left: 58px; color: #234E52; }
+    .statement { margin-top: 35px; max-width: 475px; font-size: 25px; line-height: 1.28; color: #234E52; }
+    .detail { margin-top: 28px; max-width: 480px; font-size: 17px; line-height: 1.45; color: #285E61; }
+    .flow { margin-top: 41px; display: flex; align-items: center; gap: 11px; font-family: 'DM Mono', monospace; font-size: 12px; color: #E6FFFA; }
+    .node { width: 130px; height: 50px; background: #285E61; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.25; }
+    .node.red { background: #C53030; width: 145px; }
+    .arrow { width: 40px; height: 2px; background: #285E61; position: relative; }
+    .arrow:after { content: ''; position: absolute; right: 0; top: -4px; width: 9px; height: 9px; border-top: 2px solid #285E61; border-right: 2px solid #285E61; transform: rotate(45deg); }
+    .criteria { margin-top: 31px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px 22px; }
+    .criterion { border-top: 2px solid #6DAEAA; padding-top: 9px; font-size: 15px; line-height: 1.25; color: #285E61; }
+    .criterion b { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .3px; display: block; color: #234E52; margin-bottom: 4px; }
+    .foot { position: absolute; left: 72px; bottom: 27px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .6px; color: #285E61; }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <header class="top"><div><p class="kicker">01 / Problem framing</p><h1>Why a peer-first editor?</h1></div><p class="page">P2P WORKSPACE · 02</p></header>
+    <div class="red-rule"></div>
+    <main class="content">
+      <section class="column"><h2>Conventional trust model</h2><p class="statement">Every edit can be routed through a central document service.</p><p class="detail">That service can become the ordering point, storage location, and processing boundary for the document—even when the collaborators simply want to write together.</p><div class="flow"><span class="node">BROWSER A</span><span class="arrow"></span><span class="node red">CENTRAL<br>DOCUMENT SERVICE</span><span class="arrow"></span><span class="node">BROWSER B</span></div></section>
+      <section class="column"><h2>Project objective</h2><p class="statement">Keep the document in participant browsers and synchronize replicas directly.</p><p class="detail">The system narrows infrastructure to connection establishment. It does not claim that signaling disappears; it ensures that document content is outside the application-server data path.</p><div class="criteria"><div class="criterion"><b>01 / CONCURRENT</b>Merge ordinary simultaneous edits without a central conflict resolver.</div><div class="criterion"><b>02 / OFFLINE</b>Persist local work before a peer or network is available.</div><div class="criterion"><b>03 / PRIVATE</b>Do not send document bodies to the application server.</div><div class="criterion"><b>04 / BOUNDED</b>Support predictable small-room collaboration up to ten peers.</div></div></section>
+    </main>
+    <p class="foot">DESIGN QUESTION: CAN REAL-TIME EDITING REMAIN USEFUL WITHOUT CENTRAL DOCUMENT OWNERSHIP?</p>
+  </div>
+</body>
+</html>

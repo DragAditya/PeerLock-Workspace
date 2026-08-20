@@ -1,0 +1,23 @@
+# Project TODO
+
+- [x] Document the local-first architecture, trust boundaries, signaling limitations, and security claims before implementation.
+- [x] Add Yjs, y-webrtc, y-indexeddb, Tiptap, collaboration, and awareness dependencies with locked package versions.
+- [x] Define shared client-side document, room, peer-presence, and connection-state models.
+- [x] Build a responsive application shell with a refined dark privacy-first visual system and accessible navigation.
+- [x] Implement a local IndexedDB document registry with create, rename, delete, and list operations.
+- [x] Implement a dedicated rich-text editor route backed by one Yjs document per local workspace document.
+- [x] Configure browser-only y-indexeddb persistence so edits survive refreshes and offline use.
+- [x] Implement room creation, joining via short room code, and shareable room links without sending document content to the application server.
+- [x] Add encrypted WebRTC-based Yjs peer synchronization, enforce a visible ten-peer room limit, and expose connection state.
+- [x] Add a room-secret workflow so every peer uses the same private WebRTC room identifier without exposing document content to the signaling service.
+- [x] Add Yjs awareness with participant names, distinct cursor colors, selection badges, and a live participant panel.
+- [x] Build a real-time peer connection graph that reflects active connections, reconnecting peers, and offline state.
+- [x] Keep a persistent privacy status indicator stating the precise scope of the no-document-server-storage guarantee.
+- [x] Implement client-side export of the current document as plain text and Markdown.
+- [x] Add graceful empty, loading, reconnecting, offline, permission, and error states across all user flows.
+- [x] Create an in-app MCA report page that explains architecture, CRDTs, WebRTC signaling, encryption boundaries, IndexedDB persistence, limitations, and distributed-systems principles with citations.
+- [x] Create an in-app presentation guide containing slide-ready architecture diagrams and speaker notes.
+- [x] Create an in-app viva page with expected questions and technically accurate answers.
+- [x] Write Vitest coverage for document models, room-code helpers, export utilities, collaboration configuration, and privacy copy.
+- [x] Run type checking, unit tests, and visual verification at desktop and mobile breakpoints.
+- [x] Review this tracker, mark completed items accurately, and save a final project checkpoint.

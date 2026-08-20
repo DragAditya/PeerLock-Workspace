@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #E6FFFA; color: #234E52; position: relative; font-family: 'Source Serif 4', Georgia, serif; }
+    .head { padding: 48px 72px 0; display: flex; justify-content: space-between; align-items: end; }
+    .kicker, h1, h2, .stage-no, .page, .bottom-label { font-family: 'DM Mono', monospace; font-weight: 600; }
+    .kicker { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #C53030; }
+    h1 { margin-top: 13px; font-size: 35px; letter-spacing: -1.6px; line-height: 1.15; color: #234E52; }
+    .page { font-size: 14px; color: #285E61; }
+    .rule { margin: 21px 72px 0; width: 1136px; height: 8px; background: #C53030; }
+    .intro { padding: 26px 72px 0; display: flex; justify-content: space-between; }
+    .intro p { width: 655px; font-size: 19px; line-height: 1.38; color: #285E61; }
+    .intro-note { width: 326px; border-top: 3px solid #234E52; padding-top: 8px; font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.45; color: #285E61; }
+    .intro-note strong { color: #C53030; }
+    .flow { padding: 33px 72px 0; display: flex; align-items: flex-start; }
+    .stage { width: 244px; min-height: 276px; border-top: 3px solid #234E52; position: relative; padding: 17px 19px 0; }
+    .stage:before { content: ''; position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-left: 6px solid #C53030; border-top: 6px solid #C53030; transform: translateY(-3px); }
+    .stage-no { padding-left: 40px; font-size: 12px; letter-spacing: .5px; color: #C53030; }
+    h2 { margin-top: 23px; font-size: 18px; line-height: 1.25; color: #234E52; }
+    .stage p { margin-top: 15px; font-size: 16px; line-height: 1.4; color: #285E61; }
+    .detail { margin-top: 25px; font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.45; color: #285E61; }
+    .arrow { width: 53px; height: 3px; background: #285E61; margin-top: 131px; position: relative; }
+    .arrow:after { content: ''; position: absolute; right: 0; top: -5px; width: 11px; height: 11px; border-top: 3px solid #285E61; border-right: 3px solid #285E61; transform: rotate(45deg); }
+    .bottom { position: absolute; left: 72px; bottom: 48px; width: 1136px; min-height: 72px; background: #234E52; display: flex; align-items: center; }
+    .bottom-label { width: 235px; margin-left: 25px; font-size: 12px; letter-spacing: .8px; color: #8EEFD8; }
+    .bottom-text { width: 780px; margin-left: 24px; font-size: 19px; line-height: 1.3; color: #E6FFFA; }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <header class="head">
+      <div><p class="kicker">04 / Local-first behavior</p><h1>Offline-first workflow</h1></div>
+      <p class="page">P2P WORKSPACE · 05</p>
+    </header>
+    <div class="rule"></div>
+    <section class="intro">
+      <p>Editing does not wait for the network. The browser restores a durable local replica first, accepts new changes while offline, and later exchanges missing CRDT updates when a reachable room peer returns.</p>
+      <p class="intro-note"><strong>IMPORTANT /</strong><br>Local persistence preserves work. Synchronization requires both a valid room peer and network connectivity.</p>
+    </section>
+    <main class="flow">
+      <section class="stage"><p class="stage-no">01 / RESTORE</p><h2>Open local replica</h2><p>The Yjs document is restored from the browser's IndexedDB store before peer synchronization begins.</p><p class="detail">STATE: LOCAL HISTORY AVAILABLE</p></section>
+      <span class="arrow"></span>
+      <section class="stage"><p class="stage-no">02 / EDIT</p><h2>Continue offline</h2><p>New rich-text operations remain valid local CRDT updates and are persisted without a live connection.</p><p class="detail">STATE: NETWORK OPTIONAL</p></section>
+      <span class="arrow"></span>
+      <section class="stage"><p class="stage-no">03 / RECONNECT</p><h2>Discover peers</h2><p>After connectivity returns, the WebRTC provider can re-establish room peer channels through signaling-assisted setup.</p><p class="detail">STATE: MISSING UPDATES EXCHANGED</p></section>
+      <span class="arrow"></span>
+      <section class="stage"><p class="stage-no">04 / CONVERGE</p><h2>Merge replicas</h2><p>Yjs merges compatible updates deterministically so reachable replicas reach the same shared document state.</p><p class="detail">STATE: EVENTUAL CONSISTENCY</p></section>
+    </main>
+    <footer class="bottom"><p class="bottom-label">LOCAL-FIRST PRINCIPLE</p><p class="bottom-text">The browser is the durable editing environment; peer networking replicates the work rather than making the work possible.</p></footer>
+  </div>
+</body>
+</html>

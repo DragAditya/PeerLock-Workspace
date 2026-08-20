@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #E6FFFA; color: #234E52; display: flex; font-family: 'Source Serif 4', Georgia, serif; }
+    .left { width: 710px; padding: 78px 0 0 82px; }
+    .eyebrow, .tech, .label { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; }
+    .eyebrow { color: #C53030; }
+    h1 { margin-top: 28px; max-width: 595px; font-family: 'DM Mono', monospace; font-size: 51px; line-height: 1.1; letter-spacing: -2.6px; color: #234E52; }
+    .rule { width: 120px; height: 8px; background: #C53030; margin: 31px 0 25px; }
+    .subtitle { max-width: 550px; font-size: 23px; line-height: 1.35; color: #285E61; }
+    .tech { margin-top: 53px; color: #285E61; font-size: 13px; letter-spacing: .8px; }
+    .right { width: 570px; position: relative; background: #D2F4ED; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .bracket { position: absolute; width: 110px; height: 110px; border-color: #C53030; border-style: solid; opacity: .86; }
+    .bracket.a { left: 72px; top: 76px; border-width: 8px 0 0 8px; }
+    .bracket.b { right: 74px; bottom: 76px; border-width: 0 8px 8px 0; }
+    .mesh { position: relative; width: 380px; height: 360px; }
+    .vault { position: absolute; left: 130px; top: 117px; width: 120px; height: 120px; border: 5px solid #234E52; background: #E6FFFA; display: flex; align-items: center; justify-content: center; text-align: center; font-family: 'DM Mono', monospace; font-weight: 600; font-size: 16px; line-height: 1.25; }
+    .peer { position: absolute; width: 52px; height: 52px; border-radius: 50%; background: #234E52; color: #E6FFFA; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 600; }
+    .peer.one { left: 24px; top: 24px; } .peer.two { right: 15px; top: 58px; } .peer.three { left: 12px; bottom: 44px; } .peer.four { right: 29px; bottom: 16px; }
+    .line { position: absolute; height: 2px; background: #285E61; transform-origin: left center; opacity: .75; }
+    .l1 { width: 138px; left: 66px; top: 63px; transform: rotate(35deg); } .l2 { width: 148px; left: 227px; top: 92px; transform: rotate(145deg); } .l3 { width: 150px; left: 58px; top: 275px; transform: rotate(-36deg); } .l4 { width: 137px; left: 240px; top: 245px; transform: rotate(35deg); }
+    .right-note { position: absolute; left: 72px; bottom: 45px; width: 390px; font-size: 17px; line-height: 1.35; color: #285E61; }
+    .footer { position: absolute; left: 82px; bottom: 35px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .8px; color: #285E61; }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <section class="left">
+      <p class="eyebrow">MCA Capstone Project</p>
+      <h1>Peer-to-Peer<br>Encrypted<br>Workspace</h1>
+      <div class="rule"></div>
+      <p class="subtitle">A local-first collaborative document editor for small groups, built with CRDTs, encrypted WebRTC channels, and browser-resident persistence.</p>
+      <p class="tech">REACT + TYPESCRIPT &nbsp;/&nbsp; YJS &nbsp;/&nbsp; WEBRTC &nbsp;/&nbsp; INDEXEDDB</p>
+    </section>
+    <section class="right">
+      <span class="bracket a"></span><span class="bracket b"></span>
+      <div class="mesh">
+        <span class="line l1"></span><span class="line l2"></span><span class="line l3"></span><span class="line l4"></span>
+        <span class="peer one">A</span><span class="peer two">B</span><span class="peer three">C</span><span class="peer four">D</span>
+        <div class="vault">LOCAL<br>VAULT</div>
+      </div>
+      <p class="right-note">The server helps browsers discover one another; it does not own the document.</p>
+    </section>
+    <p class="footer">DISTRIBUTED SYSTEMS · PRIVACY ENGINEERING · OFFLINE-FIRST DESIGN</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #E6FFFA; color: #234E52; position: relative; font-family: 'Source Serif 4', Georgia, serif; display: flex; }
+    .left { width: 705px; padding: 67px 0 0 82px; }
+    .right { width: 575px; position: relative; background: #D2F4ED; overflow: hidden; }
+    .kicker, h1, h2, .pillar-no, .page, .final-label { font-family: 'DM Mono', monospace; font-weight: 600; }
+    .kicker { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #C53030; }
+    h1 { margin-top: 22px; max-width: 560px; font-size: 43px; line-height: 1.12; letter-spacing: -2.2px; color: #234E52; }
+    .rule { width: 119px; height: 8px; margin-top: 28px; background: #C53030; }
+    .summary { margin-top: 23px; max-width: 530px; font-size: 20px; line-height: 1.38; color: #285E61; }
+    .pillars { margin-top: 36px; width: 544px; border-top: 3px solid #234E52; }
+    .pillar { min-height: 58px; display: flex; align-items: center; border-top: 1px solid #8CCFC2; }
+    .pillar:first-child { border-top: 0; }
+    .pillar-no { width: 52px; font-size: 13px; color: #C53030; }
+    .pillar h2 { width: 196px; font-size: 12px; letter-spacing: .2px; color: #234E52; }
+    .pillar p { width: 286px; font-size: 14px; line-height: 1.25; color: #285E61; }
+    .bracket { position: absolute; width: 108px; height: 108px; border-color: #C53030; border-style: solid; }
+    .bracket.one { left: 69px; top: 70px; border-width: 8px 0 0 8px; }
+    .bracket.two { right: 71px; bottom: 70px; border-width: 0 8px 8px 0; }
+    .mesh { position: absolute; left: 89px; top: 121px; width: 397px; height: 327px; }
+    .vault { position: absolute; left: 139px; top: 97px; width: 122px; height: 122px; border: 5px solid #234E52; background: #E6FFFA; display: flex; align-items: center; justify-content: center; text-align: center; font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; line-height: 1.3; color: #234E52; }
+    .peer { position: absolute; width: 52px; height: 52px; border-radius: 50%; background: #234E52; color: #E6FFFA; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; }
+    .peer.a { left: 10px; top: 12px; } .peer.b { right: 10px; top: 42px; } .peer.c { left: 0; bottom: 14px; } .peer.d { right: 23px; bottom: 3px; }
+    .line { position: absolute; height: 3px; background: #285E61; transform-origin: left center; }
+    .l1 { left: 56px; top: 48px; width: 152px; transform: rotate(32deg); } .l2 { left: 253px; top: 83px; width: 154px; transform: rotate(146deg); } .l3 { left: 55px; top: 264px; width: 155px; transform: rotate(-32deg); } .l4 { left: 258px; top: 230px; width: 139px; transform: rotate(35deg); }
+    .final { position: absolute; left: 71px; bottom: 73px; width: 431px; border-top: 3px solid #234E52; padding-top: 15px; }
+    .final-label { font-size: 11px; letter-spacing: .8px; color: #C53030; }
+    .final p { margin-top: 9px; font-size: 22px; line-height: 1.28; color: #234E52; }
+    .page { position: absolute; right: 72px; top: 35px; font-size: 13px; color: #285E61; }
+    .footer { position: absolute; left: 82px; bottom: 27px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .5px; color: #285E61; }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <section class="left">
+      <p class="kicker">09 / Conclusion</p>
+      <h1>Collaboration can be distributed without central document ownership.</h1>
+      <div class="rule"></div>
+      <p class="summary">Peer-to-Peer Encrypted Workspace combines browser-local persistence, CRDT replica convergence, and encrypted peer channels into one transparent small-group collaboration model.</p>
+      <div class="pillars">
+        <div class="pillar"><span class="pillar-no">01</span><h2>DISTRIBUTED SYSTEMS</h2><p>Independent Yjs replicas converge after concurrent and offline edits.</p></div>
+        <div class="pillar"><span class="pillar-no">02</span><h2>LOCAL-FIRST DESIGN</h2><p>IndexedDB preserves useful work in the browser before a peer is reachable.</p></div>
+        <div class="pillar"><span class="pillar-no">03</span><h2>PRIVACY ENGINEERING</h2><p>The application host is outside the document-content path; signaling remains a narrow setup role.</p></div>
+      </div>
+    </section>
+    <section class="right">
+      <p class="page">P2P WORKSPACE · 10</p>
+      <span class="bracket one"></span><span class="bracket two"></span>
+      <div class="mesh"><span class="line l1"></span><span class="line l2"></span><span class="line l3"></span><span class="line l4"></span><span class="peer a">A</span><span class="peer b">B</span><span class="peer c">C</span><span class="peer d">D</span><div class="vault">LOCAL<br>DOCUMENT<br>REPLICA</div></div>
+      <div class="final"><p class="final-label">FINAL TAKEAWAY</p><p>The server helps browsers meet; it does not own the document.</p></div>
+    </section>
+    <p class="footer">YJS · WEBRTC · INDEXEDDB · REACT + TYPESCRIPT</p>
+  </div>
+</body>
+</html>

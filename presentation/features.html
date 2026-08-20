@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #E6FFFA; color: #234E52; position: relative; font-family: 'Source Serif 4', Georgia, serif; }
+    .head { padding: 48px 72px 0; display: flex; align-items: end; justify-content: space-between; }
+    .kicker, h1, h2, h3, .num, .page, .workflow-title { font-family: 'DM Mono', monospace; font-weight: 600; }
+    .kicker { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #C53030; }
+    h1 { margin-top: 13px; font-size: 35px; line-height: 1.14; letter-spacing: -1.7px; color: #234E52; }
+    .page { font-size: 14px; color: #285E61; }
+    .rule { width: 1136px; height: 8px; margin: 18px 72px 0; background: #C53030; }
+    .body { display: flex; gap: 40px; padding: 28px 72px 0; }
+    .feature-field { width: 785px; min-height: 440px; position: relative; border-top: 3px solid #234E52; padding-top: 16px; }
+    .feature-field:before { content: ''; position: absolute; left: 0; top: -3px; width: 44px; height: 44px; border-left: 7px solid #C53030; border-top: 7px solid #C53030; }
+    .section-label { padding-left: 60px; font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 25px; background: #285E61; }
+    .feature { height: 93px; background: #D8F5EE; padding: 14px 17px 0; display: flex; gap: 15px; }
+    .num { display: block; color: #C53030; font-size: 13px; width: 22px; flex: 0 0 22px; }
+    h3 { font-size: 13px; letter-spacing: .15px; color: #234E52; }
+    .feature p { margin-top: 5px; font-size: 14px; line-height: 1.22; color: #285E61; }
+    .workflow { width: 372px; min-height: 420px; background: #234E52; color: #E6FFFA; padding: 22px 30px 0; position: relative; }
+    .workflow:after { content: ''; position: absolute; right: 0; bottom: 0; width: 76px; height: 76px; border-right: 8px solid #C53030; border-bottom: 8px solid #C53030; }
+    .workflow-title { font-size: 13px; letter-spacing: .9px; color: #F8D1C9; text-transform: uppercase; }
+    .workflow h2 { margin-top: 12px; font-family: 'DM Mono', monospace; font-size: 24px; line-height: 1.25; letter-spacing: -1px; color: #E6FFFA; }
+    .workflow p { margin-top: 12px; font-size: 17px; line-height: 1.42; color: #C8EEE6; }
+    .steps { margin-top: 18px; border-top: 2px solid #8CCFC2; padding-top: 8px; }
+    .step { display: flex; gap: 11px; margin-top: 8px; font-size: 14px; line-height: 1.25; color: #E6FFFA; }
+    .step span { font-family: 'DM Mono', monospace; color: #FFB3A7; }
+    .footer { position: absolute; left: 72px; bottom: 27px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .6px; color: #285E61; }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <header class="head">
+      <div><p class="kicker">06 / Implementation</p><h1>Implemented application features</h1></div>
+      <p class="page">P2P WORKSPACE · 07</p>
+    </header>
+    <div class="rule"></div>
+    <main class="body">
+      <section class="feature-field">
+        <p class="section-label">Delivered capability map</p>
+        <div class="grid">
+          <article class="feature"><span class="num">01</span><div><h3>LOCAL DOCUMENT VAULT</h3><p>Create, rename, list, and delete browser-resident documents.</p></div></article>
+          <article class="feature"><span class="num">02</span><div><h3>PRIVATE PEER ROOMS</h3><p>Host or join with a room code and private invite secret.</p></div></article>
+          <article class="feature"><span class="num">03</span><div><h3>RICH-TEXT CRDT EDITOR</h3><p>Tiptap editing surface bound to a shared Yjs document.</p></div></article>
+          <article class="feature"><span class="num">04</span><div><h3>OFFLINE PERSISTENCE</h3><p>IndexedDB restores local state and retains edits before reconnect.</p></div></article>
+          <article class="feature"><span class="num">05</span><div><h3>LIVE AWARENESS</h3><p>Distinct peer names, colors, cursor carets, and selections.</p></div></article>
+          <article class="feature"><span class="num">06</span><div><h3>PEER CONNECTION GRAPH</h3><p>Shows direct channels, offline status, and bounded room capacity.</p></div></article>
+          <article class="feature"><span class="num">07</span><div><h3>BROWSER-ONLY EXPORT</h3><p>Downloads the active document as plain text or Markdown.</p></div></article>
+          <article class="feature"><span class="num">08</span><div><h3>ACADEMIC SUPPORT</h3><p>In-app report, presentation guidance, and viva practice material.</p></div></article>
+        </div>
+      </section>
+      <aside class="workflow">
+        <p class="workflow-title">One local-first flow</p>
+        <h2>Write alone.<br>Share deliberately.<br>Sync directly.</h2>
+        <p>The product starts with a local browser document. Collaboration is an explicit action that adds a peer room without changing the document’s storage boundary.</p>
+        <div class="steps">
+          <div class="step"><span>→</span><p>Local Yjs document restores from IndexedDB.</p></div>
+          <div class="step"><span>→</span><p>Private invite establishes the shared peer room.</p></div>
+        </div>
+      </aside>
+    </main>
+    <p class="footer">FEATURES TESTED WITH TYPESCRIPT + VITEST · VISUAL FLOWS VERIFIED ON DESKTOP AND MOBILE</p>
+  </div>
+</body>
+</html>
