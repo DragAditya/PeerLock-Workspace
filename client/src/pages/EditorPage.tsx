@@ -97,20 +97,20 @@ export default function EditorPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-[1480px]">
-        <div className="mb-5 flex flex-wrap items-center gap-3">
-          <button onClick={() => setLocation("/")} className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-[#8694AA] hover:bg-white/[0.06] hover:text-white"><ChevronLeft className="h-3.5 w-3.5" />All documents</button>
-          <span className="hidden h-4 w-px bg-white/[0.1] sm:block" />
+      <div className="editor-deck mx-auto max-w-[1480px]">
+        <div className="editor-command-head mb-5 flex flex-wrap items-center gap-3">
+          <button onClick={() => setLocation("/")} className="editor-back flex h-8 items-center gap-1 px-2 text-xs"><ChevronLeft className="h-3.5 w-3.5" />VAULT</button>
+          <span className="editor-head-rule hidden h-4 w-px sm:block" />
           <div className="min-w-0 flex-1">
-            <input value={title} onChange={event => setTitle(event.target.value)} onBlur={() => void rename()} onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }} className="w-full max-w-xl bg-transparent text-lg font-semibold tracking-[-0.025em] text-white outline-none placeholder:text-[#758299]" aria-label="Document title" />
+            <input value={title} onChange={event => setTitle(event.target.value)} onBlur={() => void rename()} onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }} className="editor-title-input w-full max-w-xl bg-transparent outline-none" aria-label="Document title" />
           </div>
-          <button onClick={() => void rename()} className="grid h-8 w-8 place-items-center rounded-lg text-[#7D8AA0] hover:bg-white/[0.06] hover:text-[#B9C4D4]" aria-label="Save title"><Pencil className="h-3.5 w-3.5" /></button>
-          <div className="hidden rounded-lg border border-white/[0.08] bg-white/[0.035] px-2.5 py-1.5 text-[11px] text-[#95A1B7] sm:block">{document.roomCode ? `Room ${document.roomCode}` : "Local document"}</div>
+          <button onClick={() => void rename()} className="editor-icon-action grid h-8 w-8 place-items-center" aria-label="Save title"><Pencil className="h-3.5 w-3.5" /></button>
+          <div className="editor-document-tag hidden px-2.5 py-1.5 text-[10px] sm:block">{document.roomCode ? `ROOM / ${document.roomCode}` : "LOCAL / ONLY"}</div>
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="editor-grid grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="min-w-0 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-[#111722]/68 px-4 py-3">
+            <div className="editor-signal-bar flex flex-wrap items-center justify-between gap-3 px-4 py-3">
               <div className="flex min-w-0 items-center gap-2.5"><span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/[0.05] ${details.tone}`}><StatusIcon className={`h-4 w-4 ${collaboration.connectionState === "loading-local" ? "animate-spin" : ""}`} /></span><div className="min-w-0"><p className="text-xs font-semibold text-[#E4EAF5]">{details.label}</p><p className="mt-0.5 max-w-2xl truncate text-[11px] text-[#8190A6]">{details.text}</p></div></div>
               <div className="flex items-center gap-2">
                 {document.roomCode ? <button onClick={copyInvite} className="flex h-8 items-center gap-1.5 rounded-lg border border-[#7FE6CA]/20 bg-[#7FE6CA]/[0.06] px-2.5 text-[11px] font-semibold text-[#A8F1DC] hover:bg-[#7FE6CA]/[0.13]">{copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}{copied ? "Copied" : "Copy invite"}</button> : <button onClick={() => void startPrivateRoom()} className="flex h-8 items-center gap-1.5 rounded-lg border border-[#B8AFFF]/20 bg-[#B8AFFF]/[0.07] px-2.5 text-[11px] font-semibold text-[#D0C9FF] hover:bg-[#B8AFFF]/[0.14]"><Wifi className="h-3.5 w-3.5" />Share as room</button>}
@@ -118,18 +118,18 @@ export default function EditorPage() {
                 <div className="group relative"><button className="flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-[#C4CDDB] hover:bg-white/[0.08]"><Download className="h-3.5 w-3.5" />Export</button><div className="invisible absolute right-0 top-9 z-20 w-36 rounded-xl border border-white/[0.1] bg-[#18202E] p-1 opacity-0 shadow-xl transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"><button onClick={() => exportDocument("txt")} className="w-full rounded-lg px-3 py-2 text-left text-xs text-[#D8E0EC] hover:bg-white/[0.08]">Plain text (.txt)</button><button onClick={() => exportDocument("md")} className="w-full rounded-lg px-3 py-2 text-left text-xs text-[#D8E0EC] hover:bg-white/[0.08]">Markdown (.md)</button></div></div>
               </div>
             </div>
-            {collaboration.ydoc ? <CollaborativeEditor key={document.id} ydoc={collaboration.ydoc} provider={collaboration.provider} profile={profile} onReady={editor => { editorRef.current = editor; }} /> : <div className="grid min-h-[500px] place-items-center rounded-2xl border border-white/[0.08] bg-[#111722]/70 text-sm text-[#8190A6]"><Loader2 className="mr-2 h-4 w-4 animate-spin text-[#7FE6CA]" />Opening local document…</div>}
+            {collaboration.ydoc ? <div className="editor-writing-surface"><CollaborativeEditor key={document.id} ydoc={collaboration.ydoc} provider={collaboration.provider} profile={profile} onReady={editor => { editorRef.current = editor; }} /></div> : <div className="editor-loading grid min-h-[500px] place-items-center text-sm"><Loader2 className="mr-2 h-4 w-4 animate-spin text-[#7FE6CA]" />Opening local document…</div>}
           </div>
 
-          <aside className="space-y-4">
+          <aside className="editor-modules space-y-4">
             <ConnectionGraph peers={collaboration.peers} connectionState={collaboration.connectionState} directPeerCount={collaboration.directPeerCount} roomCapacity={collaboration.roomCapacity} />
             {collaboration.ydoc && <RoomChat ydoc={collaboration.ydoc} profile={profile} peers={collaboration.peers} enabled={collaboration.isCollaborative} />}
-            <section className="rounded-2xl border border-white/[0.09] bg-[#111722]/84 p-4">
+            <section className="editor-module p-4">
               <div className="flex items-center justify-between"><div><h3 className="text-sm font-semibold text-[#E7ECF6]">Presence</h3><p className="mt-1 text-[11px] text-[#7B889E]">Awareness is ephemeral</p></div><span className="flex items-center gap-1 text-[11px] text-[#7FE6CA]"><Users className="h-3.5 w-3.5" />{collaboration.peers.length}/10</span></div>
               <div className="mt-3 space-y-2.5">{collaboration.peers.map(peer => <div key={peer.clientId} className="flex items-center gap-2.5"><span className="grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-[#091018]" style={{ backgroundColor: peer.color }}>{peer.name.slice(0, 1).toUpperCase()}</span><span className="min-w-0 flex-1 truncate text-xs font-medium text-[#D7DEEA]">{peer.name}{peer.isLocal ? " (you)" : ""}</span><span className={`h-1.5 w-1.5 rounded-full ${peer.isDirect ? "bg-[#78E7C6]" : "bg-[#F4C477]"}`} /></div>)}</div>
               {collaboration.roomCapacity !== "within-limit" && <p className={`mt-3 rounded-lg px-2.5 py-2 text-[10px] leading-4 ${collaboration.roomCapacity === "above-limit" ? "bg-[#FF9EAE]/10 text-[#FFB1BE]" : "bg-[#F4C477]/10 text-[#F7D79D]"}`}>{collaboration.roomCapacity === "above-limit" ? "This room exceeds the supported 10-participant scope. A serverless mesh cannot authoritatively reject extra peers; use a smaller room for predictable performance." : "This room has reached its supported 10-participant capacity."}</p>}
             </section>
-            <section className="rounded-2xl border border-[#7FE6CA]/13 bg-[#63E8C4]/[0.045] p-4"><div className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#7FE6CA]" /><div><h3 className="text-xs font-semibold text-[#D7F7ED]">Privacy scope</h3><p className="mt-1.5 text-[11px] leading-5 text-[#A2C5BB]">{privacyCopy.preciseScope}</p></div></div></section>
+            <section className="editor-privacy-module p-4"><div className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#7FE6CA]" /><div><h3 className="text-xs font-semibold text-[#D7F7ED]">Privacy scope</h3><p className="mt-1.5 text-[11px] leading-5 text-[#A2C5BB]">{privacyCopy.preciseScope}</p></div></div></section>
           </aside>
         </div>
       </div>

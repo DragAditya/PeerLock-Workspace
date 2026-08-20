@@ -63,3 +63,11 @@
 - [x] Update onboarding terminology and placeholder to use Username rather than the existing personal-name example.
 - [x] Run functional, TypeScript, production-build, and visual verification for the focused collaboration visual refinement.
 - [x] Create prompt.md with a complete technology-agnostic functional specification for recreating Peerlock without visual-design instructions.
+- [x] Replace the existing Peerlock visual direction and information architecture with a completely new product experience while preserving all local-first collaboration features.
+- [x] Rebuild the first-use flow, dashboard, editor workspace, collaboration panels, settings, report, and study pages from new component compositions.
+- [x] Establish a new responsive visual system, interaction model, typography hierarchy, and dark-only color language independent of the previous design.
+- [x] Run full functional, type, production-build, and desktop/mobile visual validation after the ground-up redesign.
+- [x] Rebuild Settings, Report, Study, and collaboration-panel page structures with command-deck compositions rather than relying only on inherited surface styling.
+- [x] Capture post-redesign desktop and mobile verification for the core workspace routes after completing their page-level redesigns.
+- [x] Capture and verify fresh desktop and mobile screenshots for the redesigned editor route and collaboration-panel layout.
+- [ ] Verify the command-deck editor and collaboration panels from a real local profile and valid document route after first-use onboarding is completed.
