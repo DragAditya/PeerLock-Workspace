@@ -94,5 +94,17 @@
 - [x] Re-run functional validation for the rebuilt hub, onboarding, document model, and room-entry flow after adding recovery handling.
 - [x] Verify the HubPage manual room-join recovery UI for invalid room codes, invalid secrets, and failed room-opening behavior in a real browser.
 - [x] Add and browser-verify a true failed room-opening recovery path beyond invalid manual input.
-- [ ] Rebuild the editor, real-time collaboration controls, local persistence, export, AI privacy boundary, and academic materials from the new architecture.
-- [ ] Validate and publish the new clean-slate Peerlock implementation across desktop, mobile, local persistence, and peer-room paths.
+- [x] Rebuild the editor, real-time collaboration controls, local persistence, export, AI privacy boundary, and academic materials from the new architecture.
+- [x] Validate and publish the new clean-slate Peerlock implementation across desktop, mobile, local persistence, and peer-room paths.
+- [x] Rebuild the clean-slate document studio with a Tiptap and Yjs rich-text editor, Markdown shortcuts, syntax-highlighted code blocks, and production-quality editing states.
+- [x] Add awareness-based participant controls, visible ten-peer capacity handling, and a real peer-topology and connection-state view to the clean-slate room console.
+- [x] Run two-context multi-peer browser validation for WebRTC document synchronization, replicated chat, presence updates, room capacity, and connection states.
+- [ ] Add a real connection-state topology module and robust capacity controls, then browser-verify connecting, connected, and ten-peer-capacity UI states.
+- [ ] Re-run multi-peer browser validation covering document sync, replicated chat, presence, topology state, and capacity behavior.
+- [x] Diagnose and fix the rapid concurrent-edit synchronization failure reported after initial successful peer sync.
+- [x] Move live chat, peer activity, and collaboration status into the primary studio rather than hiding them in the room console.
+- [x] Add a complete visible formatting toolset and document actions to the primary editing workflow.
+- [x] Render collaborator presence and cursor locations directly in the shared document using unobtrusive colour-coded carets.
+- [x] Stress-test rapid multi-peer editing, chat, presence, and reconnect behavior across independent browser contexts.
+- [x] Force a peer reconnect in a real browser and verify document sync, chat replication, presence recovery, and connection-state UI afterward.
+- [x] Verify post-reconnect room-chat replication in a real browser before finalizing the studio repair.
