@@ -66,6 +66,12 @@ export async function attachRoomToDocument(id: string, roomCode: string, roomSec
   return saveDocument({ ...document, roomCode, roomSecret });
 }
 
+export async function setDocumentExternalAiEnabled(id: string, externalAiEnabled: boolean) {
+  const document = await getDocument(id);
+  if (!document) return undefined;
+  return saveDocument({ ...document, externalAiEnabled });
+}
+
 export async function touchDocument(id: string) {
   const document = await getDocument(id);
   if (!document) return undefined;

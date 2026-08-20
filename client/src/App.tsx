@@ -39,7 +39,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider
-        defaultTheme="light"
+        defaultTheme="dark"
         switchable
       >
         <TooltipProvider>

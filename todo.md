@@ -42,3 +42,14 @@
 - [x] Replace the current visual system with a premium, cohesive glass workspace using a deliberate paired light/dark palette, restrained translucency, depth, and responsive layout hierarchy.
 - [x] Redesign the onboarding, shell, dashboard, editor, settings, and collaboration surfaces to use the new visual system consistently.
 - [x] Run AI-focused unit tests, type checking, production build validation, and desktop/mobile visual review before publishing the upgrade.
+- [x] Add a persistent per-document AI privacy policy that can completely disable external AI processing for sensitive documents.
+- [x] Add a clear editor control, policy status badge, confirmation copy, and settings affordance for changing the document’s AI privacy policy.
+- [x] Enforce the disabled policy in the Gemini formatting request boundary so the server refuses AI formatting for protected documents.
+- [x] Make dark mode the default appearance and rebuild light mode as a balanced complementary colour system with legible contrast.
+- [x] Redesign the workspace with cinematic but purposeful visual depth, sophisticated responsive motion, kinetic hierarchy, and accessible micro-interactions.
+- [x] Reduce remote collaborative cursors to compact colour-coded bars and subtle name chips rather than large disruptive labels.
+- [x] Add Vitest coverage for protected-document AI blocking and run full functional, production-build, and responsive visual validation.
+- [x] Add a persistent per-document AI privacy policy that can completely disable external AI processing for sensitive documents.
+- [x] Add a clear editor control, policy status badge, confirmation copy, and settings affordance for changing the document’s AI privacy policy.
+- [x] Enforce the disabled policy in the Gemini formatting request boundary so the server refuses AI formatting for protected documents.
+- [x] Add Vitest coverage for policy persistence and blocked AI formatting requests, then run full validation before publishing.

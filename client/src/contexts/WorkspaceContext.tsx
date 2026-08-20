@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import {
   createDocument as createDocumentRecord,
   attachRoomToDocument,
+  setDocumentExternalAiEnabled as setDocumentExternalAiEnabledRecord,
   deleteDocument as deleteDocumentRecord,
   getOrCreateRoomDocument,
   listDocuments,
@@ -20,6 +21,7 @@ type WorkspaceContextValue = {
   renameDocument: (id: string, title: string) => Promise<LocalDocument | undefined>;
   deleteDocument: (id: string) => Promise<void>;
   attachRoom: (id: string, roomCode: string, roomSecret: string) => Promise<LocalDocument | undefined>;
+  setDocumentExternalAiEnabled: (id: string, externalAiEnabled: boolean) => Promise<LocalDocument | undefined>;
   updateProfile: (next: LocalProfile) => void;
 };
 
@@ -73,6 +75,12 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     return document;
   }, [refreshDocuments]);
 
+  const setDocumentExternalAiEnabled = useCallback(async (id: string, externalAiEnabled: boolean) => {
+    const document = await setDocumentExternalAiEnabledRecord(id, externalAiEnabled);
+    await refreshDocuments();
+    return document;
+  }, [refreshDocuments]);
+
   const updateProfile = useCallback((next: LocalProfile) => {
     const normalized = { ...next, name: next.name.trim() };
     saveLocalProfile(normalized);
@@ -91,8 +99,9 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     renameDocument,
     deleteDocument,
     attachRoom,
+    setDocumentExternalAiEnabled,
     updateProfile,
-  }), [attachRoom, createDocument, createOrOpenRoom, deleteDocument, documents, loading, profile, profileReady, refreshDocuments, renameDocument, updateProfile]);
+  }), [attachRoom, createDocument, createOrOpenRoom, deleteDocument, documents, loading, profile, profileReady, refreshDocuments, renameDocument, setDocumentExternalAiEnabled, updateProfile]);
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

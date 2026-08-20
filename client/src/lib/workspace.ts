@@ -7,7 +7,13 @@ export type LocalDocument = {
   updatedAt: number;
   roomCode?: string;
   roomSecret?: string;
+  /** Defaults to true for pre-policy documents; false guarantees the UI will not send text to external AI. */
+  externalAiEnabled?: boolean;
 };
+
+export function isExternalAiAllowed(document: LocalDocument) {
+  return document.externalAiEnabled !== false;
+}
 
 export type LocalProfile = {
   id: string;

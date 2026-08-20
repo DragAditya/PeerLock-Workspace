@@ -20,7 +20,7 @@ export const appRouter = router({
     }),
   }),
   ai: router({
-    formatDocument: publicProcedure.input(z.object({ documentText: z.string().min(1).max(16_000), instruction: z.string().max(600), consent: z.literal(true) })).mutation(async ({ input }) => {
+    formatDocument: publicProcedure.input(z.object({ documentText: z.string().min(1).max(16_000), instruction: z.string().max(600), consent: z.literal(true), externalAiAllowed: z.literal(true) })).mutation(async ({ input }) => {
       try {
         const markdown = await formatDocumentWithGemini(input.documentText, input.instruction);
         return { markdown };

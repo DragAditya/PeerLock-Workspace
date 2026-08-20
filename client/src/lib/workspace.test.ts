@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { colorForSeed, getLocalProfile, isLocalProfileReady, MAX_ROOM_PARTICIPANTS, presenceColors, saveLocalProfile } from "./workspace";
+import { colorForSeed, getLocalProfile, isExternalAiAllowed, isLocalProfileReady, MAX_ROOM_PARTICIPANTS, presenceColors, saveLocalProfile } from "./workspace";
 
 describe("workspace models", () => {
   it("uses a stable valid presence color for the same local profile seed", () => {
@@ -21,6 +21,12 @@ describe("workspace models", () => {
     const profile = getLocalProfile();
     saveLocalProfile({ ...profile, name: "Yogeshwari" });
     expect(isLocalProfileReady()).toBe(true);
+  });
+
+  it("honors a document-level external AI block while keeping existing documents compatible", () => {
+    const base = { id: "doc", title: "Sensitive", createdAt: 1, updatedAt: 1 };
+    expect(isExternalAiAllowed(base)).toBe(true);
+    expect(isExternalAiAllowed({ ...base, externalAiEnabled: false })).toBe(false);
   });
 });
 
