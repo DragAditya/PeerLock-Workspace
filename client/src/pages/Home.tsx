@@ -12,14 +12,15 @@ import { useLocation, useRoute } from "wouter";
 export default function Home() {
   const [, setLocation] = useLocation();
   const [isInviteRoute] = useRoute("/room/:roomCode");
+  const [isShortInviteRoute] = useRoute("/r/:roomCode");
   const { documents, loading, createDocument, createOrOpenRoom, deleteDocument } = useWorkspace();
   const [inviteError, setInviteError] = useState("");
 
   useEffect(() => {
-    if (!isInviteRoute) return;
+    if (!isInviteRoute && !isShortInviteRoute) return;
     const invite = readInviteFromLocation();
     if (!invite.roomCode || !invite.roomSecret) {
-      setInviteError("This private room needs its full invite link, including the #key fragment.");
+      setInviteError("This private room needs its complete compact invite link, including the secret after #.");
       return;
     }
     let cancelled = false;
@@ -27,7 +28,7 @@ export default function Home() {
       if (!cancelled) setLocation(`/editor/${document.id}`);
     });
     return () => { cancelled = true; };
-  }, [createOrOpenRoom, isInviteRoute, setLocation]);
+  }, [createOrOpenRoom, isInviteRoute, isShortInviteRoute, setLocation]);
 
   const createLocalWorkspace = async () => {
     const document = await createDocument();

@@ -104,16 +104,19 @@ The privacy claim must not be exaggerated. A peer-to-peer application is not ano
 | Feature | User outcome |
 | --- | --- |
 | Local document dashboard | Users can create, rename, list, and delete documents in IndexedDB. |
-| Secure room invite | Users host a room or join with a full invite link, short code, and private key. |
-| Collaborative rich-text editor | Users format text and edit concurrently through Tiptap and Yjs. |
+| Concise secure room invite | Users host or join through a compact `/r/CODE#SECRET` invite; the secret remains in the URL fragment. |
+| Technical rich-text editor | Users format text, use Markdown-style shortcuts, and write syntax-highlighted fenced code blocks through Tiptap and Yjs.[5] [6] |
 | Presence and cursors | Users see ephemeral names, distinct colors, carets, and selections. |
+| Required local profile | First-use onboarding requires a local display name and cursor color before editing begins. |
+| Peer-synchronized room chat | Chat messages are a second Yjs shared type, retained locally and replicated through the same peer room rather than a server chat API. |
 | Connection graph | Users see direct peer channels, offline/reconnecting states, and the ten-peer scope. |
+| Local appearance settings | Light mode is the default; a user can persist a dark-mode preference in the same browser. |
 | Browser-only export | Users download `.txt` or `.md` locally without an upload step. |
 | Academic materials | Report, presentation guidance, diagram, and viva preparation are available in-app. |
 
 ## 11. Validation Strategy
 
-The project validates source-level correctness with TypeScript checks and Vitest tests. The test suite covers room-code generation, 256-bit secret shape, Markdown/plain-text export conversion, stable participant-color assignment, the ten-person collaboration configuration, room-capacity states, and privacy copy. Visual verification covers desktop and mobile layouts for the dashboard, report, and viva pages.
+The project validates source-level correctness with TypeScript checks and Vitest tests. The expanded suite covers room-code generation and concise invites, 256-bit secret shape, Markdown/plain-text export conversion, automatic technical formatting, Yjs chat message models, profile-completion logic, stable participant-color assignment, the ten-person collaboration configuration, room-capacity states, and privacy copy. Visual verification covers the desktop and mobile first-use onboarding as well as the product’s major application views.
 
 For a live demonstration, the recommended experiment is to open the same full invite link in two browser profiles or two devices. The presenter should show the initial local workspace, share the invite, type concurrently, observe cursors and the mesh view, temporarily disconnect one peer, create an offline edit, reconnect, and confirm that the document converges. This is a reproducible functional demonstration, not a fabricated performance benchmark.
 
@@ -136,3 +139,7 @@ Peer-to-Peer Encrypted Workspace demonstrates that a browser can act as both a d
 [3]: [y-webrtc — WebRTC Connector for Yjs](https://github.com/yjs/y-webrtc)
 
 [4]: [Tiptap Documentation — Awareness in Collaboration](https://tiptap.dev/docs/collaboration/core-concepts/awareness)
+
+[5]: [Tiptap CodeBlockLowlight Extension](https://tiptap.dev/docs/editor/extensions/nodes/code-block-lowlight)
+
+[6]: [Tiptap Input Rules](https://tiptap.dev/docs/editor/api/input-rules)

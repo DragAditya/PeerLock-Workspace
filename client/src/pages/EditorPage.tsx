@@ -2,13 +2,15 @@ import type { Editor } from "@tiptap/core";
 import { AppShell } from "@/components/AppShell";
 import { CollaborativeEditor } from "@/components/CollaborativeEditor";
 import { ConnectionGraph } from "@/components/ConnectionGraph";
+import { RoomChat } from "@/components/RoomChat";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useCollaborationDocument } from "@/hooks/useCollaborationDocument";
 import { downloadTextFile, editorJsonToMarkdown, editorJsonToPlainText } from "@/lib/export";
+import { autoFormatEditor } from "@/lib/autoFormat";
 import { buildInviteUrl, createRoomCode, createRoomSecret } from "@/lib/room";
 import { privacyCopy } from "@/lib/privacy";
 import type { ConnectionState, LocalDocument } from "@/lib/workspace";
-import { Check, ChevronLeft, Copy, Download, FileText, Globe2, Loader2, Pencil, ShieldCheck, Users, WifiOff, Wifi } from "lucide-react";
+import { Check, ChevronLeft, Copy, Download, FileText, Globe2, Loader2, Pencil, ShieldCheck, Users, WifiOff, Wifi, WandSparkles } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useRoute } from "wouter";
 
@@ -33,6 +35,7 @@ export default function EditorPage() {
   const document = documents.find(item => item.id === params?.id);
   const [title, setTitle] = useState("");
   const [copied, setCopied] = useState(false);
+  const [formatted, setFormatted] = useState(false);
   const editorRef = useRef<Editor | null>(null);
 
   useEffect(() => setTitle(document?.title ?? ""), [document?.id, document?.title]);
@@ -64,6 +67,14 @@ export default function EditorPage() {
     downloadTextFile(getFilename(document?.title ?? "peerlock-document", kind), content, kind === "md" ? "text/markdown" : "text/plain");
   };
 
+  const autoFormat = () => {
+    if (!editorRef.current) return;
+    if (!window.confirm("Auto-format will normalize the current document into headings, lists, quotes, and code blocks. Continue?")) return;
+    autoFormatEditor(editorRef.current);
+    setFormatted(true);
+    window.setTimeout(() => setFormatted(false), 2600);
+  };
+
   if (!document) {
     return <AppShell><div className="grid min-h-[60vh] place-items-center"><div className="text-center"><FileText className="mx-auto h-7 w-7 text-[#7FE6CA]" /><h1 className="mt-4 text-xl font-semibold text-white">Document unavailable</h1><p className="mt-2 text-sm text-[#8794A9]">It may have been removed from this browser.</p><button className="mt-5 text-sm font-semibold text-[#7FE6CA]" onClick={() => setLocation("/")}>Return to local documents</button></div></div></AppShell>;
   }
@@ -90,6 +101,7 @@ export default function EditorPage() {
               <div className="flex min-w-0 items-center gap-2.5"><span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/[0.05] ${details.tone}`}><StatusIcon className={`h-4 w-4 ${collaboration.connectionState === "loading-local" ? "animate-spin" : ""}`} /></span><div className="min-w-0"><p className="text-xs font-semibold text-[#E4EAF5]">{details.label}</p><p className="mt-0.5 max-w-2xl truncate text-[11px] text-[#8190A6]">{details.text}</p></div></div>
               <div className="flex items-center gap-2">
                 {document.roomCode ? <button onClick={copyInvite} className="flex h-8 items-center gap-1.5 rounded-lg border border-[#7FE6CA]/20 bg-[#7FE6CA]/[0.06] px-2.5 text-[11px] font-semibold text-[#A8F1DC] hover:bg-[#7FE6CA]/[0.13]">{copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}{copied ? "Copied" : "Copy invite"}</button> : <button onClick={() => void startPrivateRoom()} className="flex h-8 items-center gap-1.5 rounded-lg border border-[#B8AFFF]/20 bg-[#B8AFFF]/[0.07] px-2.5 text-[11px] font-semibold text-[#D0C9FF] hover:bg-[#B8AFFF]/[0.14]"><Wifi className="h-3.5 w-3.5" />Share as room</button>}
+                <button onClick={autoFormat} className="flex h-8 items-center gap-1.5 rounded-lg border border-[#F4C477]/30 bg-[#F4C477]/[0.08] px-2.5 text-[11px] font-semibold text-[#F7D79D] hover:bg-[#F4C477]/[0.16]"><WandSparkles className="h-3.5 w-3.5" />{formatted ? "Formatted" : "Auto-format"}</button>
                 <div className="group relative"><button className="flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-[#C4CDDB] hover:bg-white/[0.08]"><Download className="h-3.5 w-3.5" />Export</button><div className="invisible absolute right-0 top-9 z-20 w-36 rounded-xl border border-white/[0.1] bg-[#18202E] p-1 opacity-0 shadow-xl transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"><button onClick={() => exportDocument("txt")} className="w-full rounded-lg px-3 py-2 text-left text-xs text-[#D8E0EC] hover:bg-white/[0.08]">Plain text (.txt)</button><button onClick={() => exportDocument("md")} className="w-full rounded-lg px-3 py-2 text-left text-xs text-[#D8E0EC] hover:bg-white/[0.08]">Markdown (.md)</button></div></div>
               </div>
             </div>
@@ -98,6 +110,7 @@ export default function EditorPage() {
 
           <aside className="space-y-4">
             <ConnectionGraph peers={collaboration.peers} connectionState={collaboration.connectionState} directPeerCount={collaboration.directPeerCount} roomCapacity={collaboration.roomCapacity} />
+            {collaboration.ydoc && <RoomChat ydoc={collaboration.ydoc} profile={profile} enabled={collaboration.isCollaborative} />}
             <section className="rounded-2xl border border-white/[0.09] bg-[#111722]/84 p-4">
               <div className="flex items-center justify-between"><div><h3 className="text-sm font-semibold text-[#E7ECF6]">Presence</h3><p className="mt-1 text-[11px] text-[#7B889E]">Awareness is ephemeral</p></div><span className="flex items-center gap-1 text-[11px] text-[#7FE6CA]"><Users className="h-3.5 w-3.5" />{collaboration.peers.length}/10</span></div>
               <div className="mt-3 space-y-2.5">{collaboration.peers.map(peer => <div key={peer.clientId} className="flex items-center gap-2.5"><span className="grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-[#091018]" style={{ backgroundColor: peer.color }}>{peer.name.slice(0, 1).toUpperCase()}</span><span className="min-w-0 flex-1 truncate text-xs font-medium text-[#D7DEEA]">{peer.name}{peer.isLocal ? " (you)" : ""}</span><span className={`h-1.5 w-1.5 rounded-full ${peer.isDirect ? "bg-[#78E7C6]" : "bg-[#F4C477]"}`} /></div>)}</div>

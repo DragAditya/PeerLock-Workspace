@@ -80,7 +80,7 @@ export function RoomDialogs({ compact = false }: { compact?: boolean }) {
             <p className="mt-2 text-sm leading-6 text-[#98A4B9]">Paste a full invite link, or enter the short room code and matching private key separately.</p>
             <div className="mt-5 space-y-2">
               <Label htmlFor="room-invite" className="text-xs text-[#C6CEDD]">Invite link or room code</Label>
-              <Input id="room-invite" value={joinValue} onChange={event => { setJoinValue(event.target.value); setError(""); }} placeholder="ABCD1234 or https://…/room/ABCD1234#key=…" className="h-11 border-white/[0.12] bg-white/[0.045] text-[#E8EEF8] placeholder:text-[#69768B]" />
+              <Input id="room-invite" value={joinValue} onChange={event => { setJoinValue(event.target.value); setError(""); }} placeholder="ABCD1234 or https://…/r/ABCD1234#secret" className="h-11 border-white/[0.12] bg-white/[0.045] text-[#E8EEF8] placeholder:text-[#69768B]" />
               {!parseInviteInput(joinValue).roomSecret && <><Label htmlFor="room-secret" className="pt-1 text-xs text-[#C6CEDD]">Private key</Label><Input id="room-secret" value={joinSecret} onChange={event => { setJoinSecret(event.target.value); setError(""); }} placeholder="Shared private key" className="h-11 border-white/[0.12] bg-white/[0.045] font-mono text-xs text-[#E8EEF8] placeholder:font-sans placeholder:text-[#69768B]" /></>}
               {error && <p className="text-xs text-[#FF9DAF]">{error}</p>}
               {joinValue && <p className="text-[11px] text-[#728197]">Detected room code: <strong className="font-semibold text-[#9FEAD6]">{normalizeRoomCode(parseInviteInput(joinValue).roomCode) || "—"}</strong></p>}

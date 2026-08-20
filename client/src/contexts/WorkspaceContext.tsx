@@ -7,12 +7,13 @@ import {
   listDocuments,
   renameDocument as renameDocumentRecord,
 } from "@/lib/documentStore";
-import { getLocalProfile, saveLocalProfile, type LocalDocument, type LocalProfile } from "@/lib/workspace";
+import { getLocalProfile, isLocalProfileReady, saveLocalProfile, type LocalDocument, type LocalProfile } from "@/lib/workspace";
 
 type WorkspaceContextValue = {
   documents: LocalDocument[];
   loading: boolean;
   profile: LocalProfile;
+  profileReady: boolean;
   refreshDocuments: () => Promise<void>;
   createDocument: (title?: string, room?: { roomCode: string; roomSecret: string }) => Promise<LocalDocument>;
   createOrOpenRoom: (roomCode: string, roomSecret: string) => Promise<LocalDocument>;
@@ -28,6 +29,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [documents, setDocuments] = useState<LocalDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<LocalProfile>(() => getLocalProfile());
+  const [profileReady, setProfileReady] = useState(() => isLocalProfileReady());
 
   const refreshDocuments = useCallback(async () => {
     setLoading(true);
@@ -72,15 +74,17 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   }, [refreshDocuments]);
 
   const updateProfile = useCallback((next: LocalProfile) => {
-    const normalized = { ...next, name: next.name.trim() || "Local editor" };
+    const normalized = { ...next, name: next.name.trim() };
     saveLocalProfile(normalized);
     setProfile(normalized);
+    setProfileReady(true);
   }, []);
 
   const value = useMemo<WorkspaceContextValue>(() => ({
     documents,
     loading,
     profile,
+    profileReady,
     refreshDocuments,
     createDocument,
     createOrOpenRoom,
@@ -88,7 +92,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     deleteDocument,
     attachRoom,
     updateProfile,
-  }), [attachRoom, createDocument, createOrOpenRoom, deleteDocument, documents, loading, profile, refreshDocuments, renameDocument, updateProfile]);
+  }), [attachRoom, createDocument, createOrOpenRoom, deleteDocument, documents, loading, profile, profileReady, refreshDocuments, renameDocument, updateProfile]);
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

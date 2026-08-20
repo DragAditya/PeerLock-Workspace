@@ -21,3 +21,12 @@
 - [x] Write Vitest coverage for document models, room-code helpers, export utilities, collaboration configuration, and privacy copy.
 - [x] Run type checking, unit tests, and visual verification at desktop and mobile breakpoints.
 - [x] Review this tracker, mark completed items accurately, and save a final project checkpoint.
+- [x] Add Markdown input shortcuts and syntax-highlighted code blocks for technical writing in the rich-text editor.
+- [x] Add an automatic document-formatting action that structures heading, list, spacing, and code content entirely in the browser.
+- [x] Add a peer-synchronized real-time room chat panel using the existing Yjs document, with no application-server message store.
+- [x] Require first-time local profile setup before a user can create or edit a document.
+- [x] Add a settings page for local profile editing, appearance preferences, and privacy information.
+- [x] Make light mode the default application appearance and provide a persistent user-selectable dark mode.
+- [x] Replace long private room routes with a concise code-and-fragment invite format while retaining the private secret outside HTTP requests.
+- [x] Add Vitest coverage for chat models, automatic formatting helpers, profile-completion logic, and concise invite handling.
+- [x] Re-run type checking, unit tests, and desktop/mobile visual verification for the enhanced product.

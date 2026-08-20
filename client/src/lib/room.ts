@@ -29,7 +29,7 @@ export function isValidRoomCode(value: string) {
 }
 
 export function normalizeRoomCode(value: string) {
-  return value.trim().toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, ROOM_CODE_LENGTH);
+  return value.trim().toUpperCase().replace(new RegExp(`[^${ROOM_ALPHABET}]`, "g"), "").slice(0, ROOM_CODE_LENGTH);
 }
 
 export async function deriveOpaqueRoomName(roomCode: string, roomSecret: string) {
@@ -39,15 +39,17 @@ export async function deriveOpaqueRoomName(roomCode: string, roomSecret: string)
 }
 
 export function buildInviteUrl(roomCode: string, roomSecret: string) {
-  const base = `${window.location.origin}/room/${roomCode}`;
-  return `${base}#key=${encodeURIComponent(roomSecret)}`;
+  const origin = typeof window === "undefined" ? "https://peerlock.local" : window.location.origin;
+  const base = `${origin}/r/${roomCode}`;
+  return `${base}#${encodeURIComponent(roomSecret)}`;
 }
 
 export function readInviteFromLocation() {
-  const match = window.location.pathname.match(/^\/room\/([A-Z2-9]{8})$/i);
+  const match = window.location.pathname.match(/^\/(?:room|r)\/([A-Z2-9]{8})$/i);
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
   const roomCode = match?.[1] ? normalizeRoomCode(match[1]) : "";
-  const roomSecret = hash.get("key") ?? "";
+  const rawHash = window.location.hash.replace(/^#/, "");
+  const roomSecret = hash.get("key") ?? decodeURIComponent(rawHash);
   return { roomCode, roomSecret };
 }
 
@@ -58,12 +60,13 @@ export function parseInviteInput(value: string) {
   try {
     const url = new URL(trimmed, window.location.origin);
     const roomCode = normalizeRoomCode(url.pathname.split("/").pop() ?? "");
-    const roomSecret = new URLSearchParams(url.hash.replace(/^#/, "")).get("key") ?? "";
+    const rawHash = url.hash.replace(/^#/, "");
+    const roomSecret = new URLSearchParams(rawHash).get("key") ?? decodeURIComponent(rawHash);
     return { roomCode, roomSecret };
   } catch {
     const [rawCode, rawHash] = trimmed.split("#");
     const roomCode = normalizeRoomCode(rawCode);
-    const roomSecret = new URLSearchParams(rawHash ?? "").get("key") ?? "";
+    const roomSecret = new URLSearchParams(rawHash ?? "").get("key") ?? decodeURIComponent(rawHash ?? "");
     return { roomCode, roomSecret };
   }
 }

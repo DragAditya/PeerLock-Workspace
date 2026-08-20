@@ -1,16 +1,18 @@
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { BookOpen, FilePlus2, FileText, GraduationCap, LockKeyhole, PanelLeftClose, Plus, ShieldCheck, X } from "lucide-react";
+import { BookOpen, FilePlus2, FileText, GraduationCap, LockKeyhole, PanelLeftClose, Plus, Settings2, ShieldCheck, X } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { ProfileDialog } from "./ProfileDialog";
 import { PeerlockMark } from "./PeerlockMark";
 import { privacyCopy } from "@/lib/privacy";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const navItems = [
   { label: "Workspaces", path: "/", icon: FileText },
   { label: "MCA report", path: "/report", icon: BookOpen },
   { label: "Present & viva", path: "/study", icon: GraduationCap },
+  { label: "Settings", path: "/settings", icon: Settings2 },
 ];
 
 function formatRelativeTime(timestamp: number) {
@@ -25,6 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { documents, createDocument } = useWorkspace();
+  const { theme } = useTheme();
 
   const handleCreateDocument = async () => {
     const document = await createDocument();
@@ -38,7 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#090C14] text-[#F5F7FB]">
+    <div className={`app-shell theme-${theme} min-h-screen bg-[#090C14] text-[#F5F7FB]`}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute -left-48 top-[-12rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,_rgba(77,232,191,0.11),_transparent_66%)]" />
         <div className="absolute -right-52 top-32 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,_rgba(135,113,255,0.11),_transparent_66%)]" />

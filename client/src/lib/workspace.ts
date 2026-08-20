@@ -63,13 +63,18 @@ export function getLocalProfile(): LocalProfile {
   const id = storedId ?? randomId();
   if (!storedId) localStorage.setItem("p2p-workspace.profile-id", id);
 
-  const name = localStorage.getItem("p2p-workspace.profile-name")?.trim() || "Local editor";
+  const name = localStorage.getItem("p2p-workspace.profile-name")?.trim() || "";
   const color = localStorage.getItem("p2p-workspace.profile-color") || colorForSeed(id);
   return { id, name, color };
 }
 
+export function isLocalProfileReady() {
+  return localStorage.getItem("p2p-workspace.profile-ready") === "true" && Boolean(localStorage.getItem("p2p-workspace.profile-name")?.trim());
+}
+
 export function saveLocalProfile(profile: LocalProfile) {
   localStorage.setItem("p2p-workspace.profile-id", profile.id);
-  localStorage.setItem("p2p-workspace.profile-name", profile.name.trim() || "Local editor");
+  localStorage.setItem("p2p-workspace.profile-name", profile.name.trim());
   localStorage.setItem("p2p-workspace.profile-color", profile.color);
+  localStorage.setItem("p2p-workspace.profile-ready", "true");
 }
