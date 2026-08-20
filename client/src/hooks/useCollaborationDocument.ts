@@ -25,6 +25,7 @@ export function useCollaborationDocument({ document, profile, onActivity }: UseC
   const [peers, setPeers] = useState<PeerPresence[]>([]);
   const [directPeerCount, setDirectPeerCount] = useState(0);
   const [roomCapacity, setRoomCapacity] = useState<RoomCapacityState>("within-limit");
+  const [persistenceReady, setPersistenceReady] = useState(false);
   const activityTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export function useCollaborationDocument({ document, profile, onActivity }: UseC
     setPeers([localPeer]);
     setDirectPeerCount(0);
     setRoomCapacity("within-limit");
+    setPersistenceReady(false);
     setConnectionState("loading-local");
 
     const initializePeerSync = async () => {
@@ -117,7 +119,10 @@ export function useCollaborationDocument({ document, profile, onActivity }: UseC
     window.addEventListener("online", onOnline);
     window.addEventListener("offline", onOffline);
 
-    persistence.once("synced", initializePeerSync);
+    persistence.once("synced", () => {
+      if (!disposed) setPersistenceReady(true);
+      void initializePeerSync();
+    });
 
     return () => {
       disposed = true;
@@ -137,6 +142,7 @@ export function useCollaborationDocument({ document, profile, onActivity }: UseC
     peers,
     directPeerCount,
     roomCapacity,
+    persistenceReady,
     connectionState,
     isCollaborative: Boolean(document.roomCode && document.roomSecret),
   };

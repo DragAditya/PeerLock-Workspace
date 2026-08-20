@@ -71,3 +71,9 @@
 - [x] Capture post-redesign desktop and mobile verification for the core workspace routes after completing their page-level redesigns.
 - [x] Capture and verify fresh desktop and mobile screenshots for the redesigned editor route and collaboration-panel layout.
 - [ ] Verify the command-deck editor and collaboration panels from a real local profile and valid document route after first-use onboarding is completed.
+- [x] Add an advanced document command strip with word count, reading time, local save state, focus mode, and contextual document actions.
+- [x] Add richer peer collaboration controls, including a compact active-peer rail, room activity feed, and quick access to privacy and invitation status.
+- [x] Add browser-local document intelligence for outline navigation, document insights, and writing progress without storing content on the application server.
+- [x] Optimize the authenticated editor’s mobile composition so primary writing actions stay prominent while collaboration panels remain easy to scan.
+- [x] Wire the local save-status badge to real IndexedDB/Yjs persistence readiness rather than a timer-based approximation.
+- [ ] Run full functional, type, production-build, and live-editor visual validation for the ultra-workspace upgrade.
