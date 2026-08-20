@@ -23,17 +23,18 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
   useEffect(() => { const refreshChat = () => setChat(messages.toArray().filter(validMessage).sort((a, b) => a.at - b.at)); messages.observe(refreshChat); refreshChat(); return () => messages.unobserve(refreshChat); }, [messages]);
   useEffect(() => {
     providerRef.current?.destroy(); providerRef.current = null; setProvider(null); setPeers([]); setConnection(document.roomCode ? "connecting" : "local");
-    if (!document.roomCode || !document.roomSecret || !profile) return;
+    if (!document.roomCode || !profile) return;
     let cancelled = false;
-    void opaqueRoomName(document.roomCode, document.roomSecret).then(room => {
+    const password = document.roomProtected ? (document.roomPassword ?? document.roomSecret ?? "") : undefined;
+    void opaqueRoomName(document.roomCode, password).then(room => {
       if (cancelled) return;
-      const nextProvider = new WebrtcProvider(room, ydoc, { password: document.roomSecret, maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
+      const nextProvider = new WebrtcProvider(room, ydoc, { ...(password ? { password } : {}), maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
       nextProvider.awareness.setLocalStateField("user", { name: profile.name, color: profile.color, id: profile.id });
       const updatePeers = () => setPeers(Array.from(nextProvider.awareness.getStates().entries()).map(([id, state]) => ({ id, name: (state.user as { name?: string } | undefined)?.name ?? "Anonymous peer", color: (state.user as { color?: string } | undefined)?.color ?? "#607064" })));
       nextProvider.awareness.on("change", updatePeers); nextProvider.on("status", event => setConnection(event.connected ? "connected" : "connecting")); updatePeers();
     });
     return () => { cancelled = true; providerRef.current?.destroy(); providerRef.current = null; setProvider(null); };
-  }, [document.roomCode, document.roomSecret, profile?.id, profile?.name, profile?.color, ydoc]);
+  }, [document.roomCode, document.roomProtected, document.roomPassword, document.roomSecret, profile?.id, profile?.name, profile?.color, ydoc]);
   const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([{ id: crypto.randomUUID(), author: profile.name, color: profile.color, body: body.trim(), at: Date.now() }]); };
   return { ydoc, fragment, provider, connection, peers, chat, send };
 }

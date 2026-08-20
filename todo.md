@@ -111,3 +111,10 @@
 - [x] Stress-test rapid multi-peer editing, chat, presence, and reconnect behavior across independent browser contexts.
 - [x] Force a peer reconnect in a real browser and verify document sync, chat replication, presence recovery, and connection-state UI afterward.
 - [x] Verify post-reconnect room-chat replication in a real browser before finalizing the studio repair.
+- [x] Remove unexplained room-secret prompts by introducing explicit open-room and password-protected room creation choices.
+- [x] Update room invite and join flows so a password is requested only for rooms deliberately created with password protection.
+- [x] Replace the homepage header’s New Document action with direct Settings access while keeping document creation in the workspace flow.
+- [x] Add a local-profile logout/reset action that clears browser-only guest identity without requiring account credentials.
+- [x] Keep Peerlock guest-first: no user ID, account password, or central login requirement for normal use.
+- [x] Validate protected/open room creation, join recovery, settings navigation, guest logout, and mobile access flows in a real browser.
+- [x] Validate open and password-protected room joins, guest reset, and Settings access end-to-end on a mobile browser, including successful password-room entry.

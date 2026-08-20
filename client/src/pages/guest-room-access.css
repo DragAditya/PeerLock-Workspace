@@ -1,0 +1,10 @@
+.room-protection-choice { display: flex !important; align-items: center; gap: 8px; letter-spacing: 0 !important; text-transform: none !important; }
+.room-protection-choice input { width: 16px; height: 16px; }
+.room-start label { display: grid; gap: 7px; margin-top: 14px; color: #5e6259; font-size: 11px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+.room-start label input { border: 1px solid #d1d2c9; border-radius: 6px; padding: 10px; background: white; color: #17201c; font-size: 12px; }
+.room-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 14px; }
+.room-mode button { margin: 0 !important; border: 1px solid #cfd1c8 !important; background: white !important; color: #566058 !important; }
+.room-mode button.active { border-color: #0f766e !important; background: #e4f1ed !important; color: #0f766e !important; }
+.guest-reset { align-items: center; }
+.reset-profile { display: inline-flex; align-items: center; justify-content: center; gap: 8px; align-self: center; border: 1px solid #b13a28; border-radius: 7px; padding: 12px 14px; background: transparent; color: #9a301f; font-size: 12px; font-weight: 750; }
+.reset-profile:hover { background: #f9e8e3; }

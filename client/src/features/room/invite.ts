@@ -10,16 +10,16 @@ export function makeRoomSecret() {
   return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export function makeInvite(roomCode: string, roomSecret: string) { return `${window.location.origin}/r/${roomCode}#${roomSecret}`; }
+export function makeInvite(roomCode: string, protectedRoom = false, origin = window.location.origin) { return `${origin}/r/${roomCode}${protectedRoom ? "?access=protected" : ""}`; }
 
 export function readInvite() {
   const roomCode = window.location.pathname.match(/^\/(?:r|room)\/([A-Z0-9]{8})$/i)?.[1]?.toUpperCase();
-  const roomSecret = window.location.hash.slice(1);
-  return roomCode && /^[a-f0-9]{64}$/i.test(roomSecret) ? { roomCode, roomSecret } : null;
+  const access = new URLSearchParams(window.location.search).get("access");
+  return roomCode ? { roomCode, protected: access === "protected" } : null;
 }
 
-export async function opaqueRoomName(roomCode: string, secret: string) {
-  const bytes = new TextEncoder().encode(`${roomCode}:${secret}`);
+export async function opaqueRoomName(roomCode: string, password?: string) {
+  const bytes = new TextEncoder().encode(`${roomCode}:${password || "peerlock-open-room"}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return `peerlock-${Array.from(new Uint8Array(digest)).map(value => value.toString(16).padStart(2, "0")).join("").slice(0, 40)}`;
 }

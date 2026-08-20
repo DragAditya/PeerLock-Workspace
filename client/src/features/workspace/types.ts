@@ -6,6 +6,9 @@ export type WorkspaceDocument = {
   createdAt: number;
   updatedAt: number;
   roomCode?: string;
+  roomProtected?: boolean;
+  roomPassword?: string;
+  /** Legacy field retained so earlier local rooms can still be opened. */
   roomSecret?: string;
   externalAiEnabled: boolean;
 };
@@ -15,8 +18,9 @@ export type WorkspaceStore = {
   documents: WorkspaceDocument[];
   loading: boolean;
   setProfile: (profile: LocalProfile) => void;
+  clearProfile: () => void;
   createDocument: (title?: string) => Promise<WorkspaceDocument>;
   updateDocument: (id: string, patch: Partial<WorkspaceDocument>) => Promise<void>;
   removeDocument: (id: string) => Promise<void>;
-  openRoom: (roomCode: string, roomSecret: string) => Promise<WorkspaceDocument>;
+  openRoom: (roomCode: string, options?: { protected?: boolean; password?: string }) => Promise<WorkspaceDocument>;
 };
