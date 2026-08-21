@@ -17,15 +17,16 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
   const [connection, setConnection] = useState(document.roomCode ? "connecting" : "local");
   const [peers, setPeers] = useState<PeerPresence[]>([]);
   const [chat, setChat] = useState<RoomMessage[]>([]); const [provider, setProvider] = useState<WebrtcProvider | null>(null);
+  const [persistenceReady, setPersistenceReady] = useState(false);
   const providerRef = useRef<WebrtcProvider | null>(null);
 
-  useEffect(() => { const persistence = new IndexeddbPersistence(`peerlock-document-${document.id}`, ydoc); return () => { persistence.destroy(); ydoc.destroy(); }; }, [document.id, ydoc]);
+  useEffect(() => { setPersistenceReady(false); const persistence = new IndexeddbPersistence(`peerlock-document-${document.id}`, ydoc); const onSynced = () => setPersistenceReady(true); persistence.once("synced", onSynced); return () => { persistence.destroy(); ydoc.destroy(); }; }, [document.id, ydoc]);
   useEffect(() => { const refreshChat = () => setChat(messages.toArray().filter(validMessage).sort((a, b) => a.at - b.at)); messages.observe(refreshChat); refreshChat(); return () => messages.unobserve(refreshChat); }, [messages]);
   useEffect(() => {
     providerRef.current?.destroy(); providerRef.current = null; setProvider(null); setPeers([]); setConnection(document.roomCode ? "connecting" : "local");
     if (!document.roomCode || !profile) return;
     let cancelled = false;
-    const password = document.roomProtected ? (document.roomPassword ?? document.roomSecret ?? "") : undefined;
+    const password = document.roomTransportSecret;
     void opaqueRoomName(document.roomCode, password).then(room => {
       if (cancelled) return;
       const nextProvider = new WebrtcProvider(room, ydoc, { ...(password ? { password } : {}), maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
@@ -34,7 +35,7 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
       nextProvider.awareness.on("change", updatePeers); nextProvider.on("status", event => setConnection(event.connected ? "connected" : "connecting")); updatePeers();
     });
     return () => { cancelled = true; providerRef.current?.destroy(); providerRef.current = null; setProvider(null); };
-  }, [document.roomCode, document.roomProtected, document.roomPassword, document.roomSecret, profile?.id, profile?.name, profile?.color, ydoc]);
+  }, [document.roomCode, document.roomId, document.roomTransportSecret, profile?.id, profile?.name, profile?.color, ydoc]);
   const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([{ id: crypto.randomUUID(), author: profile.name, color: profile.color, body: body.trim(), at: Date.now() }]); };
-  return { ydoc, fragment, provider, connection, peers, chat, send };
+  return { ydoc, fragment, provider, connection, peers, chat, send, persistenceReady };
 }

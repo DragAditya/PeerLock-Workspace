@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -25,4 +25,34 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/** Opaque, cookie-bound browser guests. No email, credential, document, or chat content is stored here. */
+export const peerlockGuestSessions = mysqlTable("peerlock_guest_sessions", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/** Server metadata registry for room identity and access policy only. Document data stays in Yjs/IndexedDB/WebRTC. */
+export const peerlockRooms = mysqlTable("peerlock_rooms", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  code: varchar("code", { length: 8 }).notNull(),
+  ownerSessionId: varchar("owner_session_id", { length: 64 }).notNull(),
+  passwordSalt: varchar("password_salt", { length: 64 }),
+  passwordHash: varchar("password_hash", { length: 128 }),
+  transportSecret: varchar("transport_secret", { length: 128 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastActivityAt: timestamp("last_activity_at").defaultNow().notNull().onUpdateNow(),
+}, table => [uniqueIndex("peerlock_rooms_code_unique").on(table.code), index("peerlock_rooms_active_idx").on(table.lastActivityAt)]);
+
+/** Membership and join-request state. It never contains document body, editor updates, or chat messages. */
+export const peerlockRoomMemberships = mysqlTable("peerlock_room_memberships", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  roomId: varchar("room_id", { length: 36 }).notNull(),
+  sessionId: varchar("session_id", { length: 64 }).notNull(),
+  displayName: varchar("display_name", { length: 64 }).notNull(),
+  displayColor: varchar("display_color", { length: 16 }).notNull(),
+  status: mysqlEnum("status", ["pending", "approved", "declined", "expired"]).notNull(),
+  requestExpiresAt: timestamp("request_expires_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().onUpdateNow().notNull(),
+}, table => [uniqueIndex("peerlock_membership_room_session_unique").on(table.roomId, table.sessionId), index("peerlock_membership_room_status_idx").on(table.roomId, table.status)]);

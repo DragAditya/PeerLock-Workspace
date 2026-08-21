@@ -118,3 +118,11 @@
 - [x] Keep Peerlock guest-first: no user ID, account password, or central login requirement for normal use.
 - [x] Validate protected/open room creation, join recovery, settings navigation, guest logout, and mobile access flows in a real browser.
 - [x] Validate open and password-protected room joins, guest reset, and Settings access end-to-end on a mobile browser, including successful password-room entry.
+- [x] Audit and replace the current browser-only room identity model with unique server-registered room IDs, collision-safe public codes, password hashes, and verified membership metadata while storing no document bodies or chat content server-side.
+- [x] Enforce server-side room password verification, room-code validity, membership authorization, direct-call denial, and cross-room isolation for every join attempt.
+- [ ] Add server-authorized join requests with owner Accept/Decline controls, request expiry, duplicate-request handling, leave/disconnect updates, and real-time member state notifications.
+- [x] Expose a reliable global live-room count based only on active room metadata, not locally fabricated documents or unknown codes.
+- [x] Repair rich-editor bullet and numbered list behaviors, including toolbar actions, continuation, exit, nesting, CRDT persistence, and synchronization.
+- [x] Fix empty-document persistence so clearing all content remains empty across editing, synchronization, refresh, reconnect, undo/redo, and local storage restoration.
+- [x] Fix guest-name input persistence so Ctrl+A then Backspace produces a true empty value and a subsequent new name remains saved normally.
+- [ ] Run multi-browser and API-level security regression tests for unique rooms, passwords, invalid codes, approval, presence, lists, empty documents, chat, reconnects, and guest-name editing.
