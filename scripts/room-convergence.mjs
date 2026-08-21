@@ -34,9 +34,35 @@ try {
   await guest.getByLabel("Display name").fill("Approved guest");
   await guest.getByRole("button", { name: /continue as guest/i }).click();
   await owner.getByRole("button", { name: /allow approved guest/i }).waitFor({ timeout: 15000 });
+  const approvalStartedAt = Date.now();
   await owner.getByRole("button", { name: /allow approved guest/i }).click();
-  await guest.waitForURL(/\/studio\//, { timeout: 15000 });
-  await guest.getByText(initialText).waitFor({ timeout: 20000 });
+  try {
+    await guest.waitForURL(/\/studio\//, { timeout: 15000 });
+  } catch {
+    throw new Error(`Approved Fake ID did not open the room: ${JSON.stringify({ owner: { url: owner.url(), text: await owner.locator("body").innerText() }, guest: { url: guest.url(), text: await guest.locator("body").innerText() } })}`);
+  }
+  const roomOpenedMs = Date.now() - approvalStartedAt;
+  try {
+    await guest.getByText(initialText).waitFor({ timeout: 20000 });
+  } catch {
+    const snapshot = await Promise.all([owner, guest].map(async page => ({
+      url: page.url(),
+      title: await page.getByLabel("Document title").inputValue().catch(() => ""),
+      editorText: await page.locator(".ProseMirror.rich-editor").innerText().catch(() => ""),
+      status: await page.locator(".canvas-meta").innerText().catch(() => ""),
+      peers: await page.locator(".live-peers").innerText().catch(() => ""),
+      document: await page.evaluate(async () => new Promise(resolve => {
+        const request = indexedDB.open("peerlock-clean-v1");
+        request.onsuccess = () => {
+          const store = request.result.transaction("documents", "readonly").objectStore("documents");
+          const records = store.getAll();
+          records.onsuccess = () => resolve(records.result);
+        };
+      })),
+    })));
+    throw new Error(`Initial Main ID to Fake ID hydration failed: ${JSON.stringify(snapshot)}`);
+  }
+  const initialHydrationMs = Date.now() - approvalStartedAt;
   await owner.getByLabel("Open settings").click();
   await owner.waitForURL(`${base}/settings`);
   await owner.getByLabel("Close settings").click();
@@ -46,7 +72,7 @@ try {
   await ownerEditor.press("Backspace");
   await ownerEditor.type("owner and approved guest share this exact room");
   await guest.getByText("owner and approved guest share this exact room").waitFor({ timeout: 20000 });
-  console.log(JSON.stringify({ success: true, code, ownerUrl: owner.url(), guestUrl: guest.url() }));
+  console.log(JSON.stringify({ success: true, code, roomOpenedMs, initialHydrationMs, ownerUrl: owner.url(), guestUrl: guest.url() }));
 } finally {
   await browser.close();
 }

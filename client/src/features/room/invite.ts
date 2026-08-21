@@ -23,3 +23,8 @@ export async function opaqueRoomName(roomId: string, transportSecret: string) {
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return `peerlock-${Array.from(new Uint8Array(digest)).map(value => value.toString(16).padStart(2, "0")).join("").slice(0, 40)}`;
 }
+
+export function peerlockSignalingUrl(origin = window.location) {
+  const scheme = origin.protocol === "https:" ? "wss:" : "ws:";
+  return `${scheme}//${origin.host}/api/peerlock-signaling`;
+}

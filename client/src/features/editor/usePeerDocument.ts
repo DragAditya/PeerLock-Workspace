@@ -1,5 +1,5 @@
-import { opaqueRoomName } from "@/features/room/invite";
 import { ROOM_MAX_REMOTE_CONNECTIONS } from "@/features/room/capacity";
+import { opaqueRoomName, peerlockSignalingUrl } from "@/features/room/invite";
 import { createInitializationGate } from "@/features/workspace/initialization";
 import type { LocalProfile, WorkspaceDocument } from "@/features/workspace/types";
 import { IndexeddbPersistence } from "y-indexeddb";
@@ -28,7 +28,8 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
   useEffect(() => {
     let cancelled = false;
     let persistence: IndexeddbPersistence | null = null;
-    setPersistenceReady(false);
+    const isFirstJoinReplica = Boolean(document.roomId && document.id === `room-${document.roomId}`);
+    setPersistenceReady(isFirstJoinReplica);
     setPersistenceRecovered(false);
     const gate = createInitializationGate(3500, reason => {
       if (cancelled) return;
@@ -52,7 +53,7 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
     const transportSecret = document.roomTransportSecret;
     void opaqueRoomName(document.roomId, transportSecret).then(room => {
       if (cancelled) return;
-      const nextProvider = new WebrtcProvider(room, ydoc, { password: transportSecret, maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
+      const nextProvider = new WebrtcProvider(room, ydoc, { signaling: [peerlockSignalingUrl()], password: transportSecret, maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
       const refreshAfterRemoteSync = ({ synced }: { synced: boolean }) => { if (synced) setSyncRevision(value => value + 1); };
       nextProvider.on("synced", refreshAfterRemoteSync); nextProvider.connect();
       nextProvider.awareness.setLocalStateField("user", { name: profile.name, color: profile.color, id: profile.id });

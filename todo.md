@@ -162,3 +162,8 @@
 - [x] Add bounded workspace and Yjs IndexedDB startup timeouts that safely release loading gates when local persistence is delayed.
 - [x] Add clear document loading and unavailable-document recovery states without exposing document content to the server.
 - [x] Validate fresh local-document startup and timeout recovery at phone and desktop widths.
+
+- [x] Reproduce the Main ID to Fake ID approval path that creates an empty duplicate local room document.
+- [x] Guarantee one canonical local document and one WebRTC namespace per server-issued room UUID across all guests and repeated joins.
+- [x] Ensure an approved Fake ID automatically receives Main ID's existing document contents within a normal peer-connection interval.
+- [x] Validate initial hydration, live edits, and repeated invite joins using independent Main ID and Fake ID browser contexts.
