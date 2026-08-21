@@ -198,3 +198,7 @@
 - [x] Replace email-verification links with hashed, expiring, single-use six-digit OTP codes sent through Resend.
 - [x] Remove guest entry and require an authenticated verified Peerlock account before workspace, document, and room access.
 - [ ] Preserve an account-derived collaboration identity and validate approval, room synchronization, password recovery, and OTP verification end to end.
+
+- [ ] Fix the mobile verified-identity summary so email address, status, and account details never collide or run together.
+- [ ] Fix the mobile OTP verification control so its label, six-digit input, and actions have clear vertical hierarchy and touch-safe spacing.
+- [ ] Validate the corrected account and settings pages at phone and desktop widths.
