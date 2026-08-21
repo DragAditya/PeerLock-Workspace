@@ -1,6 +1,6 @@
 import { createHash, randomBytes, randomInt, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import type { Request, Response } from "express";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, eq, gt, isNull, or } from "drizzle-orm";
 import { parse as parseCookie } from "cookie";
 import { peerlockAccounts, peerlockAccountSessions, peerlockAccountTokens } from "../drizzle/schema";
 import { getSessionCookieOptions } from "./_core/cookies";
@@ -12,8 +12,20 @@ const VERIFY_MS = 1000 * 60 * 10;
 const RESET_MS = 1000 * 60 * 30;
 const recoveryAttempts = new Map<string, number[]>();
 const verificationAttempts = new Map<string, number[]>();
+let emailDeliveryStatus: { attemptedAt: string | null; configured: boolean; delivered: boolean | null; status: number | null; reason: string | null } = { attemptedAt: null, configured: false, delivered: null, status: null, reason: null };
 
 export type AccountIdentity = { id: string; email: string; username: string; emailVerifiedAt: Date | null };
+
+export function accountEmailDiagnostics() { return { ...emailDeliveryStatus, senderConfigured: Boolean(process.env.RESEND_FROM_EMAIL), baseUrlConfigured: Boolean(process.env.APP_BASE_URL) }; }
+
+export function safeAccountError(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  if (/peerlock_accounts_username_unique|username.*unique|duplicate key.*username/i.test(message)) return "That username is already taken. Try adding a number or choosing a different name.";
+  if (/peerlock_accounts_email_unique|email.*unique|duplicate key.*email|23505/i.test(message)) return "An account already uses this email. Sign in instead or reset your password.";
+  if (/peerlock_accounts|relation .* does not exist|Failed query/i.test(message)) return "Account setup is incomplete. The latest database migration has not been applied yet. Redeploy on Render with the documented build command, then try again.";
+  if (/fetch failed|ECONN|ETIMEDOUT|network/i.test(message)) return "The account service could not reach its email provider. Try again shortly or check the protected diagnostics page.";
+  return message || "The account service is temporarily unavailable. Please try again shortly.";
+}
 
 function normalizeEmail(email: string) { return email.trim().toLowerCase(); }
 function normalizeUsername(username: string) { return username.trim().replace(/\s+/g, " "); }
@@ -46,14 +58,22 @@ function requestOrigin(req: Request) {
 async function sendAccountEmail(input: { to: string; subject: string; html: string }) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
-  if (!apiKey || !from) { console.warn("[Account] Email is not configured. Set RESEND_API_KEY and RESEND_FROM_EMAIL."); return false; }
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to: [input.to], subject: input.subject, html: input.html }),
-  });
-  if (!response.ok) { console.error("[Account] Email delivery failed", response.status); return false; }
-  return true;
+  emailDeliveryStatus = { attemptedAt: new Date().toISOString(), configured: Boolean(apiKey && from), delivered: null, status: null, reason: null };
+  if (!apiKey || !from) { emailDeliveryStatus = { ...emailDeliveryStatus, delivered: false, reason: "Missing server email configuration" }; console.warn("[Account] Email is not configured."); return false; }
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [input.to], subject: input.subject, html: input.html }),
+    });
+    if (!response.ok) { emailDeliveryStatus = { ...emailDeliveryStatus, delivered: false, status: response.status, reason: response.status === 403 ? "Sender or API key was rejected" : "Provider request was rejected" }; console.error("[Account] Email delivery failed", response.status); return false; }
+    emailDeliveryStatus = { ...emailDeliveryStatus, delivered: true, status: response.status, reason: null };
+    return true;
+  } catch {
+    emailDeliveryStatus = { ...emailDeliveryStatus, delivered: false, reason: "Network request to provider failed" };
+    console.error("[Account] Email provider network request failed");
+    return false;
+  }
 }
 
 function allowRecovery(key: string) {
@@ -107,8 +127,9 @@ export async function registerAccount(req: Request, res: Response, input: { emai
   if (!/^[A-Za-z0-9][A-Za-z0-9 ._-]{1,47}$/.test(username)) throw new Error("Use 2–48 letters, numbers, spaces, dots, hyphens, or underscores for your username.");
   if (policyError) throw new Error(policyError);
   const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
-  const existing = await db.select({ id: peerlockAccounts.id }).from(peerlockAccounts).where(eq(peerlockAccounts.email, email)).limit(1);
-  if (existing[0]) throw new Error("An account already uses this email. Sign in or reset your password.");
+  const existing = await db.select({ email: peerlockAccounts.email, username: peerlockAccounts.username }).from(peerlockAccounts).where(or(eq(peerlockAccounts.email, email), eq(peerlockAccounts.username, username))).limit(1);
+  if (existing[0]?.email === email) throw new Error("An account already uses this email. Sign in or reset your password.");
+  if (existing[0]?.username === username) throw new Error("That username is already taken. Try adding a number or choosing a different name.");
   const record = passwordRecord(input.password); const id = randomUUID();
   await db.insert(peerlockAccounts).values({ id, email, username, passwordSalt: record.salt, passwordHash: record.hash });
   const [account] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, id)).limit(1);

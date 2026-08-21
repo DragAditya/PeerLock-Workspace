@@ -207,3 +207,8 @@
 - [x] Add restrained error feedback for invalid OTP and account-form failures without impeding correction.
 - [x] Add premium, reduced-motion-safe transitions and press feedback across account, recovery, and settings interactions.
 - [ ] Validate motion feedback and the repaired account/settings mobile layouts.
+
+- [x] Replace raw duplicate-account and database failure output with clear safe registration messages, including a polished existing-email/username path.
+- [x] Diagnose Resend delivery failure and show actionable, non-sensitive email configuration status.
+- [x] Add protected copy-friendly `/devlogs` diagnostics with detailed system, database, email, authentication, migration, and room metadata status while redacting secrets, tokens, OTPs, passwords, and document content.
+- [ ] Validate registration conflict, missing account migration, email failure, and authorized diagnostics behavior.
