@@ -126,3 +126,10 @@
 - [x] Fix empty-document persistence so clearing all content remains empty across editing, synchronization, refresh, reconnect, undo/redo, and local storage restoration.
 - [x] Fix guest-name input persistence so Ctrl+A then Backspace produces a true empty value and a subsequent new name remains saved normally.
 - [x] Run multi-browser and API-level security regression tests for unique rooms, passwords, invalid codes, approval, presence, lists, empty documents, chat, reconnects, and guest-name editing.
+
+- [x] Synchronize document titles through the shared Yjs document so collaborators receive live title updates.
+- [x] Move owner join approval and decline controls into the main collaboration area above room chat while retaining secure server authorization.
+- [x] Make the Settings header control toggle the settings view open and closed, and add a guest logout action that preserves local documents.
+- [x] Prevent password-protected invites from submitting any join request or granting access until the password is entered and server-verified.
+- [x] Upgrade Gemini document formatting to preserve intent and code while applying technical structure, and allow applying approved output directly to the editor.
+- [x] Add a consent-based selected-text Gemini assistant for improve, summarize, expand, simplify, explain, and format actions with direct in-editor replacement.

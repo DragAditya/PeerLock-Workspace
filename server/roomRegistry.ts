@@ -8,7 +8,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { getDb } from "./db";
 import { peerlockGuestSessions, peerlockRoomMemberships, peerlockRooms } from "../drizzle/schema";
 
-const COOKIE_NAME = "peerlock_guest_session";
+export const COOKIE_NAME = "peerlock_guest_session";
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const REQUEST_TTL_MS = 10 * 60 * 1000;
 const ACTIVE_WINDOW_MS = 2 * 60 * 1000;
@@ -37,6 +37,11 @@ export async function ensureGuestSession(ctx: Pick<TrpcContext, "req" | "res">) 
     await db.insert(peerlockGuestSessions).values({ id }).onDuplicateKeyUpdate({ set: { lastSeenAt: new Date() } });
   }
   return id;
+}
+
+export function clearGuestSession(ctx: Pick<TrpcContext, "req" | "res">) {
+  (ctx.res as Response).clearCookie(COOKIE_NAME, { ...getSessionCookieOptions(ctx.req), maxAge: -1 });
+  return { success: true as const };
 }
 
 async function requireRoom(code: string) {

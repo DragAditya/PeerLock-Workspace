@@ -15,16 +15,31 @@ import type { WebrtcProvider } from "y-webrtc";
 const lowlight = createLowlight(common);
 const CollaborativeListKeymap = ListKeymap.extend({ priority: 1000 });
 const CollaborativeListItem = ListItem.extend({ priority: 1000 });
-type Props = { document: Y.Doc; fragment: Y.XmlFragment; provider: WebrtcProvider | null; ready: boolean; name: string; color: string; onTextChange: (text: string) => void };
+export type RichEditorApi = { getSelectedText: () => string; replaceSelection: (text: string) => void; replaceDocument: (text: string) => void };
+type Props = { document: Y.Doc; fragment: Y.XmlFragment; provider: WebrtcProvider | null; ready: boolean; name: string; color: string; onTextChange: (text: string) => void; onEditorReady?: (api: RichEditorApi) => void };
 const controls = [
   ["heading", Heading2, "Heading"], ["bold", Bold, "Bold"], ["italic", Italic, "Italic"], ["bulletList", List, "Bullets"], ["orderedList", ListOrdered, "Numbered list"], ["blockquote", Quote, "Quote"], ["codeBlock", Code2, "Code block"],
 ] as const;
 
-export function RichEditor({ document, fragment, provider, ready, name, color, onTextChange }: Props) {
+function escapeHtml(value: string) { return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function formattedTextToHtml(value: string) {
+  const blocks: string[] = []; const fence = /```([\w+-]*)\n([\s\S]*?)```/g; let cursor = 0; let match: RegExpExecArray | null;
+  const prose = (text: string) => text.split(/\n{2,}/).map(part => part.trim()).filter(Boolean).map(part => {
+    if (/^#{1,2}\s+/.test(part)) return `<h2>${escapeHtml(part.replace(/^#{1,2}\s+/, ""))}</h2>`;
+    if (part.split("\n").every(line => /^[-*]\s+/.test(line))) return `<ul>${part.split("\n").map(line => `<li>${escapeHtml(line.replace(/^[-*]\s+/, ""))}</li>`).join("")}</ul>`;
+    if (part.split("\n").every(line => /^\d+\.\s+/.test(line))) return `<ol>${part.split("\n").map(line => `<li>${escapeHtml(line.replace(/^\d+\.\s+/, ""))}</li>`).join("")}</ol>`;
+    return `<p>${escapeHtml(part).replace(/\n/g, "<br>")}</p>`;
+  });
+  while ((match = fence.exec(value))) { blocks.push(...prose(value.slice(cursor, match.index))); blocks.push(`<pre><code class="language-${escapeHtml(match[1] || "plaintext")}">${escapeHtml(match[2].replace(/\n$/, ""))}</code></pre>`); cursor = match.index + match[0].length; }
+  blocks.push(...prose(value.slice(cursor))); return blocks.join("") || "<p></p>";
+}
+
+export function RichEditor({ document, fragment, provider, ready, name, color, onTextChange, onEditorReady }: Props) {
   const extensions: any[] = [StarterKit.configure({ undoRedo: false, codeBlock: false, listItem: false, listKeymap: false }), CollaborativeListItem, CollaborativeListKeymap, CodeBlockLowlight.configure({ lowlight }), Collaboration.configure({ document, fragment }), Placeholder.configure({ placeholder: "Write something worth keeping private…\n\nUse Markdown input: # heading, - list, > quote, or ``` for code." })];
   if (provider) extensions.push(CollaborationCaret.configure({ provider, user: { name, color } }));
   const editor = useEditor({ extensions, editorProps: { attributes: { class: "rich-editor" } }, editable: ready }, [document, fragment, provider, name, color, ready]);
   useEffect(() => { if (!editor) return; const update = () => onTextChange(editor.getText()); editor.on("update", update); update(); return () => { editor.off("update", update); }; }, [editor, onTextChange]);
+  useEffect(() => { if (!editor || !onEditorReady) return; onEditorReady({ getSelectedText: () => { const { from, to } = editor.state.selection; return editor.state.doc.textBetween(from, to, "\n").trim(); }, replaceSelection: (text) => { const { from, to } = editor.state.selection; editor.chain().focus().command(({ tr }) => { tr.insertText(text, from, to); return true; }).run(); }, replaceDocument: (text) => editor.chain().focus().setContent(formattedTextToHtml(text), { emitUpdate: true }).run() }); }, [editor, onEditorReady]);
   if (!ready || !editor) return <div className="rich-editor-loading">Restoring local document…</div>;
   const handleListKey = (event: React.KeyboardEvent<HTMLDivElement>) => { if (!editor.isActive("listItem")) return; const { $from, empty } = editor.state.selection; if (event.key === "Enter") { if (editor.commands.splitListItem("listItem")) event.preventDefault(); return; } if (event.key === "Tab") { event.preventDefault(); if (event.shiftKey) editor.commands.liftListItem("listItem"); else editor.commands.sinkListItem("listItem"); return; } if (event.key === "Backspace" && empty && $from.parentOffset === 0 && $from.parent.content.size === 0 && editor.commands.liftListItem("listItem")) event.preventDefault(); };
   return <div className="rich-editor-shell"><div className="rich-toolbar">{controls.map(([command, Icon, label]) => <button key={command} type="button" title={label} aria-label={label} className={editor.isActive(command) ? "active" : ""} onClick={() => { const chain = editor.chain().focus(); if (command === "heading") chain.toggleHeading({ level: 2 }).run(); else if (command === "bulletList") chain.toggleBulletList().run(); else if (command === "orderedList") chain.toggleOrderedList().run(); else if (command === "blockquote") chain.toggleBlockquote().run(); else if (command === "codeBlock") chain.toggleCodeBlock().run(); else if (command === "bold") chain.toggleBold().run(); else chain.toggleItalic().run(); }}><Icon size={15} /></button>)}<span /><button type="button" title="Undo" onClick={() => editor.chain().focus().undo().run()}><Undo2 size={15} /></button><button type="button" title="Redo" onClick={() => editor.chain().focus().redo().run()}><Redo2 size={15} /></button></div><EditorContent editor={editor} onKeyDownCapture={handleListKey} /></div>;
