@@ -154,3 +154,7 @@
 - [x] Ensure an approved peer receives the existing Yjs document state automatically without requiring a click or local edit.
 - [x] Add accessible, performance-safe micro-interactions to collaboration, controls, and room-status changes.
 - [x] Validate the responsive studio, Settings close return, and automatic owner-to-guest content hydration in independent browsers.
+
+- [x] Eliminate ProseMirror editor content overflow, desktop-scale minimum sizing, and non-wrapping long text on phones.
+- [x] Ensure real paragraphs, long tokens, lists, quotes, and code blocks remain readable inside the mobile editor viewport.
+- [x] Validate the corrected rich editor at phone and desktop widths using actual shared-document content.

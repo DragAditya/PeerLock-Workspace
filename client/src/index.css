@@ -34,3 +34,19 @@
 .studio-live { grid-column: 1; margin: 0 18px 32px 32px; border: 1px solid #d2d3cc; border-radius: 10px; padding: 20px; background: #fffefb; }.studio-live-head { display: flex; justify-content: space-between; align-items: end; gap: 18px; }.studio-live-head h2 { margin: 6px 0 0; font-size: 20px; letter-spacing: -.05em; }.studio-live-head > span { display: flex; align-items: center; gap: 5px; color: #0f766e; font-size: 11px; font-weight: 750; }.studio-live-grid { display: grid; grid-template-columns: minmax(180px,.55fr) minmax(0,1.45fr); gap: 18px; margin-top: 18px; }.live-peers { display: grid; align-content: start; gap: 7px; border-right: 1px solid #e2e3dc; padding-right: 18px; }.live-peers > span { display: flex; align-items: center; gap: 7px; color: #4f574f; font-size: 12px; }.live-peers i, .live-chat-log i { width: 8px; height: 8px; border-radius: 50%; }.live-chat header { display: flex; gap: 7px; align-items: center; color: #26332c; font-size: 12px; }.live-chat-log { min-height: 58px; margin: 9px 0; }.live-chat-log p { display: flex; gap: 7px; margin: 5px 0; color: #596059; font-size: 11px; }.live-chat-log b { color: #29372f; }.live-empty { color: #81867d !important; font-size: 11px !important; }.live-chat form { display: grid; grid-template-columns: 1fr 34px; gap: 6px; }.live-chat input { min-width: 0; border: 1px solid #d3d5cd; border-radius: 5px; padding: 9px; font-size: 12px; }.live-chat button { display: grid; place-items: center; border: 0; border-radius: 5px; background: #17201c; color: white; }
 @media (max-width: 850px) { .studio-live { margin: 0; border-right: 0; border-left: 0; border-radius: 0; padding: 22px 20px 30px; }.studio-live-head { align-items: start; flex-direction: column; gap: 8px; }.studio-live-grid { grid-template-columns: 1fr; gap: 16px; }.live-peers { border-right: 0; border-bottom: 1px solid #e2e3dc; padding: 0 0 14px; } }
 .messages { display: grid; gap: 7px; max-height: 150px; overflow-y: auto; margin-top: 12px; }.messages p { margin: 0; }.messages p i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }.messages p b { color: #303a34; }.room-chat form { display: grid; grid-template-columns: 1fr 32px; gap: 5px; margin-top: 11px; }.room-chat form input { min-width: 0; border: 1px solid #d5d6ce; border-radius: 5px; padding: 8px; font-size: 11px; }.room-chat form button { display: grid; place-items: center; border: 0; border-radius: 5px; background: #0f766e; color: white; }
+
+/* The Tiptap editable node carries both .ProseMirror and .rich-editor.  Keep its
+   inline size independent of document content so an unbroken word cannot widen
+   the canvas beyond a phone viewport. */
+.studio-layout, .studio-canvas, .rich-editor-shell { min-width: 0; max-width: 100%; }
+.rich-editor-shell { grid-template-columns: minmax(0, 1fr); width: 100%; overflow-x: clip; }
+.rich-toolbar { min-width: 0; max-width: 100%; overflow-x: auto; }
+.ProseMirror.rich-editor { width: 100%; min-width: 0; max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
+.ProseMirror.rich-editor > *, .ProseMirror.rich-editor li, .ProseMirror.rich-editor blockquote { min-width: 0; max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
+.ProseMirror.rich-editor pre { min-width: 0; max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; white-space: pre; word-break: normal; overflow-wrap: normal; }
+.ProseMirror.rich-editor :not(pre) > code { overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
+
+@media (max-width: 850px), (max-aspect-ratio: 3/4) {
+  .studio-layout, .studio-canvas, .rich-editor-shell, .ProseMirror.rich-editor { inline-size: 100%; min-inline-size: 0; max-inline-size: 100%; }
+  .ProseMirror.rich-editor { padding-right: 20px; padding-left: 20px; }
+}
