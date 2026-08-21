@@ -18,8 +18,8 @@ export function readInvite() {
   return roomCode ? { roomCode, protected: access === "protected" } : null;
 }
 
-export async function opaqueRoomName(roomCode: string, password?: string) {
-  const bytes = new TextEncoder().encode(`${roomCode}:${password || "peerlock-open-room"}`);
+export async function opaqueRoomName(roomId: string, transportSecret: string) {
+  const bytes = new TextEncoder().encode(`peerlock-v2:${roomId}:${transportSecret}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return `peerlock-${Array.from(new Uint8Array(digest)).map(value => value.toString(16).padStart(2, "0")).join("").slice(0, 40)}`;
 }

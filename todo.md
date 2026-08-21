@@ -143,3 +143,8 @@
 - [x] Rebuild guest access-code and password entry into an informative, animated, responsive room-entry flow.
 - [x] Diagnose Gemini selected-text availability failures and add actionable, non-destructive error recovery guidance.
 - [x] Validate invitation approvals, guest room entry, and Gemini failure handling on mobile and desktop.
+
+- [x] Diagnose and fix approved guests joining a duplicate WebRTC lobby instead of the owner’s server-authorized room.
+- [x] Ensure every local document maps one-to-one to the server room UUID, public code, and WebRTC synchronization namespace.
+- [x] Add room-isolation regressions covering approval, repeated invite joins, cross-room attempts, and duplicate local document prevention.
+- [ ] Validate an owner and approved guest edit the exact same Yjs document after joining through an invite.

@@ -17,7 +17,16 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const createDocument = async (title = "Untitled note") => { const time = Date.now(); const document = { id: nanoid(12), title, createdAt: time, updatedAt: time, externalAiEnabled: true }; await save(document); return document; };
   const updateDocument = async (id: string, patch: Partial<WorkspaceDocument>) => { const current = documents.find(item => item.id === id); if (!current) return; await save({ ...current, ...patch, updatedAt: Date.now() }); };
   const removeDocument = async (id: string) => { await deleteStoredDocument(id); setDocuments(current => current.filter(item => item.id !== id)); };
-  const openRoom = async (room: { id: string; code: string; protected: boolean; transportSecret: string }) => { const found = documents.find(item => item.roomId === room.id); if (found) { const updated = { ...found, roomCode: room.code, roomProtected: room.protected, roomTransportSecret: room.transportSecret }; await save(updated); return updated; } const document = await createDocument(`Room ${room.code}`); const linked = { ...document, roomId: room.id, roomCode: room.code, roomProtected: room.protected, roomTransportSecret: room.transportSecret }; await save(linked); return linked; };
+  const openRoom = async (room: { id: string; code: string; protected: boolean; transportSecret: string }) => {
+    const matching = documents.filter(item => item.roomId === room.id).sort((a, b) => b.updatedAt - a.updatedAt);
+    const canonical = matching[0];
+    const linked = canonical
+      ? { ...canonical, roomCode: room.code, roomProtected: room.protected, roomTransportSecret: room.transportSecret, updatedAt: Date.now() }
+      : { id: `room-${room.id}`, title: `Room ${room.code}`, createdAt: Date.now(), updatedAt: Date.now(), externalAiEnabled: true, roomId: room.id, roomCode: room.code, roomProtected: room.protected, roomTransportSecret: room.transportSecret };
+    await Promise.all(matching.slice(1).map(stale => deleteStoredDocument(stale.id)));
+    await save(linked);
+    return linked;
+  };
   const value = useMemo(() => ({ profile, documents, loading, setProfile, clearProfile, createDocument, updateDocument, removeDocument, openRoom }), [profile, documents, loading]);
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }
