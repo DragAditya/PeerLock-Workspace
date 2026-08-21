@@ -23,35 +23,25 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
   const [title, setTitle] = useState(document.title);
   const providerRef = useRef<WebrtcProvider | null>(null);
 
-  useEffect(() => {
-    setPersistenceReady(false);
-    const persistence = new IndexeddbPersistence(`peerlock-document-${document.id}`, ydoc);
-    const onSynced = () => setPersistenceReady(true);
-    const fallback = window.setTimeout(onSynced, 3500);
-    persistence.once("synced", onSynced);
-    return () => { window.clearTimeout(fallback); persistence.destroy(); ydoc.destroy(); };
-  }, [document.id, ydoc]);
+  useEffect(() => { setPersistenceReady(false); const persistence = new IndexeddbPersistence(`peerlock-document-${document.id}`, ydoc); const onSynced = () => setPersistenceReady(true); persistence.once("synced", onSynced); return () => { persistence.destroy(); ydoc.destroy(); }; }, [document.id, ydoc]);
   useEffect(() => { if (!persistenceReady) return; const syncTitle = () => { const sharedTitle = metadata.get("title"); if (typeof sharedTitle === "string") setTitle(sharedTitle); else metadata.set("title", title); }; metadata.observe(syncTitle); syncTitle(); return () => metadata.unobserve(syncTitle); }, [metadata, persistenceReady, title]);
   useEffect(() => { const refreshChat = () => setChat(messages.toArray().filter(validMessage).sort((a, b) => a.at - b.at)); messages.observe(refreshChat); refreshChat(); return () => messages.unobserve(refreshChat); }, [messages]);
   useEffect(() => {
     providerRef.current?.destroy(); providerRef.current = null; setProvider(null); setPeers([]); setConnection(document.roomCode ? "connecting" : "local");
-    if (!persistenceReady || !document.roomId || !document.roomTransportSecret || !profile) return;
+    if (!document.roomId || !document.roomTransportSecret || !profile) return;
     let cancelled = false;
-    let refreshAfterYjsUpdate: ((update: Uint8Array, origin: unknown) => void) | undefined;
     const transportSecret = document.roomTransportSecret;
     void opaqueRoomName(document.roomId, transportSecret).then(room => {
       if (cancelled) return;
       const nextProvider = new WebrtcProvider(room, ydoc, { password: transportSecret, maxConns: ROOM_MAX_REMOTE_CONNECTIONS }); providerRef.current = nextProvider; setProvider(nextProvider);
       const refreshAfterRemoteSync = ({ synced }: { synced: boolean }) => { if (synced) setSyncRevision(value => value + 1); };
-      refreshAfterYjsUpdate = (_update: Uint8Array, origin: unknown) => { if (origin === (nextProvider as unknown as { room?: unknown }).room) setSyncRevision(value => value + 1); };
       nextProvider.on("synced", refreshAfterRemoteSync); nextProvider.connect();
-      ydoc.on("update", refreshAfterYjsUpdate);
       nextProvider.awareness.setLocalStateField("user", { name: profile.name, color: profile.color, id: profile.id });
       const updatePeers = () => setPeers(Array.from(nextProvider.awareness.getStates().entries()).map(([id, state]) => ({ id, name: (state.user as { name?: string } | undefined)?.name ?? "Anonymous peer", color: (state.user as { color?: string } | undefined)?.color ?? "#607064" })));
       nextProvider.awareness.on("change", updatePeers); nextProvider.on("status", event => setConnection(event.connected ? "connected" : "connecting")); updatePeers();
     });
-    return () => { cancelled = true; if (refreshAfterYjsUpdate) ydoc.off("update", refreshAfterYjsUpdate); providerRef.current?.destroy(); providerRef.current = null; setProvider(null); };
-  }, [document.roomId, document.roomTransportSecret, persistenceReady, profile?.id, profile?.name, profile?.color, ydoc]);
+    return () => { cancelled = true; providerRef.current?.destroy(); providerRef.current = null; setProvider(null); };
+  }, [document.roomId, document.roomTransportSecret, profile?.id, profile?.name, profile?.color, ydoc]);
   const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([{ id: crypto.randomUUID(), author: profile.name, color: profile.color, body: body.trim(), at: Date.now() }]); };
   const updateTitle = (next: string) => { setTitle(next); if (persistenceReady) metadata.set("title", next); };
   return { ydoc, fragment, provider, connection, peers, chat, send, persistenceReady, syncRevision, title, updateTitle };
