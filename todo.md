@@ -159,3 +159,11 @@
 - [x] Add shared containment rules for long words, code, document titles, chat, and room metadata across all pages.
 - [x] Refine responsive typography and spacing across the hub, studio, settings, room entry, and learning pages.
 - [x] Validate primary pages and the collaborative editor at phone and desktop widths without horizontal overflow.
+
+- [x] Diagnose and fix the document-studio white-screen loading state that occurs after opening a document.
+- [x] Add a safe, actionable document-startup recovery view if editor initialization fails instead of leaving an indefinite spinner.
+- [x] Validate successful opened-document startup after a fresh phone and desktop page load.
+
+- [x] Diagnose and fix the mobile white-screen loading state that prevents the app or document from rendering.
+- [x] Add a safe, actionable startup recovery view if client initialization fails instead of leaving an indefinite blank screen.
+- [x] Validate successful mobile and desktop document startup after a fresh page load.

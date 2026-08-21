@@ -10,7 +10,13 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfileState] = useState<LocalProfile | null>(() => { try { return JSON.parse(localStorage.getItem(profileKey) ?? "null"); } catch { return null; } });
   const [documents, setDocuments] = useState<WorkspaceDocument[]>([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => { void listLocalDocuments().then(items => { setDocuments(items); setLoading(false); }); }, []);
+  useEffect(() => {
+    let active = true;
+    const finish = (items: WorkspaceDocument[] = []) => { if (!active) return; setDocuments(items); setLoading(false); };
+    const timeout = window.setTimeout(() => finish(), 4500);
+    void listLocalDocuments().then(items => finish(items)).catch(() => finish()).finally(() => window.clearTimeout(timeout));
+    return () => { active = false; window.clearTimeout(timeout); };
+  }, []);
   const setProfile = (next: LocalProfile) => { localStorage.setItem(profileKey, JSON.stringify(next)); setProfileState(next); };
   const clearProfile = () => { localStorage.removeItem(profileKey); setProfileState(null); };
   const save = async (document: WorkspaceDocument) => { await storeDocument(document); setDocuments(current => [document, ...current.filter(item => item.id !== document.id)].sort((a, b) => b.updatedAt - a.updatedAt)); };

@@ -20,7 +20,7 @@ const selectionActions: Array<{ action: Exclude<AiAction, "format_document">; la
 function download(filename: string, content: string) { const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([content], { type: "text/plain" })); link.download = filename; link.click(); URL.revokeObjectURL(link.href); }
 
 export function StudioPage() {
-  const [, params] = useRoute("/studio/:id"); const [, navigate] = useLocation(); const { documents, updateDocument, profile } = useWorkspace();
+  const [, params] = useRoute("/studio/:id"); const [, navigate] = useLocation(); const { documents, loading, updateDocument, profile } = useWorkspace();
   const record = documents.find(item => item.id === params?.id); const current = record ? documents.find(item => item.id === record.id) ?? record : undefined;
   const [roomOpen, setRoomOpen] = useState(false); const [copied, setCopied] = useState(false); const [message, setMessage] = useState(""); const [editorText, setEditorText] = useState("");
   const [suggestion, setSuggestion] = useState<{ text: string; target: "document" | "selection"; label: string } | null>(null); const [aiError, setAiError] = useState(""); const [editorApi, setEditorApi] = useState<RichEditorApi | null>(null); const [assistantOpen, setAssistantOpen] = useState(false);
@@ -34,7 +34,8 @@ export function StudioPage() {
   useEffect(() => { if (!record?.roomId) return; const stream = new EventSource(`/api/room-events/${record.roomId}`); stream.onmessage = () => void pendingRequests.refetch(); return () => stream.close(); }, [record?.roomId]);
   useEffect(() => { if (current && peer.title && peer.title !== current.title) void updateDocument(current.id, { title: peer.title }); }, [current?.id, current?.title, peer.title]);
   const onText = useCallback((text: string) => setEditorText(text), []); const words = useMemo(() => editorText.trim() ? editorText.trim().split(/\s+/).length : 0, [editorText]);
-  if (!record || !current) return <ProfileGate><AppFrame><div className="route-loading">Finding your local document…</div></AppFrame></ProfileGate>;
+  if (loading) return <ProfileGate><AppFrame><div className="route-loading"><div><span className="document-loader" /><p className="eyebrow">Opening local document</p><h1>Preparing your workspace…</h1><p>Your document is loading from this browser only.</p></div></div></AppFrame></ProfileGate>;
+  if (!record || !current) return <ProfileGate><AppFrame><div className="route-loading route-recovery"><div><p className="eyebrow">Document unavailable</p><h1>We could not open this local document.</h1><p>It may have been removed from this browser or storage may be temporarily unavailable. Your other local documents are not changed.</p><button onClick={() => navigate("/")}>Return to workspace</button></div></div></AppFrame></ProfileGate>;
   const protectedRoom = Boolean(current.roomProtected); const invite = current.roomCode ? makeInvite(current.roomCode, protectedRoom) : ""; const topologyState = roomState(peer.connection, peer.peers.length);
   const startRoom = (mode: "open" | "protected") => { setRoomError(""); if (!profile) return; if (mode === "protected" && roomPassword.trim().length < 8) { setRoomError("Choose a password with at least eight characters."); return; } createRoom.mutate({ protected: mode === "protected", password: mode === "protected" ? roomPassword.trim() : undefined, identity: { name: profile.name || `Guest ${profile.id.slice(0, 4)}`, color: profile.color } }); };
   const copyInvite = async () => { await navigator.clipboard.writeText(invite); setCopied(true); setTimeout(() => setCopied(false), 1200); };

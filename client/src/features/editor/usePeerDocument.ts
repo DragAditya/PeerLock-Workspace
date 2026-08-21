@@ -23,7 +23,14 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
   const [title, setTitle] = useState(document.title);
   const providerRef = useRef<WebrtcProvider | null>(null);
 
-  useEffect(() => { setPersistenceReady(false); const persistence = new IndexeddbPersistence(`peerlock-document-${document.id}`, ydoc); const onSynced = () => setPersistenceReady(true); persistence.once("synced", onSynced); return () => { persistence.destroy(); ydoc.destroy(); }; }, [document.id, ydoc]);
+  useEffect(() => {
+    setPersistenceReady(false);
+    const persistence = new IndexeddbPersistence(`peerlock-document-${document.id}`, ydoc);
+    const onSynced = () => setPersistenceReady(true);
+    const fallback = window.setTimeout(onSynced, 3500);
+    persistence.once("synced", onSynced);
+    return () => { window.clearTimeout(fallback); persistence.destroy(); ydoc.destroy(); };
+  }, [document.id, ydoc]);
   useEffect(() => { if (!persistenceReady) return; const syncTitle = () => { const sharedTitle = metadata.get("title"); if (typeof sharedTitle === "string") setTitle(sharedTitle); else metadata.set("title", title); }; metadata.observe(syncTitle); syncTitle(); return () => metadata.unobserve(syncTitle); }, [metadata, persistenceReady, title]);
   useEffect(() => { const refreshChat = () => setChat(messages.toArray().filter(validMessage).sort((a, b) => a.at - b.at)); messages.observe(refreshChat); refreshChat(); return () => messages.unobserve(refreshChat); }, [messages]);
   useEffect(() => {
