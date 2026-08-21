@@ -179,3 +179,10 @@
 
 - [x] Update the public Render configuration to apply committed database migrations during the free-tier build command without Shell access.
 - [x] Push and verify the Render Free configuration update on GitHub.
+
+- [x] Audit all MySQL/TiDB-specific Peerlock database code, migrations, tests, and Render configuration for Neon PostgreSQL conversion.
+- [x] Convert Drizzle schema, database driver, room queries, and migration tooling to Neon PostgreSQL without changing room, approval, or document-sync behavior.
+- [x] Create and validate a PostgreSQL migration for guest sessions, rooms, and memberships.
+- [x] Update Render and public hosting documentation for Neon PostgreSQL deployments.
+- [x] Run type, unit, build, and independent Main ID/Fake ID collaboration regressions after the database conversion.
+- [ ] Securely configure a newly rotated Neon connection and verify deployment readiness without committing credentials.

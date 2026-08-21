@@ -4,7 +4,7 @@ Create an untracked `.env` file only for local development. Do not copy real val
 
 | Variable | Example format | Required | Notes |
 | --- | --- | --- | --- |
-| `DATABASE_URL` | `mysql://USERNAME:PASSWORD@HOST:3306/DATABASE_NAME` | Yes | Database holds metadata-only room records and memberships. |
+| `DATABASE_URL` | `postgresql://USER:PASSWORD@HOST/DB?sslmode=require` | Yes | Neon PostgreSQL connection. The database holds metadata-only room records and memberships. |
 | `JWT_SECRET` | Long random string | Yes | Generate a strong random value for each deployment. |
 | `GEMINI_API_KEY` | Google Gemini API key | No | Enables consent-gated AI formatting. |
 | `NODE_ENV` | `production` | Production | Hosting providers normally set this value. |

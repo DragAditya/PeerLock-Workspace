@@ -20,7 +20,7 @@ Peerlock is a **guest-first, local-first collaborative editor** for small teams 
 ```bash
 pnpm install --frozen-lockfile
 # Create your own untracked .env from the variable list in environment.example.md.
-# Set DATABASE_URL and JWT_SECRET. GEMINI_API_KEY is optional.
+# Set a Neon PostgreSQL DATABASE_URL and JWT_SECRET. GEMINI_API_KEY is optional.
 pnpm dev
 ```
 

@@ -34,7 +34,7 @@ export async function ensureGuestSession(ctx: Pick<TrpcContext, "req" | "res">) 
     await db.insert(peerlockGuestSessions).values({ id });
     (ctx.res as Response).cookie(COOKIE_NAME, id, { ...getSessionCookieOptions(ctx.req), maxAge: 1000 * 60 * 60 * 24 * 30 });
   } else {
-    await db.insert(peerlockGuestSessions).values({ id }).onDuplicateKeyUpdate({ set: { lastSeenAt: new Date() } });
+    await db.insert(peerlockGuestSessions).values({ id }).onConflictDoUpdate({ target: peerlockGuestSessions.id, set: { lastSeenAt: new Date() } });
   }
   return id;
 }

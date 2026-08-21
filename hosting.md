@@ -10,7 +10,7 @@ Peerlock is a **single Node.js web service**, not a static website. Its Node ser
 | **Vercel** | Express and WebSockets are supported, but WebSockets are Beta and connections may reach different function instances. The current signaling relay deliberately keeps topic membership only in process memory. | Use for evaluation or after adding a shared pub/sub layer; do not use the current single-memory relay for multi-instance production rooms. |
 | Manus built-in hosting | Already configured for this project. | Suitable when you want managed deployment and custom-domain controls inside Manus. |
 
-> **Privacy boundary:** no provider configuration should add document-body storage, Yjs update persistence, or chat persistence to the server. The MySQL database is only for rooms, password hashes, guest sessions, and approvals.
+> **Privacy boundary:** no provider configuration should add document-body storage, Yjs update persistence, or chat persistence to the server. The Neon PostgreSQL database is only for rooms, password hashes, guest sessions, and approvals.
 
 ## 1. Before deploying
 
@@ -30,20 +30,20 @@ The production commands are already defined in `package.json`.
 | --- | --- |
 | `pnpm build` | Builds the Vite client into `dist/public` and bundles the Node server into `dist/index.js`. |
 | `pnpm start` | Starts the combined production Node service. It reads the host-provided `PORT`; do not hard-code a port. |
-| `pnpm db:push` | Generates and applies Drizzle migrations. Run this only after reviewing the generated migration and pointing `DATABASE_URL` to the correct database. |
+| `pnpm drizzle-kit migrate` | Applies the committed Neon PostgreSQL migrations. Use this for production databases. |
 
 ## 2. Create the database
 
-Create a managed MySQL-compatible database, preferably in the same region as the Node service. Add its full connection string as `DATABASE_URL`.
+Create a Neon PostgreSQL database, preferably in a region close to the Node service. In Neon, open **Connect**, copy the pooled PostgreSQL connection string, and add it as `DATABASE_URL`.
 
 ```text
-mysql://USERNAME:PASSWORD@HOST:3306/DATABASE_NAME
+postgresql://USERNAME:PASSWORD@HOST/DATABASE?sslmode=require
 ```
 
 Then apply the project schema once from a trusted local or CI environment:
 
 ```bash
-DATABASE_URL='mysql://…' pnpm db:push
+DATABASE_URL='postgresql://…?sslmode=require' pnpm drizzle-kit migrate
 ```
 
 The schema creates room metadata and membership tables. It must never be extended with document text, Yjs state, chat messages, or AI request bodies.
@@ -54,7 +54,7 @@ Copy `.env.example` for local development. In a hosting dashboard, add secrets t
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Yes | MySQL/TiDB connection used only for room registry and approval metadata. |
+| `DATABASE_URL` | Yes | Neon PostgreSQL connection used only for room registry and approval metadata. |
 | `JWT_SECRET` | Yes | Template session infrastructure secret. Use a long cryptographically random value. |
 | `GEMINI_API_KEY` | No | Enables the consent-gated Gemini formatting actions. Leave empty to disable AI safely. |
 | `NODE_ENV` | Yes in production | Set to `production`. |
@@ -92,7 +92,7 @@ The repository includes `render.yaml`. Render can use this Blueprint to prefill 
 
 This error means Render can reach the configured database but the Peerlock tables have not yet been migrated. It is **not** a document-sync or password error. The missing tables are `peerlock_guest_sessions`, `peerlock_rooms`, and `peerlock_room_memberships`.
 
-1. Open the Render service and confirm that `DATABASE_URL` is set to the intended MySQL/TiDB database.
+1. Open the Render service and confirm that `DATABASE_URL` is set to the intended Neon PostgreSQL database.
 2. Set the **Build Command** to:
 
    ```bash
@@ -128,7 +128,7 @@ Peerlock’s current signaling relay is intentionally **memory-only**: it does n
 | --- | --- |
 | Static Vite frontend | Compatible after a Vercel-specific build/output setup. |
 | Express/tRPC API | Compatible as an Express function. |
-| Guest room metadata and approvals | Compatible with an externally reachable MySQL/TiDB database. |
+| Guest room metadata and approvals | Compatible with an externally reachable Neon PostgreSQL database. |
 | Multi-peer WebRTC signaling | Requires a Vercel adapter plus external ephemeral pub/sub (for example, Redis) so topic membership is shared across function instances. |
 
 ### Safe Vercel path
@@ -150,7 +150,7 @@ Avoid splitting the client, API, and signaling relay across unrelated domains un
 
 | Symptom | Likely cause | Action |
 | --- | --- | --- |
-| Fake ID stays on “Your request is with the owner” | Database/approval connectivity issue or owner did not approve. | Check service logs and verify `DATABASE_URL`; test a fresh room. |
+| Fake ID stays on “Your request is with the owner” | Database/approval connectivity issue or owner did not approve. | Check service logs and verify the Neon `DATABASE_URL`; test a fresh room. |
 | Fake ID opens but sees no Main ID text | WebSocket upgrade path is blocked or peers are on different signaling instances. | Check `/api/peerlock-signaling`; use a single Render Web Service for the current build. |
 | AI says unavailable | `GEMINI_API_KEY` is unset or invalid. | Add it as a protected host secret; AI is optional. |
 | App cannot connect to database | Incorrect URL, IP allow-list, TLS, or database region issue. | Validate the connection string and network allow-list using the provider’s database instructions. |
