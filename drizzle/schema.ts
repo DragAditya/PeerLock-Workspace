@@ -2,6 +2,7 @@ import { index, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar }
 
 export const userRole = pgEnum("user_role", ["user", "admin"]);
 export const roomMembershipStatus = pgEnum("room_membership_status", ["pending", "approved", "declined", "expired"]);
+export const accountTokenPurpose = pgEnum("account_token_purpose", ["verify_email", "reset_password"]);
 
 /** Core template user table. Peerlock collaboration itself remains guest-first. */
 export const users = pgTable("users", {
@@ -50,3 +51,48 @@ export const peerlockRoomMemberships = pgTable("peerlock_room_memberships", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastSeenAt: timestamp("last_seen_at").defaultNow().$onUpdate(() => new Date()).notNull(),
 }, table => [uniqueIndex("peerlock_membership_room_session_unique").on(table.roomId, table.sessionId), index("peerlock_membership_room_status_idx").on(table.roomId, table.status)]);
+
+/** Optional Peerlock account identity. Local documents remain device-local and are never stored here. */
+export const peerlockAccounts = pgTable("peerlock_accounts", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  email: varchar("email", { length: 320 }).notNull(),
+  username: varchar("username", { length: 48 }).notNull(),
+  passwordSalt: varchar("password_salt", { length: 64 }).notNull(),
+  passwordHash: varchar("password_hash", { length: 128 }).notNull(),
+  emailVerifiedAt: timestamp("email_verified_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+  lastSignedInAt: timestamp("last_signed_in_at"),
+}, table => [
+  uniqueIndex("peerlock_accounts_email_unique").on(table.email),
+  uniqueIndex("peerlock_accounts_username_unique").on(table.username),
+]);
+
+/** Opaque, revocable account sessions. Browser cookies hold only random tokens, never account data. */
+export const peerlockAccountSessions = pgTable("peerlock_account_sessions", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  accountId: varchar("account_id", { length: 36 }).notNull(),
+  tokenHash: varchar("token_hash", { length: 128 }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+}, table => [
+  uniqueIndex("peerlock_account_sessions_token_hash_unique").on(table.tokenHash),
+  index("peerlock_account_sessions_account_idx").on(table.accountId),
+  index("peerlock_account_sessions_expiry_idx").on(table.expiresAt),
+]);
+
+/** Hashed, expiring, single-use email-verification and password-reset tokens. */
+export const peerlockAccountTokens = pgTable("peerlock_account_tokens", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  accountId: varchar("account_id", { length: 36 }).notNull(),
+  purpose: accountTokenPurpose("purpose").notNull(),
+  tokenHash: varchar("token_hash", { length: 128 }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  consumedAt: timestamp("consumed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, table => [
+  uniqueIndex("peerlock_account_tokens_token_hash_unique").on(table.tokenHash),
+  index("peerlock_account_tokens_account_purpose_idx").on(table.accountId, table.purpose),
+  index("peerlock_account_tokens_expiry_idx").on(table.expiresAt),
+]);

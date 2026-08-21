@@ -186,3 +186,10 @@
 - [x] Update Render and public hosting documentation for Neon PostgreSQL deployments.
 - [x] Run type, unit, build, and independent Main ID/Fake ID collaboration regressions after the database conversion.
 - [ ] Securely configure a newly rotated Neon connection and verify deployment readiness without committing credentials.
+
+- [x] Audit guest and existing OAuth behavior before introducing optional email-and-password accounts.
+- [x] Add Neon PostgreSQL models and migrations for account credentials, secure sessions, and single-use password-reset tokens.
+- [x] Implement account registration, email-password sign-in, logout, and account settings without changing guest room access.
+- [x] Implement non-enumerating forgot-password and reset-password flows with hashed, expiring, single-use tokens.
+- [x] Add a polished responsive account experience with clear guest-versus-account choices.
+- [ ] Validate authentication security, reset flows, guest access, local documents, and Main ID/Fake ID collaboration behavior.

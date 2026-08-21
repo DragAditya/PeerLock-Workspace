@@ -57,6 +57,9 @@ Copy `.env.example` for local development. In a hosting dashboard, add secrets t
 | `DATABASE_URL` | Yes | Neon PostgreSQL connection used only for room registry and approval metadata. |
 | `JWT_SECRET` | Yes | Template session infrastructure secret. Use a long cryptographically random value. |
 | `GEMINI_API_KEY` | No | Enables the consent-gated Gemini formatting actions. Leave empty to disable AI safely. |
+| `RESEND_API_KEY` | Yes for account recovery | Server-only Resend key for verification and password-reset emails. Never commit it or expose it to the client. |
+| `RESEND_FROM_EMAIL` | Yes for account recovery | A verified sender, such as `Peerlock <noreply@yourdomain.com>`. `onboarding@resend.dev` is limited to testing with the Resend account owner. |
+| `APP_BASE_URL` | Yes in production | The complete public HTTPS URL, for example `https://peerlock.onrender.com`; it is used to build recovery links. |
 | `NODE_ENV` | Yes in production | Set to `production`. |
 | `PORT` | Host-managed | Do not set unless your provider explicitly requires it; Peerlock reads it automatically. |
 | `VITE_APP_ID`, `OAUTH_SERVER_URL`, `VITE_OAUTH_PORTAL_URL`, `OWNER_OPEN_ID` | Optional | Required only if you retain the template OAuth integration. Peerlock collaboration itself remains guest-first. |
@@ -80,7 +83,7 @@ Render supports Node/Express web services and lets you connect a GitHub reposito
 | Node version | `22.x` |
 | Region | Same region as the database, where possible |
 
-4. Add the environment variables from the preceding table.
+4. Add the environment variables from the preceding table. For account recovery, set `APP_BASE_URL` to the final Render URL and configure a valid Resend API key plus sender address.
 5. Apply the database migration once.
 6. Deploy, then open the Render URL using **two separate browser profiles** to test Main ID and Fake ID room approval.
 
@@ -115,6 +118,8 @@ After updating from this repository revision, new Render Blueprint deployments u
 | Approve | Fake ID opens the canonical room document and sees Main ID’s text automatically. |
 | WebSocket | Browser DevTools shows a successful `wss://YOUR-DOMAIN/api/peerlock-signaling` connection. |
 | AI disabled | Documents still edit and sync normally when `GEMINI_API_KEY` is absent. |
+| Account sign-up | A new account receives a verification email at the configured address. |
+| Forgot password | The response is generic, and an existing account receives a one-time reset link. |
 
 ## 5. Vercel deployment — compatible with caveats
 
@@ -153,6 +158,7 @@ Avoid splitting the client, API, and signaling relay across unrelated domains un
 | Fake ID stays on “Your request is with the owner” | Database/approval connectivity issue or owner did not approve. | Check service logs and verify the Neon `DATABASE_URL`; test a fresh room. |
 | Fake ID opens but sees no Main ID text | WebSocket upgrade path is blocked or peers are on different signaling instances. | Check `/api/peerlock-signaling`; use a single Render Web Service for the current build. |
 | AI says unavailable | `GEMINI_API_KEY` is unset or invalid. | Add it as a protected host secret; AI is optional. |
+| No account email arrives | Resend sender is not verified, the testing sender is restricted, or `APP_BASE_URL` is incorrect. | Verify a Resend sender/domain, set `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and the complete HTTPS `APP_BASE_URL`, then deploy again. |
 | App cannot connect to database | Incorrect URL, IP allow-list, TLS, or database region issue. | Validate the connection string and network allow-list using the provider’s database instructions. |
 | Local browser document does not load | Browser IndexedDB is blocked or cleared. | Open the workspace root and create/open the local document again; the server cannot restore document content by design. |
 
