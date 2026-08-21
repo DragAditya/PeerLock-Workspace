@@ -172,3 +172,7 @@
 - [x] Create detailed hosting.md guidance for Render and Vercel, including environment variables, database setup, WebSocket signaling, and privacy constraints.
 - [x] Validate production build and repository ignore rules before publication.
 - [x] Create a public GitHub repository and push the complete source project.
+
+- [ ] Diagnose and resolve the Render database schema error preventing guest-session and room creation.
+- [ ] Make the required Peerlock database migration procedure unambiguous in the public Render deployment guidance.
+- [ ] Verify room creation against the initialized Render database.

@@ -75,6 +75,7 @@ Render supports Node/Express web services and lets you connect a GitHub reposito
 | --- | --- |
 | Runtime | `Node` |
 | Build command | `pnpm install --frozen-lockfile && pnpm build` |
+| Pre-deploy command | `pnpm drizzle-kit migrate` |
 | Start command | `pnpm start` |
 | Health check path | `/` |
 | Node version | `22.x` |
@@ -86,7 +87,23 @@ Render supports Node/Express web services and lets you connect a GitHub reposito
 
 ### Blueprint deployment
 
-The repository includes `render.yaml`. Render can use this Blueprint to prefill the service definition. You must still supply `DATABASE_URL` and, if wanted, `GEMINI_API_KEY` as protected values.
+The repository includes `render.yaml`. Render can use this Blueprint to prefill the service definition. It runs `pnpm drizzle-kit migrate` after the build and before the server starts, which is the intended place for the metadata-only room-registry migration.[4] You must still supply `DATABASE_URL` and, if wanted, `GEMINI_API_KEY` as protected values.
+
+### Fixing `Failed query: insert into peerlock_guest_sessions`
+
+This error means Render can reach the configured database but the Peerlock tables have not yet been migrated. It is **not** a document-sync or password error. The missing tables are `peerlock_guest_sessions`, `peerlock_rooms`, and `peerlock_room_memberships`.
+
+1. Open the Render service and confirm that `DATABASE_URL` is set to the intended MySQL/TiDB database.
+2. Open **Shell** for the service (or use a one-off command in your deployment workflow) and run:
+
+   ```bash
+   pnpm drizzle-kit migrate
+   ```
+
+3. Wait for a successful exit, then redeploy or restart the service.
+4. Create a **new** local document and create a room again. The failed document remains local in the browser; it can be reopened, but a newly created document makes the result easiest to verify.
+
+After updating from this repository revision, the Render Blueprint's `preDeployCommand` performs the same migration before later deploys. Do not use `pnpm db:push` as a Render startup command because it regenerates migration files; production should apply the committed migrations with `pnpm drizzle-kit migrate`.
 
 ### Render verification checklist
 
@@ -144,3 +161,4 @@ Avoid splitting the client, API, and signaling relay across unrelated domains un
 [1]: https://render.com/docs/deploy-node-express-app "Render: Deploy a Node Express App"
 [2]: https://vercel.com/docs/frameworks/backend/express "Vercel: Express on Vercel"
 [3]: https://vercel.com/docs/functions/websockets "Vercel: WebSockets"
+[4]: https://render.com/docs/blueprint-spec "Render: Blueprint YAML Reference"
