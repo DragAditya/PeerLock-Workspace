@@ -176,3 +176,6 @@
 - [ ] Diagnose and resolve the Render database schema error preventing guest-session and room creation.
 - [ ] Make the required Peerlock database migration procedure unambiguous in the public Render deployment guidance.
 - [ ] Verify room creation against the initialized Render database.
+
+- [x] Update the public Render configuration to apply committed database migrations during the free-tier build command without Shell access.
+- [x] Push and verify the Render Free configuration update on GitHub.

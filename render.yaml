@@ -2,8 +2,7 @@ services:
   - type: web
     name: peerlock-p2p-workspace
     runtime: node
-    buildCommand: pnpm install --frozen-lockfile && pnpm build
-    preDeployCommand: pnpm drizzle-kit migrate
+    buildCommand: pnpm install --frozen-lockfile && pnpm build && pnpm drizzle-kit migrate
     startCommand: pnpm start
     healthCheckPath: /
     envVars:
