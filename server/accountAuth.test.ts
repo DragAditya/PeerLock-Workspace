@@ -26,4 +26,8 @@ describe("safe account errors", () => {
     expect(safeAccountError(new Error('relation "peerlock_accounts" does not exist'))).toContain("latest database migration");
     expect(safeAccountError(new Error("fetch failed: ECONNRESET"))).toContain("email provider");
   });
+
+  it("explains a missing Neon deployment connection instead of showing a generic unavailable message", () => {
+    expect(safeAccountError(new Error("Accounts are temporarily unavailable."))).toContain("Neon PostgreSQL DATABASE_URL");
+  });
 });

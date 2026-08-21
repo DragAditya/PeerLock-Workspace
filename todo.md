@@ -212,3 +212,7 @@
 - [x] Diagnose Resend delivery failure and show actionable, non-sensitive email configuration status.
 - [x] Add protected copy-friendly `/devlogs` diagnostics with detailed system, database, email, authentication, migration, and room metadata status while redacting secrets, tokens, OTPs, passwords, and document content.
 - [ ] Validate registration conflict, missing account migration, email failure, and authorized diagnostics behavior.
+- [x] Make `/devlogs` available without sign-in while preserving strict redaction of secrets, credentials, private account data, document content, and chat text.
+- [x] Replace the generic “Accounts are temporarily unavailable” registration failure with a safe, actionable diagnosis for missing Neon configuration, migrations, or deployment connectivity.
+- [x] Repair the reported phone layout issues in the account and public diagnostics screens, including excessive blank space and poor vertical hierarchy.
+- [x] Validate public diagnostics access, deployment-failure guidance, and 390px phone layouts before publishing the repair.

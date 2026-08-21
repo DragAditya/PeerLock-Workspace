@@ -23,6 +23,7 @@ export function safeAccountError(error: unknown) {
   if (/peerlock_accounts_username_unique|username.*unique|duplicate key.*username/i.test(message)) return "That username is already taken. Try adding a number or choosing a different name.";
   if (/peerlock_accounts_email_unique|email.*unique|duplicate key.*email|23505/i.test(message)) return "An account already uses this email. Sign in instead or reset your password.";
   if (/peerlock_accounts|relation .* does not exist|Failed query/i.test(message)) return "Account setup is incomplete. The latest database migration has not been applied yet. Redeploy on Render with the documented build command, then try again.";
+  if (/Accounts are temporarily unavailable|DATABASE_URL|Neon PostgreSQL/i.test(message)) return "The account database is not connected in this deployment. Add a Neon PostgreSQL DATABASE_URL in your host settings, then redeploy with the documented migration build command.";
   if (/fetch failed|ECONN|ETIMEDOUT|network/i.test(message)) return "The account service could not reach its email provider. Try again shortly or check the protected diagnostics page.";
   return message || "The account service is temporarily unavailable. Please try again shortly.";
 }
@@ -126,7 +127,7 @@ export async function registerAccount(req: Request, res: Response, input: { emai
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error("Enter a valid email address.");
   if (!/^[A-Za-z0-9][A-Za-z0-9 ._-]{1,47}$/.test(username)) throw new Error("Use 2–48 letters, numbers, spaces, dots, hyphens, or underscores for your username.");
   if (policyError) throw new Error(policyError);
-  const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
+  const db = await getDb(); if (!db) throw new Error("Account database is unavailable: DATABASE_URL must be a valid Neon PostgreSQL connection string.");
   const existing = await db.select({ email: peerlockAccounts.email, username: peerlockAccounts.username }).from(peerlockAccounts).where(or(eq(peerlockAccounts.email, email), eq(peerlockAccounts.username, username))).limit(1);
   if (existing[0]?.email === email) throw new Error("An account already uses this email. Sign in or reset your password.");
   if (existing[0]?.username === username) throw new Error("That username is already taken. Try adding a number or choosing a different name.");

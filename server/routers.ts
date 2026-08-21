@@ -44,10 +44,7 @@ export const appRouter = router({
     format: publicProcedure.input(z.object({ text: z.string(), instruction: z.string().max(240).optional(), action: z.enum(["format_document", "improve", "summarize", "expand", "simplify", "explain", "format"]).default("format_document"), consent: z.literal(true), externalAiEnabled: z.boolean() })).mutation(({ input }) => formatWithGemini(input)),
   }),
   diagnostics: router({
-    snapshot: publicProcedure.query(({ ctx }) => {
-      const account = requireVerifiedAccount(ctx);
-      return getDevDiagnostics({ accountId: account.id, verified: Boolean(account.emailVerifiedAt) });
-    }),
+    snapshot: publicProcedure.query(() => getDevDiagnostics()),
   }),
   room: router({
     create: publicProcedure.input(z.object({ protected: z.boolean(), password: z.string().max(256).optional(), identity: z.object({ name: z.string().min(1).max(64), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) }) })).mutation(({ ctx, input }) => { const account = requireVerifiedAccount(ctx); return createRegisteredRoom(ctx, { ...input, identity: { ...input.identity, name: account.username } }); }),

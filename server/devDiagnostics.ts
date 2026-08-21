@@ -17,19 +17,19 @@ async function probeTable(table: AnyPgTable): Promise<TableProbe> {
   try { const result = await db.select({ records: count() }).from(table); return { state: "ready", records: Number(result[0]?.records ?? 0) }; } catch (error) { return { state: "missing_or_unreachable", message: safeDatabaseMessage(error) }; }
 }
 
-export async function getDevDiagnostics(input: { accountId: string; verified: boolean }) {
+export async function getDevDiagnostics() {
   const [accounts, sessions, tokens, guestSessions, rooms, memberships] = await Promise.all([
     probeTable(peerlockAccounts), probeTable(peerlockAccountSessions), probeTable(peerlockAccountTokens), probeTable(peerlockGuestSessions), probeTable(peerlockRooms), probeTable(peerlockRoomMemberships),
   ]);
   const email = accountEmailDiagnostics();
   return {
     generatedAt: new Date().toISOString(),
-    access: { authenticated: true, verified: input.verified, accountReference: `…${input.accountId.slice(-6)}` },
+    access: { publicReadOnly: true, authenticationRequiredForWorkspace: true },
     runtime: { environment: process.env.NODE_ENV ?? "development", node: process.version, uptimeSeconds: Math.round(process.uptime()), appBaseUrlConfigured: Boolean(process.env.APP_BASE_URL) },
     database: { provider: "Neon PostgreSQL", urlLooksValid: isNeonPostgresUrl(process.env.DATABASE_URL), expectedMigrations: ["0000_curly_king_bedlam.sql", "0001_cloudy_malcolm_colcord.sql"], tables: { peerlock_accounts: accounts, peerlock_account_sessions: sessions, peerlock_account_tokens: tokens, peerlock_guest_sessions: guestSessions, peerlock_rooms: rooms, peerlock_room_memberships: memberships } },
     email: { configured: email.configured, senderConfigured: email.senderConfigured, appBaseUrlConfigured: email.baseUrlConfigured, lastAttemptAt: email.attemptedAt, lastDelivery: email.delivered === null ? "No attempt during this process" : email.delivered ? "Accepted by provider" : "Not delivered", providerStatus: email.status, safeReason: email.reason },
     authentication: { accountOnlyAccess: true, verification: "Six-digit hashed, expiring, single-use email OTP", passwordReset: "Single-use expiring reset link", session: "Opaque HTTP-only cookie; values are never logged" },
     collaboration: { maximumPeers: 10, signaling: "Single-process memory-only WebSocket relay", roomRegistry: "Neon metadata only", documentStorage: "Browser IndexedDB + encrypted WebRTC; excluded from server diagnostics" },
-    privacy: { excludedFromLogs: ["Passwords", "password hashes", "account session cookies", "password reset tokens", "email OTP codes", "Resend API key", "database URL", "document body", "Yjs updates", "chat message text"] },
+    privacy: { publicRedaction: "This public status page reports readiness and aggregate table counts only.", excludedFromLogs: ["Account names", "email addresses", "Passwords", "password hashes", "account session cookies", "password reset tokens", "email OTP codes", "Resend API key", "database URL", "document body", "Yjs updates", "chat message text"] },
   };
 }
