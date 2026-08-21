@@ -193,3 +193,8 @@
 - [x] Implement non-enumerating forgot-password and reset-password flows with hashed, expiring, single-use tokens.
 - [x] Add a polished responsive account experience with clear guest-versus-account choices.
 - [ ] Validate authentication security, reset flows, guest access, local documents, and Main ID/Fake ID collaboration behavior.
+
+- [x] Fix stale account verification status so verification completion updates the active account immediately.
+- [x] Replace email-verification links with hashed, expiring, single-use six-digit OTP codes sent through Resend.
+- [x] Remove guest entry and require an authenticated verified Peerlock account before workspace, document, and room access.
+- [ ] Preserve an account-derived collaboration identity and validate approval, room synchronization, password recovery, and OTP verification end to end.

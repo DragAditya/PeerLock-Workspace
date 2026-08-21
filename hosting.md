@@ -118,7 +118,7 @@ After updating from this repository revision, new Render Blueprint deployments u
 | Approve | Fake ID opens the canonical room document and sees Main ID’s text automatically. |
 | WebSocket | Browser DevTools shows a successful `wss://YOUR-DOMAIN/api/peerlock-signaling` connection. |
 | AI disabled | Documents still edit and sync normally when `GEMINI_API_KEY` is absent. |
-| Account sign-up | A new account receives a verification email at the configured address. |
+| Account sign-up | A new account receives a six-digit verification code at the configured address, then enters that code before opening documents or rooms. |
 | Forgot password | The response is generic, and an existing account receives a one-time reset link. |
 
 ## 5. Vercel deployment — compatible with caveats

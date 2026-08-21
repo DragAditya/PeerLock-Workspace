@@ -1,14 +1,19 @@
-import { useWorkspace } from "@/app/WorkspaceProvider";
-import { nanoid } from "nanoid";
-import { useState } from "react";
+import { Loader2, LockKeyhole, MailCheck } from "lucide-react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
+import { trpc } from "@/lib/trpc";
+import { useWorkspace } from "@/app/WorkspaceProvider";
 
 export function ProfileGate({ children }: { children: React.ReactNode }) {
   const { profile, setProfile } = useWorkspace();
   const [, navigate] = useLocation();
-  const [name, setName] = useState("");
-  const [color, setColor] = useState("#0f766e");
-  if (profile) return <>{children}</>;
-  const enterGuest = () => setProfile({ id: nanoid(10), name: name.trim() || `Guest ${nanoid(4).toUpperCase()}`, color });
-  return <div className="profile-gate"><section><p className="eyebrow">Peerlock / guest entry</p><h1>Enter as a guest.</h1><p className="gate-copy">Choose a display name for your collaboration cursor. Guest work remains local to this browser.</p><form onSubmit={event => { event.preventDefault(); enterGuest(); }}><label>Display name <small>(optional)</small><input autoFocus value={name} onChange={event => setName(event.target.value)} placeholder="Guest name" maxLength={32} /></label><label>Cursor colour<span className="color-row"><input type="color" value={color} onChange={event => setColor(event.target.value)} /><code>{color.toUpperCase()}</code></span></label><button type="submit">Continue as guest <span>→</span></button></form><div className="profile-account-option"><span>Want secure account recovery?</span><button type="button" onClick={() => navigate("/account/sign-in")}>Sign in or create account</button></div><small>Accounts are optional. Documents are never uploaded to the account database.</small></section><aside><p>LOCAL-FIRST</p><div className="gate-diagram"><i /><i /><i /></div><strong>Write alone.<br />Sync by choice.</strong><span>Your documents start and stay on your device.</span></aside></div>;
+  const account = trpc.auth.account.useQuery(undefined, { retry: false });
+  useEffect(() => {
+    if (!account.data || profile?.id === account.data.id) return;
+    setProfile({ id: account.data.id, name: account.data.username, color: "#0f766e" });
+  }, [account.data?.id, account.data?.username, profile?.id]);
+  if (account.isLoading || (account.data && profile?.id !== account.data.id)) return <div className="profile-gate account-gate"><section><Loader2 className="spin" size={22} /><p className="eyebrow">PEERLOCK / ACCOUNT CHECK</p><h1>Securing your workspace.</h1><p className="gate-copy">Loading your verified account identity for private collaboration.</p></section></div>;
+  if (!account.data) return <div className="profile-gate account-gate"><section><LockKeyhole size={25} /><p className="eyebrow">PEERLOCK / ACCOUNT REQUIRED</p><h1>Sign in to enter.</h1><p className="gate-copy">Peerlock now requires a protected account. Your documents remain on this browser and are never uploaded to the account database.</p><button onClick={() => navigate("/account/sign-in")}>Sign in or create account <span>→</span></button></section><aside><p>ACCOUNT-ONLY</p><div className="gate-diagram"><i /><i /><i /></div><strong>Private by design.<br />Protected by account.</strong><span>Every collaborator uses a verified identity.</span></aside></div>;
+  if (!account.data.emailVerifiedAt) return <div className="profile-gate account-gate"><section><MailCheck size={25} /><p className="eyebrow">PEERLOCK / VERIFY EMAIL</p><h1>Confirm your code.</h1><p className="gate-copy">Enter the six-digit code sent to {account.data.email} before opening documents or entering rooms.</p><button onClick={() => navigate("/account/sign-in")}>Verify email <span>→</span></button></section><aside><p>ACCOUNT-ONLY</p><div className="gate-diagram"><i /><i /><i /></div><strong>One account.<br />One trusted identity.</strong><span>Room approval and collaboration use your verified account name.</span></aside></div>;
+  return <>{children}</>;
 }

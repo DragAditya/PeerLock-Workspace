@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomInt, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import type { Request, Response } from "express";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { parse as parseCookie } from "cookie";
@@ -8,9 +8,10 @@ import { getDb } from "./db";
 
 export const ACCOUNT_SESSION_COOKIE = "peerlock_account_session";
 const SESSION_MS = 1000 * 60 * 60 * 24 * 30;
-const VERIFY_MS = 1000 * 60 * 60 * 24;
+const VERIFY_MS = 1000 * 60 * 10;
 const RESET_MS = 1000 * 60 * 30;
 const recoveryAttempts = new Map<string, number[]>();
+const verificationAttempts = new Map<string, number[]>();
 
 export type AccountIdentity = { id: string; email: string; username: string; emailVerifiedAt: Date | null };
 
@@ -18,6 +19,7 @@ function normalizeEmail(email: string) { return email.trim().toLowerCase(); }
 function normalizeUsername(username: string) { return username.trim().replace(/\s+/g, " "); }
 function hash(value: string) { return createHash("sha256").update(value).digest("hex"); }
 function randomToken() { return randomBytes(32).toString("base64url"); }
+export function createVerificationOtp() { return String(randomInt(100_000, 1_000_000)); }
 function passwordRecord(password: string) { const salt = randomBytes(16).toString("hex"); return { salt, hash: scryptSync(password, salt, 64).toString("hex") }; }
 function verifyPassword(password: string, salt: string, expectedHash: string) { const actual = scryptSync(password, salt, 64); const expected = Buffer.from(expectedHash, "hex"); return actual.length === expected.length && timingSafeEqual(actual, expected); }
 
@@ -61,6 +63,13 @@ function allowRecovery(key: string) {
   current.push(Date.now()); recoveryAttempts.set(key, current); return true;
 }
 
+function allowVerificationAttempt(accountId: string) {
+  const cutoff = Date.now() - 10 * 60 * 1000;
+  const current = (verificationAttempts.get(accountId) ?? []).filter(time => time > cutoff);
+  if (current.length >= 6) return false;
+  current.push(Date.now()); verificationAttempts.set(accountId, current); return true;
+}
+
 async function createSession(accountId: string) {
   const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
   const rawToken = randomToken();
@@ -76,19 +85,18 @@ export function clearAccountSession(res: Response, req: Request) {
   res.clearCookie(ACCOUNT_SESSION_COOKIE, { ...getSessionCookieOptions(req), maxAge: -1 });
 }
 
-async function issueToken(accountId: string, purpose: "verify_email" | "reset_password") {
+async function issueToken(accountId: string, purpose: "verify_email" | "reset_password", rawValue = randomToken()) {
   const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
-  const rawToken = randomToken();
   const expiresAt = new Date(Date.now() + (purpose === "verify_email" ? VERIFY_MS : RESET_MS));
   await db.delete(peerlockAccountTokens).where(and(eq(peerlockAccountTokens.accountId, accountId), eq(peerlockAccountTokens.purpose, purpose), isNull(peerlockAccountTokens.consumedAt)));
-  await db.insert(peerlockAccountTokens).values({ id: randomUUID(), accountId, purpose, tokenHash: hash(rawToken), expiresAt });
-  return rawToken;
+  await db.insert(peerlockAccountTokens).values({ id: randomUUID(), accountId, purpose, tokenHash: hash(rawValue), expiresAt });
+  return rawValue;
 }
 
-async function sendVerification(account: typeof peerlockAccounts.$inferSelect, req: Request) {
-  const token = await issueToken(account.id, "verify_email");
-  const link = `${requestOrigin(req)}/account/verify?token=${encodeURIComponent(token)}`;
-  return sendAccountEmail({ to: account.email, subject: "Verify your Peerlock email", html: `<p>Hello ${escapeHtml(account.username)},</p><p>Verify your email to secure your Peerlock account:</p><p><a href="${link}">Verify email</a></p><p>This link expires in 24 hours.</p>` });
+async function sendVerification(account: typeof peerlockAccounts.$inferSelect) {
+  const otp = createVerificationOtp();
+  await issueToken(account.id, "verify_email", otp);
+  return sendAccountEmail({ to: account.email, subject: "Your Peerlock verification code", html: `<p>Hello ${escapeHtml(account.username)},</p><p>Enter this one-time code in Peerlock to verify your email:</p><p style="font-size:28px;font-weight:700;letter-spacing:6px">${otp}</p><p>This code expires in 10 minutes. Never share it with anyone.</p>` });
 }
 
 function escapeHtml(value: string) { return value.replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char] ?? char); }
@@ -106,7 +114,7 @@ export async function registerAccount(req: Request, res: Response, input: { emai
   const [account] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, id)).limit(1);
   if (!account) throw new Error("Could not create account.");
   const sessionToken = await createSession(id); setAccountSession(res, req, sessionToken);
-  const verificationSent = await sendVerification(account, req);
+  const verificationSent = await sendVerification(account);
   return { account: accountView(account), verificationSent };
 }
 
@@ -125,7 +133,7 @@ export async function sendVerificationEmail(req: Request, accountId: string) {
   const [account] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, accountId)).limit(1);
   if (!account) throw new Error("Account was not found.");
   if (account.emailVerifiedAt) return { sent: false as const, alreadyVerified: true as const };
-  const sent = await sendVerification(account, req);
+  const sent = await sendVerification(account);
   return { sent, alreadyVerified: false as const };
 }
 
@@ -161,8 +169,11 @@ async function consumeToken(rawToken: string, purpose: "verify_email" | "reset_p
   return token.accountId;
 }
 
-export async function verifyAccountEmail(rawToken: string) {
-  const accountId = await consumeToken(rawToken, "verify_email"); const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
+export async function verifyAccountEmail(accountId: string, otp: string) {
+  if (!allowVerificationAttempt(accountId)) throw new Error("Too many verification attempts. Request a new code and try again later.");
+  const tokenAccountId = await consumeToken(otp, "verify_email");
+  if (tokenAccountId !== accountId) throw new Error("This code does not belong to the active account.");
+  const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
   await db.update(peerlockAccounts).set({ emailVerifiedAt: new Date() }).where(eq(peerlockAccounts.id, accountId));
   return { verified: true as const };
 }
