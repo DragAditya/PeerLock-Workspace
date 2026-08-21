@@ -138,3 +138,8 @@
 - [x] Replace the oversized mobile Gemini preview with a compact, readable review-and-apply surface that preserves access to the editor.
 - [x] Redesign the mobile AI action controls to be compact, touch-friendly, non-overflowing, and visually coherent with the editor footer.
 - [x] Validate whole-document and selection Gemini apply flows across desktop and mobile layouts.
+
+- [x] Redesign mobile owner join-request controls into clear, touch-safe Accept and Decline actions without overlapping or vertically stacking labels.
+- [x] Rebuild guest access-code and password entry into an informative, animated, responsive room-entry flow.
+- [x] Diagnose Gemini selected-text availability failures and add actionable, non-destructive error recovery guidance.
+- [x] Validate invitation approvals, guest room entry, and Gemini failure handling on mobile and desktop.

@@ -27,11 +27,17 @@ export async function formatWithGemini(input: AiFormatRequest) {
       format: "Format the selected text only. Preserve every fact, identifier, code token, and meaning; improve structure, whitespace, Markdown, and code-block language labels where applicable. Return only the replacement text."
     };
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`, { method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: `You are a precise technical writing assistant. ${actionGuidance[action]}\n\nOptional author instruction: ${input.instruction?.trim() || "None."}\n\nSource text:\n${input.text}` }] }] }) });
-    if (!response.ok) throw new Error(`Gemini returned ${response.status}`);
+    if (!response.ok) {
+      const detail = await response.text();
+      console.error("[Gemini] formatting request failed", { status: response.status, detail: detail.slice(0, 700) });
+      if (response.status === 429) throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Gemini is busy right now. Please wait a moment and retry; your selection was not changed." });
+      if (response.status === 401 || response.status === 403) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Gemini access is unavailable for this deployment. Your document and selection remain unchanged." });
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Gemini could not complete this request. Please retry; your document and selection remain unchanged." });
+    }
     const data = await response.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
     const formatted = data.candidates?.[0]?.content?.parts?.map(part => part.text ?? "").join("").trim();
     if (!formatted) throw new Error("Gemini returned no usable formatted text");
     return { formatted, action };
-  } catch (error) { if (error instanceof TRPCError) throw error; throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Gemini formatting is temporarily unavailable. Your document remains local." }); }
+  } catch (error) { if (error instanceof TRPCError) throw error; if (error instanceof Error && error.name === "AbortError") throw new TRPCError({ code: "TIMEOUT", message: "Gemini took too long to respond. Please retry; your document and selection remain unchanged." }); console.error("[Gemini] unexpected formatting error", error); throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Gemini is temporarily unavailable. Please retry; your document and selection remain unchanged." }); }
   finally { clearTimeout(timeout); }
 }
