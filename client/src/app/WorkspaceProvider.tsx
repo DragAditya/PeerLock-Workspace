@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { nanoid } from "nanoid";
+import { createInitializationGate } from "@/features/workspace/initialization";
 import { listLocalDocuments, storeDocument, deleteStoredDocument } from "@/features/workspace/storage";
 import type { LocalProfile, WorkspaceDocument, WorkspaceStore } from "@/features/workspace/types";
 
@@ -10,7 +11,25 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfileState] = useState<LocalProfile | null>(() => { try { return JSON.parse(localStorage.getItem(profileKey) ?? "null"); } catch { return null; } });
   const [documents, setDocuments] = useState<WorkspaceDocument[]>([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => { void listLocalDocuments().then(items => { setDocuments(items); setLoading(false); }); }, []);
+  const [initializationRecovered, setInitializationRecovered] = useState(false);
+  useEffect(() => {
+    let active = true;
+    const gate = createInitializationGate(4500, reason => {
+      if (!active) return;
+      setLoading(false);
+      setInitializationRecovered(reason !== "ready");
+    });
+    void listLocalDocuments()
+      .then(items => {
+        if (!active) return;
+        setDocuments(items);
+        gate.ready();
+      })
+      .catch(() => {
+        if (active) gate.fail();
+      });
+    return () => { active = false; gate.dispose(); };
+  }, []);
   const setProfile = (next: LocalProfile) => { localStorage.setItem(profileKey, JSON.stringify(next)); setProfileState(next); };
   const clearProfile = () => { localStorage.removeItem(profileKey); setProfileState(null); };
   const save = async (document: WorkspaceDocument) => { await storeDocument(document); setDocuments(current => [document, ...current.filter(item => item.id !== document.id)].sort((a, b) => b.updatedAt - a.updatedAt)); };
@@ -27,7 +46,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     await save(linked);
     return linked;
   };
-  const value = useMemo(() => ({ profile, documents, loading, setProfile, clearProfile, createDocument, updateDocument, removeDocument, openRoom }), [profile, documents, loading]);
+  const value = useMemo(() => ({ profile, documents, loading, initializationRecovered, setProfile, clearProfile, createDocument, updateDocument, removeDocument, openRoom }), [profile, documents, loading, initializationRecovered]);
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }
 

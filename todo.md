@@ -158,3 +158,7 @@
 - [x] Eliminate ProseMirror editor content overflow, desktop-scale minimum sizing, and non-wrapping long text on phones.
 - [x] Ensure real paragraphs, long tokens, lists, quotes, and code blocks remain readable inside the mobile editor viewport.
 - [x] Validate the corrected rich editor at phone and desktop widths using actual shared-document content.
+
+- [x] Add bounded workspace and Yjs IndexedDB startup timeouts that safely release loading gates when local persistence is delayed.
+- [x] Add clear document loading and unavailable-document recovery states without exposing document content to the server.
+- [x] Validate fresh local-document startup and timeout recovery at phone and desktop widths.

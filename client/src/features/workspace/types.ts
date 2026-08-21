@@ -16,6 +16,7 @@ export type WorkspaceStore = {
   profile: LocalProfile | null;
   documents: WorkspaceDocument[];
   loading: boolean;
+  initializationRecovered: boolean;
   setProfile: (profile: LocalProfile) => void;
   clearProfile: () => void;
   createDocument: (title?: string) => Promise<WorkspaceDocument>;
