@@ -1,47 +1,159 @@
-# Peerlock — P2P Encrypted Workspace
+# 🔐 Peerlock
 
-Peerlock is a **guest-first, local-first collaborative editor** for small teams of up to ten people. It combines Yjs CRDTs, IndexedDB persistence, and encrypted WebRTC peer synchronization so document bodies and room chat are not stored by the application server.
+### Private collaboration. Directly between peers.
 
-> The server stores only room metadata, password hashes where used, approval state, and temporary WebRTC signaling messages. It does **not** store document text, Yjs updates, or room-chat messages.
+Peerlock is a **privacy-first, peer-to-peer encrypted workspace** built for secure collaboration, real-time synchronization, and controlled data sharing between trusted peers.
 
-## Features
+**Your workspace. Your peers. Your data.**
 
-| Area | Included capability |
+<div align="center">
+
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-18181B?style=flat-square&logo=github&logoColor=white)](https://github.com/DragAditya/peerlock-p2p-encrypted-workspace)
+[![Status](https://img.shields.io/badge/Status-Active%20Development-18181B?style=flat-square)](https://github.com/DragAditya/peerlock-p2p-encrypted-workspace)
+[![Privacy](https://img.shields.io/badge/Privacy-First-18181B?style=flat-square)](https://github.com/DragAditya/peerlock-p2p-encrypted-workspace)
+
+</div>
+
+---
+
+## ✦ What is Peerlock?
+
+Peerlock is a secure workspace designed around **peer-to-peer communication and encrypted collaboration**.
+
+Instead of making centralized storage the center of the experience, Peerlock focuses on trusted peers communicating and synchronizing securely.
+
+> **Connect. Collaborate. Encrypt. Stay in control.**
+
+---
+
+## ⚡ Features
+
+| Feature | Description |
 | --- | --- |
-| Private writing | Tiptap rich-text editor with Markdown shortcuts, lists, quotes, and syntax-highlighted code blocks. |
-| Local-first data | Browser-local document registry and Yjs IndexedDB replicas. |
-| Collaboration | Server-verified room codes, optional passwords, owner approval, encrypted WebRTC peer sync, cursors, presence, and replicated chat. |
-| Reliability | Canonical server UUID room identity, deterministic guest room mapping, bounded IndexedDB recovery, and a project-owned memory-only signaling relay. |
-| AI assistance | Consent-gated Gemini document and selected-text formatting, with a per-document privacy switch. |
-| College support | In-app report, presentation guide, and viva preparation content. |
+| 🔐 **Encrypted Communication** | Protect communication between connected peers. |
+| 🌐 **Peer-to-Peer** | Designed around direct peer communication. |
+| ⚡ **Real-Time Sync** | Keep shared workspace data synchronized. |
+| 📁 **Shared Workspace** | Work with shared content in one focused environment. |
+| 🛡️ **Privacy First** | Minimize unnecessary centralized data exposure. |
+| 🖥️ **Self-Hostable** | Run the infrastructure under your own control. |
 
-## Quick start
+---
 
-```bash
-pnpm install --frozen-lockfile
-# Create your own untracked .env from the variable list in environment.example.md.
-# Set a Neon PostgreSQL DATABASE_URL and JWT_SECRET. GEMINI_API_KEY is optional.
-pnpm dev
-```
+## 🔒 Privacy First
 
-Open `http://localhost:3000` in two separate browser profiles. Create a room in the first profile, share the short link, request access in the second profile, and approve the request in the first profile.
+Peerlock is built around a simple idea:
 
-## Quality checks
+> **Private collaboration shouldn't require giving up control of your data.**
 
-```bash
-pnpm check
-pnpm test
-pnpm build
-node scripts/document-startup.mjs
-node scripts/room-convergence.mjs
-```
+The project focuses on encrypted peer communication, controlled sharing, and reducing unnecessary dependency on centralized storage.
 
-`hosting.md` contains complete deployment guidance for Render and a careful Vercel compatibility note.
+---
 
-## Repository safety
+## 🚀 Getting Started
 
-Never commit `.env` files, database credentials, Gemini keys, cookies, or exported private documents. The included `.gitignore` excludes common secrets, generated bundles, local logs, and browser-development artifacts.
+### Clone the repository
 
-## License
+    git clone https://github.com/DragAditya/peerlock-p2p-encrypted-workspace.git
+    cd peerlock-p2p-encrypted-workspace
 
-This capstone project is published without a license file by default. Add a license appropriate to your intended reuse policy before accepting external contributions.
+### Setup & Hosting
+
+The complete installation, configuration, hosting, and deployment process is documented in:
+
+**[→ Read the Hosting Guide](./hosting.md)**
+
+The guide covers:
+
+- Environment configuration
+- Local setup
+- Server configuration
+- Hosting
+- Deployment
+- Running Peerlock
+
+---
+
+## 📖 Documentation
+
+| Document | Description |
+| --- | --- |
+| [`hosting.md`](./hosting.md) | Complete setup, hosting & deployment guide |
+| [`README.md`](./README.md) | Project overview |
+
+---
+
+## 🛠️ Project Status
+
+> 🚧 **Active Development**
+
+Peerlock is continuously evolving.
+
+The UI, networking, synchronization, security, and overall experience may change as the project develops.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+You can help with:
+
+- 🐛 Bug fixes
+- ✨ New features
+- 🎨 UI/UX improvements
+- ⚡ Performance
+- 🔐 Security
+- 📚 Documentation
+- 💡 Ideas
+
+The basic workflow:
+
+    Fork → Clone → Build → Improve → Pull Request
+
+---
+
+## 🎯 Vision
+
+Peerlock aims to make private collaboration:
+
+**Simple.**
+
+**Fast.**
+
+**Secure.**
+
+**Peer-powered.**
+
+> Privacy shouldn't be an afterthought.
+>
+> Collaboration shouldn't mean giving away control.
+
+---
+
+## 🔐 Security
+
+Security and privacy are core principles of Peerlock.
+
+If you discover a potential security vulnerability, please avoid posting sensitive details publicly.
+
+Report security issues privately so they can be investigated responsibly.
+
+---
+
+## ⭐ Support
+
+If you like the idea behind Peerlock, consider giving the repository a ⭐.
+
+Every star, issue, contribution, and idea helps the project grow.
+
+---
+
+<div align="center">
+
+## 🔐 Peerlock
+
+**Private. Peer-to-Peer. Encrypted.**
+
+Built with ❤️ by **[Aditya Wagh](https://github.com/DragAditya)**
+
+</div>
