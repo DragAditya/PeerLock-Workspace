@@ -148,3 +148,9 @@
 - [x] Ensure every local document maps one-to-one to the server room UUID, public code, and WebRTC synchronization namespace.
 - [x] Add room-isolation regressions covering approval, repeated invite joins, cross-room attempts, and duplicate local document prevention.
 - [x] Validate an owner and approved guest edit the exact same Yjs document after joining through an invite.
+
+- [x] Repair the mobile studio width, panel placement, and horizontal overflow shown in the reported screenshot.
+- [x] Return to the originating document or prior route when the Settings header control closes Settings.
+- [x] Ensure an approved peer receives the existing Yjs document state automatically without requiring a click or local edit.
+- [x] Add accessible, performance-safe micro-interactions to collaboration, controls, and room-status changes.
+- [x] Validate the responsive studio, Settings close return, and automatic owner-to-guest content hydration in independent browsers.
