@@ -1,6 +1,7 @@
 import { and, eq, gt, sql } from "drizzle-orm";
 import { parse as parseCookie } from "cookie";
 import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { EventEmitter } from "node:events";
 import type { Response } from "express";
 import type { TrpcContext } from "./_core/context";
 import { getSessionCookieOptions } from "./_core/cookies";
@@ -11,8 +12,12 @@ const COOKIE_NAME = "peerlock_guest_session";
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const REQUEST_TTL_MS = 10 * 60 * 1000;
 const ACTIVE_WINDOW_MS = 2 * 60 * 1000;
+const roomEvents = new EventEmitter();
+roomEvents.setMaxListeners(100);
 
 export type GuestIdentity = { name: string; color: string };
+export function onRoomEvent(roomId: string, listener: () => void) { roomEvents.on(roomId, listener); return () => roomEvents.off(roomId, listener); }
+function emitRoomEvent(roomId: string) { roomEvents.emit(roomId); }
 
 function roomCode() { return Array.from(randomBytes(8), byte => CODE_ALPHABET[byte % CODE_ALPHABET.length]).join(""); }
 function secret() { return randomBytes(32).toString("hex"); }
@@ -68,6 +73,7 @@ export async function requestRoomJoin(ctx: Pick<TrpcContext, "req" | "res">, inp
   const expires = new Date(Date.now() + REQUEST_TTL_MS);
   if (existing) await db.update(peerlockRoomMemberships).set({ displayName: input.identity.name, displayColor: input.identity.color, status, requestExpiresAt: status === "pending" ? expires : null, lastSeenAt: new Date() }).where(eq(peerlockRoomMemberships.id, existing.id));
   else await db.insert(peerlockRoomMemberships).values({ id: randomUUID(), roomId: room.id, sessionId, displayName: input.identity.name, displayColor: input.identity.color, status, requestExpiresAt: status === "pending" ? expires : null });
+  emitRoomEvent(room.id);
   return { state: status, roomId: room.id, code: room.code, protected: Boolean(room.passwordHash) };
 }
 
@@ -89,6 +95,17 @@ export async function pendingRoomRequests(ctx: Pick<TrpcContext, "req" | "res">,
   return db.select({ id: peerlockRoomMemberships.id, name: peerlockRoomMemberships.displayName, color: peerlockRoomMemberships.displayColor, expiresAt: peerlockRoomMemberships.requestExpiresAt }).from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.status, "pending"), gt(peerlockRoomMemberships.requestExpiresAt, new Date())));
 }
 
+export async function roomEventSnapshot(ctx: Pick<TrpcContext, "req" | "res">, roomId: string) {
+  const sessionId = await ensureGuestSession(ctx); const { db, room } = await requireRoomById(roomId);
+  const [membership] = await db.select().from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.sessionId, sessionId))).limit(1);
+  if (!membership) throw new Error("Room membership was not found.");
+  if (room.ownerSessionId === sessionId) {
+    const requests = await db.select({ id: peerlockRoomMemberships.id, name: peerlockRoomMemberships.displayName, color: peerlockRoomMemberships.displayColor, expiresAt: peerlockRoomMemberships.requestExpiresAt }).from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.status, "pending"), gt(peerlockRoomMemberships.requestExpiresAt, new Date())));
+    return { role: "owner" as const, requests };
+  }
+  return { role: "member" as const, state: membership.status };
+}
+
 async function requireRoomById(id: string) { const db = await getDb(); if (!db) throw new Error("Room registry is temporarily unavailable."); const [room] = await db.select().from(peerlockRooms).where(eq(peerlockRooms.id, id)).limit(1); if (!room) throw new Error("Room was not found."); return { db, room }; }
 
 export async function decideRoomRequest(ctx: Pick<TrpcContext, "req" | "res">, input: { roomId: string; requestId: string; allow: boolean }) {
@@ -96,7 +113,7 @@ export async function decideRoomRequest(ctx: Pick<TrpcContext, "req" | "res">, i
   const [request] = await db.select().from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.id, input.requestId), eq(peerlockRoomMemberships.roomId, input.roomId))).limit(1);
   if (!request || request.status !== "pending") throw new Error("This join request is no longer pending.");
   if (request.requestExpiresAt && request.requestExpiresAt.getTime() < Date.now()) throw new Error("This join request has expired.");
-  await db.update(peerlockRoomMemberships).set({ status: input.allow ? "approved" : "declined", requestExpiresAt: null }).where(eq(peerlockRoomMemberships.id, request.id)); return { success: true as const };
+  await db.update(peerlockRoomMemberships).set({ status: input.allow ? "approved" : "declined", requestExpiresAt: null }).where(eq(peerlockRoomMemberships.id, request.id)); emitRoomEvent(input.roomId); return { success: true as const };
 }
 
 export async function liveRoomCount() { const db = await getDb(); if (!db) return 0; const result = await db.select({ count: sql<number>`count(*)` }).from(peerlockRooms).where(gt(peerlockRooms.lastActivityAt, new Date(Date.now() - ACTIVE_WINDOW_MS))); return Number(result[0]?.count ?? 0); }

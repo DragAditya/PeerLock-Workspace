@@ -7,6 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import { onRoomEvent, roomEventSnapshot } from "../roomRegistry";
 import { serveStatic, setupVite } from "./vite";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -36,6 +37,18 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+  app.get("/api/room-events/:roomId", async (req, res) => {
+    try {
+      const ctx = { req, res }; const roomId = req.params.roomId;
+      const snapshot = await roomEventSnapshot(ctx, roomId);
+      res.status(200).set({ "Content-Type": "text/event-stream", "Cache-Control": "no-cache, no-transform", Connection: "keep-alive" });
+      const send = async () => { try { res.write(`data: ${JSON.stringify(await roomEventSnapshot(ctx, roomId))}\n\n`); } catch { res.end(); } };
+      res.write(`data: ${JSON.stringify(snapshot)}\n\n`);
+      const unsubscribe = onRoomEvent(roomId, () => { void send(); });
+      const heartbeat = setInterval(() => { res.write(": keep-alive\n\n"); }, 25000);
+      req.on("close", () => { clearInterval(heartbeat); unsubscribe(); res.end(); });
+    } catch (error) { res.status(403).json({ error: error instanceof Error ? error.message : "Room event access was denied." }); }
+  });
   // tRPC API
   app.use(
     "/api/trpc",

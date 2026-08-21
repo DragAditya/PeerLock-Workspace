@@ -8,7 +8,7 @@ import { PeerTopology, roomState } from "@/features/room/PeerTopology";
 import { makeInvite } from "@/features/room/invite";
 import { trpc } from "@/lib/trpc";
 import { ArrowLeft, Copy, Download, LockKeyhole, Share2, Sparkles, Users } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useRoute } from "wouter";
 import "./guest-room-access.css";
 
@@ -21,12 +21,13 @@ export function StudioPage() {
   const ai = trpc.ai.format.useMutation({ onSuccess: value => { setPreview(value.formatted); setAiError(""); }, onError: error => setAiError(error.message) });
   const createRoom = trpc.room.create.useMutation({ onSuccess: value => { if (params?.id) void updateDocument(params.id, { roomId: value.id, roomCode: value.code, roomProtected: value.protected, roomTransportSecret: value.transportSecret }).then(() => setRoomOpen(true)); }, onError: issue => setRoomError(issue.message) });
   const activeRoomId = record?.roomId ?? "00000000-0000-0000-0000-000000000000";
-  const pendingRequests = trpc.room.pendingRequests.useQuery({ roomId: activeRoomId }, { enabled: Boolean(record?.roomId), refetchInterval: 1000, retry: false });
+  const pendingRequests = trpc.room.pendingRequests.useQuery({ roomId: activeRoomId }, { enabled: Boolean(record?.roomId), retry: false });
   const decideRequest = trpc.room.decideRequest.useMutation({ onSuccess: () => void pendingRequests.refetch() });
+  useEffect(() => { if (!record?.roomId) return; const stream = new EventSource(`/api/room-events/${record.roomId}`); stream.onmessage = () => void pendingRequests.refetch(); return () => stream.close(); }, [record?.roomId]);
   const onText = useCallback((text: string) => setEditorText(text), []); const words = useMemo(() => editorText.trim() ? editorText.trim().split(/\s+/).length : 0, [editorText]);
   if (!record) return <ProfileGate><AppFrame><div className="route-loading">Finding your local document…</div></AppFrame></ProfileGate>;
   const current = documents.find(item => item.id === record.id) ?? record; const protectedRoom = Boolean(current.roomProtected); const invite = current.roomCode ? makeInvite(current.roomCode, protectedRoom) : "";
-  const startRoom = (mode: "open" | "protected") => { setRoomError(""); if (!profile) return; if (mode === "protected" && roomPassword.trim().length < 8) { setRoomError("Choose a password with at least eight characters."); return; } createRoom.mutate({ protected: mode === "protected", password: mode === "protected" ? roomPassword.trim() : undefined, identity: { name: profile.name, color: profile.color } }); };
+  const startRoom = (mode: "open" | "protected") => { setRoomError(""); if (!profile) return; if (mode === "protected" && roomPassword.trim().length < 8) { setRoomError("Choose a password with at least eight characters."); return; } createRoom.mutate({ protected: mode === "protected", password: mode === "protected" ? roomPassword.trim() : undefined, identity: { name: profile.name || `Guest ${profile.id.slice(0, 4)}`, color: profile.color } }); };
   const copyInvite = async () => { await navigator.clipboard.writeText(invite); setCopied(true); setTimeout(() => setCopied(false), 1200); };
   const requestFormat = () => { if (!current.externalAiEnabled || !editorText.trim()) return; if (confirm("Peerlock will send this document text to Gemini for formatting. Continue?")) ai.mutate({ text: editorText, instruction: "Improve technical structure and readability.", consent: true, externalAiEnabled: true }); };
   const topologyState = roomState(peer.connection, peer.peers.length);
