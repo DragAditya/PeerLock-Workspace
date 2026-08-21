@@ -133,3 +133,8 @@
 - [x] Prevent password-protected invites from submitting any join request or granting access until the password is entered and server-verified.
 - [x] Upgrade Gemini document formatting to preserve intent and code while applying technical structure, and allow applying approved output directly to the editor.
 - [x] Add a consent-based selected-text Gemini assistant for improve, summarize, expand, simplify, explain, and format actions with direct in-editor replacement.
+
+- [x] Repair Gemini apply behavior so document and selection changes use Tiptap-compatible rich content without flattening Markdown, lists, quotes, or code blocks.
+- [x] Replace the oversized mobile Gemini preview with a compact, readable review-and-apply surface that preserves access to the editor.
+- [x] Redesign the mobile AI action controls to be compact, touch-friendly, non-overflowing, and visually coherent with the editor footer.
+- [x] Validate whole-document and selection Gemini apply flows across desktop and mobile layouts.
