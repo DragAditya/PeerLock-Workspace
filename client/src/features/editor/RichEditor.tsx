@@ -8,7 +8,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { common, createLowlight } from "lowlight";
 import { Bold, Code2, Heading2, Italic, List, ListOrdered, Quote, Redo2, Undo2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import * as Y from "yjs";
 import type { WebrtcProvider } from "y-webrtc";
 
@@ -50,11 +50,48 @@ export function markdownToHtml(markdown: string) {
 }
 
 export function RichEditor({ document, fragment, provider, ready, syncRevision = 0, name, color, onTextChange, onEditorReady }: Props) {
+  const publishedPeerCount = useRef(1);
   const extensions: any[] = [StarterKit.configure({ undoRedo: false, codeBlock: false, listItem: false, listKeymap: false }), CollaborativeListItem, CollaborativeListKeymap, CodeBlockLowlight.configure({ lowlight }), Collaboration.configure({ document, fragment }), Placeholder.configure({ placeholder: "Write something worth keeping private…\n\nUse Markdown input: # heading, - list, > quote, or ``` for code." })];
   if (provider) extensions.push(CollaborationCaret.configure({ provider, user: { name, color } }));
   const editor = useEditor({ extensions, editorProps: { attributes: { class: "rich-editor" } }, editable: ready }, [document, fragment, provider, name, color, ready]);
   useEffect(() => { if (!editor) return; const update = () => onTextChange(editor.getText()); editor.on("update", update); update(); return () => { editor.off("update", update); }; }, [editor, onTextChange]);
   useEffect(() => { if (!editor || !onEditorReady) return; onEditorReady({ getSelectedText: () => { const { from, to } = editor.state.selection; return editor.state.doc.textBetween(from, to, "\n").trim(); }, getDocumentMarkdown: () => markdownFromNode(editor.getJSON() as JsonNode), replaceSelectionMarkdown: (text) => { const { from, to } = editor.state.selection; editor.chain().focus().insertContentAt({ from, to }, markdownToHtml(text), { updateSelection: true }).run(); }, replaceDocumentMarkdown: (text) => editor.chain().focus().setContent(markdownToHtml(text), { emitUpdate: true }).run() }); }, [editor, onEditorReady]);
+  useEffect(() => {
+    if (!editor || !provider || !ready) return;
+    const republishOnPeerJoin = () => {
+      const peerCount = provider.awareness.getStates().size;
+      if (peerCount <= 1 || peerCount <= publishedPeerCount.current || !editor.getText().trim()) return;
+      publishedPeerCount.current = peerCount;
+      const current = editor.getJSON();
+      requestAnimationFrame(() => editor.commands.setContent(current, { emitUpdate: true }));
+    };
+    provider.awareness.on("change", republishOnPeerJoin);
+    republishOnPeerJoin();
+    return () => provider.awareness.off("change", republishOnPeerJoin);
+  }, [editor, provider, ready]);
+  useEffect(() => {
+    if (!editor || !ready) return;
+    const hydration = document.getMap<{ markdown: string; revision: number }>("peerlock-hydration");
+    let applying = false;
+    const currentMarkdown = () => markdownFromNode(editor.getJSON() as JsonNode);
+    const publish = () => {
+      const markdown = currentMarkdown();
+      if (!markdown.trim() || hydration.get("snapshot")?.markdown === markdown) return;
+      hydration.set("snapshot", { markdown, revision: Date.now() });
+    };
+    const restore = () => {
+      const snapshot = hydration.get("snapshot");
+      if (!snapshot?.markdown.trim() || editor.getText().trim()) return;
+      applying = true;
+      editor.commands.setContent(markdownToHtml(snapshot.markdown), { emitUpdate: true });
+      applying = false;
+    };
+    const onUpdate = () => { if (!applying) publish(); };
+    const onAwareness = () => { if ((provider?.awareness.getStates().size ?? 0) > 1) publish(); };
+    editor.on("update", onUpdate); hydration.observe(restore); provider?.awareness.on("change", onAwareness);
+    publish(); restore();
+    return () => { editor.off("update", onUpdate); hydration.unobserve(restore); provider?.awareness.off("change", onAwareness); };
+  }, [document, editor, provider, ready]);
   useEffect(() => { if (!editor || syncRevision === 0) return; const frame = requestAnimationFrame(() => editor.view.updateState(editor.state)); return () => cancelAnimationFrame(frame); }, [editor, syncRevision]);
   if (!ready || !editor) return <div className="rich-editor-loading">Restoring local document…</div>;
   const handleListKey = (event: React.KeyboardEvent<HTMLDivElement>) => { if (!editor.isActive("listItem")) return; const { $from, empty } = editor.state.selection; if (event.key === "Enter") { if (editor.commands.splitListItem("listItem")) event.preventDefault(); return; } if (event.key === "Tab") { event.preventDefault(); if (event.shiftKey) editor.commands.liftListItem("listItem"); else editor.commands.sinkListItem("listItem"); return; } if (event.key === "Backspace" && empty && $from.parentOffset === 0 && $from.parent.content.size === 0 && editor.commands.liftListItem("listItem")) event.preventDefault(); };

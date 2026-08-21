@@ -154,3 +154,8 @@
 - [x] Ensure an approved peer receives the existing Yjs document state automatically without requiring a click or local edit.
 - [x] Add accessible, performance-safe micro-interactions to collaboration, controls, and room-status changes.
 - [x] Validate the responsive studio, Settings close return, and automatic owner-to-guest content hydration in independent browsers.
+
+- [x] Eliminate editor text overflow and desktop-scale typography on narrow mobile viewports.
+- [x] Add shared containment rules for long words, code, document titles, chat, and room metadata across all pages.
+- [x] Refine responsive typography and spacing across the hub, studio, settings, room entry, and learning pages.
+- [x] Validate primary pages and the collaborative editor at phone and desktop widths without horizontal overflow.
