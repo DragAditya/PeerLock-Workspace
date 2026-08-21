@@ -202,3 +202,8 @@
 - [ ] Fix the mobile verified-identity summary so email address, status, and account details never collide or run together.
 - [ ] Fix the mobile OTP verification control so its label, six-digit input, and actions have clear vertical hierarchy and touch-safe spacing.
 - [ ] Validate the corrected account and settings pages at phone and desktop widths.
+
+- [x] Add clear success feedback for correct OTP verification, resend completion, and saved account preferences.
+- [x] Add restrained error feedback for invalid OTP and account-form failures without impeding correction.
+- [x] Add premium, reduced-motion-safe transitions and press feedback across account, recovery, and settings interactions.
+- [ ] Validate motion feedback and the repaired account/settings mobile layouts.
