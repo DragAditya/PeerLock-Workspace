@@ -171,4 +171,4 @@
 - [x] Prepare the complete project for public GitHub publication without committing secrets, local databases, or generated artifacts.
 - [x] Create detailed hosting.md guidance for Render and Vercel, including environment variables, database setup, WebSocket signaling, and privacy constraints.
 - [x] Validate production build and repository ignore rules before publication.
-- [ ] Create a public GitHub repository and push the complete source project.
+- [x] Create a public GitHub repository and push the complete source project.
