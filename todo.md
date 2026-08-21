@@ -167,3 +167,8 @@
 - [x] Guarantee one canonical local document and one WebRTC namespace per server-issued room UUID across all guests and repeated joins.
 - [x] Ensure an approved Fake ID automatically receives Main ID's existing document contents within a normal peer-connection interval.
 - [x] Validate initial hydration, live edits, and repeated invite joins using independent Main ID and Fake ID browser contexts.
+
+- [x] Prepare the complete project for public GitHub publication without committing secrets, local databases, or generated artifacts.
+- [x] Create detailed hosting.md guidance for Render and Vercel, including environment variables, database setup, WebSocket signaling, and privacy constraints.
+- [x] Validate production build and repository ignore rules before publication.
+- [ ] Create a public GitHub repository and push the complete source project.
