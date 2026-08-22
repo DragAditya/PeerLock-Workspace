@@ -307,3 +307,6 @@
 - [x] Align mobile document metadata, room/local status, delete actions, and peer icons into readable card rows.
 - [x] Normalize mobile app-header control spacing and button sizing across Hub and Learning Kit views.
 - [x] Validate the repaired Hub at phone and desktop widths before publishing.
+- [x] Add a deliberate mobile swipe-to-delete affordance for local note and room cards.
+- [x] Require an explicit confirmation before swipe-revealed card deletion and preserve normal tap-to-open behavior.
+- [x] Validate swipe thresholds, cancellation, confirmation, desktop deletion controls, and workspace regressions before publishing.
