@@ -1,4 +1,4 @@
-export type LocalProfile = { id: string; name: string; color: string };
+export type LocalProfile = { id: string; name: string; color: string; avatarDataUrl?: string; theme?: "system" | "light" | "dark" };
 
 export type WorkspaceDocument = {
   id: string;

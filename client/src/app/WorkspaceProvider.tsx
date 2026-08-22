@@ -30,6 +30,15 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       });
     return () => { active = false; gate.dispose(); };
   }, []);
+  useEffect(() => {
+    const preference = profile?.theme ?? "system";
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => { document.documentElement.dataset.peerlockTheme = preference === "system" ? (media.matches ? "dark" : "light") : preference; };
+    apply();
+    if (preference !== "system") return;
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [profile?.theme]);
   const setProfile = (next: LocalProfile) => { localStorage.setItem(profileKey, JSON.stringify(next)); setProfileState(next); };
   const clearProfile = () => { localStorage.removeItem(profileKey); setProfileState(null); };
   const save = async (document: WorkspaceDocument) => { await storeDocument(document); setDocuments(current => [document, ...current.filter(item => item.id !== document.id)].sort((a, b) => b.updatedAt - a.updatedAt)); };

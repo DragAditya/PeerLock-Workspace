@@ -279,3 +279,7 @@
 - [x] Add the supplied PeerLock logo to the repository’s deployable public assets and reference it with a Render-compatible path.
 - [x] Verify the full latest project state is committed and pushed to GitHub after the external-deployment asset repair.
 - [x] Validate the production build resolves the repository-owned logo asset before publishing.
+- [x] Add a lightweight browser-local profile image with compression and no server upload.
+- [x] Add focused theme and curated accent personalization while retaining the supplied PeerLock brand system.
+- [x] Redesign the settings screen into a premium, compact identity, personalization, and privacy experience without adding low-value controls.
+- [x] Validate profile-image privacy/persistence, theme/accent persistence, accessibility, and mobile performance before publishing.
