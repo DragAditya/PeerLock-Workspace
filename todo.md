@@ -292,3 +292,6 @@
 - [x] Validate the corrected mobile layouts and dark-mode accessibility before publishing and pushing GitHub.
 - [x] Fix dark-mode color leakage on light editor, Room Console, collaboration, chat, and AI paper surfaces.
 - [x] Validate dark-mode workspace contrast and mobile interaction readability before publishing and pushing GitHub.
+- [x] Add slow, seamless, reduced-motion-safe motion only to the existing atom-style encrypted-network visualization on the workspace front page.
+- [x] Correct remaining dark-mode home/workspace paper-surface contrast without changing the front-page structure or visual composition.
+- [x] Validate the animated visualization loop, reduced-motion fallback, and mobile dark-mode readability before publishing and pushing GitHub.
