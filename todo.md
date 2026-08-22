@@ -273,3 +273,6 @@
 - [x] Align global color, typography, spacing, and icon usage with the supplied PeerLock brand kit while preserving existing UX and functionality.
 - [x] Apply restrained brand-consistency refinements across existing application surfaces without redesigning their structure.
 - [x] Validate brand alignment, responsive presentation, and accessibility before publishing.
+- [x] Add consistent lime-hover feedback to primary actions without compromising contrast or reduced-motion support.
+- [x] Add an accessible custom PeerLock logo loading animation for room-join verification and approval states.
+- [x] Validate primary hover behavior, room-join loading flow, and reduced-motion behavior before publishing.
