@@ -302,3 +302,8 @@
 - [x] Simplify mobile Learning Kit navigation density and refine compact header-control spacing.
 - [x] Improve long-form Learning Kit reading contrast and mobile type hierarchy.
 - [x] Validate the repaired Learning Kit at mobile and desktop breakpoints before publishing.
+- [x] Fix Hub mobile header-to-content spacing so shared-room cards cannot be clipped beneath the app bar.
+- [x] Rebuild mobile document-card sizing and internal layout to remove excessive empty height.
+- [x] Align mobile document metadata, room/local status, delete actions, and peer icons into readable card rows.
+- [x] Normalize mobile app-header control spacing and button sizing across Hub and Learning Kit views.
+- [x] Validate the repaired Hub at phone and desktop widths before publishing.
