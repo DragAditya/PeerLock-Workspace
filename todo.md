@@ -314,3 +314,7 @@
 - [x] Correct dark-mode Hub room and note cards so local work is readable on dark surfaces without white-card leakage.
 - [x] Replace the oversized mobile delete confirmation with a compact, clearly ordered destructive confirmation dialog.
 - [x] Validate the repaired dark Hub, mobile header, confirmation, and swipe-deletion behavior before publishing.
+- [x] Correct Academy light-mode lime and supporting-text contrast for readable mobile study content.
+- [x] Remove dark-mode Academy hero ghost-heading leakage and refine the learning-rail title hierarchy.
+- [x] Unify mobile Academy header controls and realign the two-column Learning Kit tab grid.
+- [x] Validate Academy light/dark mobile presentation and application regressions before publishing.

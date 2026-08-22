@@ -129,6 +129,29 @@ const academyMobileRepairStyles = `
 :root[data-peerlock-theme="dark"] .academy-metric { border-color: rgba(238,244,235,.18); }
 :root[data-peerlock-theme="dark"] .academy-metric span { color: rgba(237,245,235,.72); }
 :root[data-peerlock-theme="dark"] .academy-blocks h3 { color: #f5faf1; }
+/* Final Academy mobile palette: the study rail stays deliberately dark in both themes for a consistent, readable learning entry. */
+@media (max-width: 850px) {
+  .academy-expanded > .academy-rail { color: #f4f8ef !important; background: radial-gradient(circle at 86% 5%, rgba(200,245,102,.16), transparent 30%), radial-gradient(circle at 8% 100%, rgba(57,99,84,.25), transparent 34%), #101a16 !important; }
+  .academy-expanded > .academy-rail .eyebrow { color: rgba(244,248,239,.72) !important; }
+  .academy-expanded > .academy-rail h1 { color: #f7fbf4 !important; }
+  .academy-expanded > .academy-rail h1 span { color: #c8f566 !important; }
+  .academy-expanded > .academy-rail .academy-rail-copy { color: rgba(244,248,239,.8) !important; }
+  .academy-expanded > .academy-rail nav { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 8px !important; }
+  .academy-expanded > .academy-rail nav button { display: grid !important; grid-template-columns: 18px minmax(0,1fr) !important; align-items: center !important; gap: 8px !important; min-height: 48px; border-color: rgba(244,248,239,.13) !important; color: rgba(244,248,239,.82) !important; text-align: left !important; }
+  .academy-expanded > .academy-rail nav button svg { position: static !important; flex: 0 0 auto; color: #c8f566 !important; }
+  .academy-expanded > .academy-rail nav button span { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .academy-expanded > .academy-rail nav button.active { border-color: rgba(200,245,102,.62) !important; color: #fbfff7 !important; background: rgba(200,245,102,.16) !important; }
+  .app-frame:has(.academy-expanded) .app-header-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 40px; align-items: center; gap: 7px; }
+  .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { display: grid; width: 40px; min-width: 40px; height: 40px; min-height: 40px; place-items: center; border: 1px solid rgba(14,20,18,.16); border-radius: 10px; padding: 0; color: #17221c; background: rgba(255,255,252,.7); box-shadow: none; }
+  .app-frame:has(.academy-expanded) .app-header-actions .header-learning.active { border-color: rgba(150,196,57,.72); color: #426617; background: rgba(198,242,70,.18); }
+}
+@media (max-width: 480px) {
+  .app-frame:has(.academy-expanded) .app-header-actions { grid-auto-columns: 36px; gap: 5px; }
+  .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { width: 36px; min-width: 36px; height: 36px; min-height: 36px; border-radius: 9px; }
+  .academy-expanded > .academy-rail nav button { min-height: 47px; padding: 9px 8px; font-size: 10.5px; }
+}
+:root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { border-color: rgba(232,242,232,.18); color: #edf5eb; background: rgba(22,36,30,.92); }
+:root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) .app-header-actions .header-learning.active { border-color: rgba(200,245,102,.48); color: #d8f88b; background: rgba(183,233,87,.12); }
 `;
 
 export function AcademyPage() {
