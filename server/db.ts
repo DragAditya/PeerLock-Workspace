@@ -6,6 +6,9 @@ import { ENV } from "./_core/env";
 
 let database: ReturnType<typeof drizzle> | null = null;
 
+/** Prefer an explicitly configured Neon URL; platform DATABASE_URL may belong to an incompatible managed database. */
+export function getConfiguredNeonDatabaseUrl() { return process.env.NEON_DATABASE_URL || process.env.DATABASE_URL; }
+
 export function isNeonPostgresUrl(value: string | undefined) {
   if (!value) return false;
   try {
@@ -18,13 +21,14 @@ export function isNeonPostgresUrl(value: string | undefined) {
 
 /** Lazily construct a Neon HTTP client. Document content never passes through this database. */
 export async function getDb() {
-  if (!database && process.env.DATABASE_URL) {
-    if (!isNeonPostgresUrl(process.env.DATABASE_URL)) {
-      console.warn("[Database] DATABASE_URL must be a Neon PostgreSQL connection URL.");
+  const databaseUrl = getConfiguredNeonDatabaseUrl();
+  if (!database && databaseUrl) {
+    if (!isNeonPostgresUrl(databaseUrl)) {
+      console.warn("[Database] A configured Peerlock database URL must be a Neon PostgreSQL connection URL.");
       return null;
     }
     try {
-      database = drizzle({ client: neon(process.env.DATABASE_URL) });
+      database = drizzle({ client: neon(databaseUrl) });
     } catch (error) {
       console.warn("[Database] Failed to initialize Neon client:", error);
       database = null;

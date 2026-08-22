@@ -216,3 +216,7 @@
 - [x] Replace the generic “Accounts are temporarily unavailable” registration failure with a safe, actionable diagnosis for missing Neon configuration, migrations, or deployment connectivity.
 - [x] Repair the reported phone layout issues in the account and public diagnostics screens, including excessive blank space and poor vertical hierarchy.
 - [x] Validate public diagnostics access, deployment-failure guidance, and 390px phone layouts before publishing the repair.
+- [x] Support a securely configurable `NEON_DATABASE_URL` fallback because the platform-managed `DATABASE_URL` cannot be overwritten for this deployment.
+- [x] Validate account and public diagnostics recovery using the securely configured Neon fallback connection.
+- [x] Run a server-only Neon connectivity check and verify all Peerlock metadata tables are reachable through the configured fallback connection.
+- [x] Complete end-to-end recovery validation for public diagnostics, account database access, full test suite, production build, and GitHub release publication.

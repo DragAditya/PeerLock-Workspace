@@ -4,7 +4,8 @@ Create an untracked `.env` file only for local development. Do not copy real val
 
 | Variable | Example format | Required | Notes |
 | --- | --- | --- | --- |
-| `DATABASE_URL` | `postgresql://USER:PASSWORD@HOST/DB?sslmode=require` | Yes | Neon PostgreSQL connection. The database holds metadata-only room records and memberships. |
+| `DATABASE_URL` | `postgresql://USER:PASSWORD@HOST/DB?sslmode=require` | Yes for Render | Neon PostgreSQL connection. The database holds metadata-only room records and memberships. |
+| `NEON_DATABASE_URL` | `postgresql://USER:PASSWORD@HOST/DB?sslmode=require` | Yes when a platform reserves `DATABASE_URL` | Alternative Neon connection. Peerlock uses this first when configured, then falls back to `DATABASE_URL`. |
 | `JWT_SECRET` | Long random string | Yes | Generate a strong random value for each deployment. |
 | `GEMINI_API_KEY` | Google Gemini API key | No | Enables consent-gated AI formatting. |
 | `RESEND_API_KEY` | Resend server API key | Yes for account recovery | Sends email verification and password-reset links. Keep server-side only. |

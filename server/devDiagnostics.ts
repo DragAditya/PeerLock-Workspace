@@ -2,7 +2,7 @@ import { count } from "drizzle-orm";
 import type { AnyPgTable } from "drizzle-orm/pg-core";
 import { peerlockAccountSessions, peerlockAccounts, peerlockAccountTokens, peerlockGuestSessions, peerlockRoomMemberships, peerlockRooms } from "../drizzle/schema";
 import { accountEmailDiagnostics } from "./accountAuth";
-import { getDb, isNeonPostgresUrl } from "./db";
+import { getConfiguredNeonDatabaseUrl, getDb, isNeonPostgresUrl } from "./db";
 
 type TableProbe = { state: "ready"; records: number } | { state: "missing_or_unreachable"; message: string };
 function safeDatabaseMessage(error: unknown) {
@@ -26,7 +26,7 @@ export async function getDevDiagnostics() {
     generatedAt: new Date().toISOString(),
     access: { publicReadOnly: true, authenticationRequiredForWorkspace: true },
     runtime: { environment: process.env.NODE_ENV ?? "development", node: process.version, uptimeSeconds: Math.round(process.uptime()), appBaseUrlConfigured: Boolean(process.env.APP_BASE_URL) },
-    database: { provider: "Neon PostgreSQL", urlLooksValid: isNeonPostgresUrl(process.env.DATABASE_URL), expectedMigrations: ["0000_curly_king_bedlam.sql", "0001_cloudy_malcolm_colcord.sql"], tables: { peerlock_accounts: accounts, peerlock_account_sessions: sessions, peerlock_account_tokens: tokens, peerlock_guest_sessions: guestSessions, peerlock_rooms: rooms, peerlock_room_memberships: memberships } },
+    database: { provider: "Neon PostgreSQL", urlLooksValid: isNeonPostgresUrl(getConfiguredNeonDatabaseUrl()), expectedMigrations: ["0000_curly_king_bedlam.sql", "0001_cloudy_malcolm_colcord.sql"], tables: { peerlock_accounts: accounts, peerlock_account_sessions: sessions, peerlock_account_tokens: tokens, peerlock_guest_sessions: guestSessions, peerlock_rooms: rooms, peerlock_room_memberships: memberships } },
     email: { configured: email.configured, senderConfigured: email.senderConfigured, appBaseUrlConfigured: email.baseUrlConfigured, lastAttemptAt: email.attemptedAt, lastDelivery: email.delivered === null ? "No attempt during this process" : email.delivered ? "Accepted by provider" : "Not delivered", providerStatus: email.status, safeReason: email.reason },
     authentication: { accountOnlyAccess: true, verification: "Six-digit hashed, expiring, single-use email OTP", passwordReset: "Single-use expiring reset link", session: "Opaque HTTP-only cookie; values are never logged" },
     collaboration: { maximumPeers: 10, signaling: "Single-process memory-only WebSocket relay", roomRegistry: "Neon metadata only", documentStorage: "Browser IndexedDB + encrypted WebRTC; excluded from server diagnostics" },
