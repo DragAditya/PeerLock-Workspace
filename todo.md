@@ -238,5 +238,6 @@
 - [x] Remove admin announcement data, server APIs, navigation, and UI to keep the control center focused on useful operational controls.
 - [x] Validate permanent deletion, same-email re-registration readiness, and non-admin access denial before publishing the focused admin revision.
 - [x] Diagnose why the live production account flow still reports email delivery unavailable despite an accepted controlled Resend test.
-- [ ] Correct the live deployment email configuration or account delivery path and validate a real account email workflow.
-- [ ] Verify a Resend sender domain and set RESEND_FROM_EMAIL to the verified domain before enabling delivery to email addresses other than the Resend account owner in test mode.
+- [x] Correct the live deployment email configuration or account delivery path and validate a real account email workflow.
+- [x] Verify a Resend sender domain and set RESEND_FROM_EMAIL to the verified domain before enabling delivery to email addresses other than the Resend account owner in test mode.
+- [x] Configure a verified `dragadi.art` Resend sender and validate real OTP delivery to an approved test recipient.

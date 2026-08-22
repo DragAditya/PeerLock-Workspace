@@ -9,7 +9,8 @@ describe("controlled Resend delivery", () => {
     expect(from, "RESEND_FROM_EMAIL must be configured").toBeTruthy();
     expect(to, "A user-approved test recipient is required").toBeTruthy();
     const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: [to], subject: "Peerlock email delivery test", html: "<p>This confirms that Peerlock can deliver account emails. No action is required.</p>" }) });
-    expect(response.status, `Resend delivery test was not accepted (HTTP ${response.status})`).toBeGreaterThanOrEqual(200);
-    expect(response.status).toBeLessThan(300);
+    const responseBody = await response.json().catch(() => null) as { message?: string } | null;
+    expect(response.status, `Resend delivery test was not accepted (HTTP ${response.status}${responseBody?.message ? `: ${responseBody.message}` : ""})`).toBeGreaterThanOrEqual(200);
+    expect(response.status, `Resend delivery test was not accepted (HTTP ${response.status}${responseBody?.message ? `: ${responseBody.message}` : ""})`).toBeLessThan(300);
   }, 20_000);
 });
