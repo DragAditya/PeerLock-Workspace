@@ -7,6 +7,8 @@ describe("account password policy", () => {
     expect(validatePassword("alllowercase123")).toBeTruthy();
     expect(validatePassword("ALLUPPERCASE123")).toBeTruthy();
     expect(validatePassword("NoDigitsPassword")).toBeTruthy();
+    expect(validatePassword("SevenA1")).toBeTruthy();
+    expect(validatePassword("EightChar1")).toBeNull();
     expect(validatePassword("CorrectHorse9Battery")).toBeNull();
   });
 });

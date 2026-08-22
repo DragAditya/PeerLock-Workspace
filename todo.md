@@ -228,3 +228,9 @@
 - [x] Validate verification and password-recovery email readiness, then publish the email-delivery repair.
 - [x] Retry the one-time Resend delivery test using the confirmed Resend account email as the approved test recipient.
 - [x] Verify that the full latest Peerlock source tree is committed and synchronized with the GitHub main branch.
+- [x] Establish a single configured super-admin identity and enforce admin-only access without hardcoding credentials or exposing them to clients.
+- [x] Add auditable metadata-only admin models for user suspension, room access revocation, room moderation, security events, and site announcements.
+- [x] Implement server-authorized super-admin APIs for user review, verification status, suspension and restoration, room metadata review, membership revocation, room deletion, diagnostics, announcements, and immutable audit history.
+- [x] Change the account password policy to a secure eight-character minimum while retaining uppercase, lowercase, numeric, and symbol support.
+- [x] Build an advanced responsive admin control center with user, room, security, diagnostics, audit, and announcement workflows.
+- [x] Validate that non-admin accounts cannot access admin data or actions; ensure documents, chats, credentials, OTPs, and WebRTC secrets remain excluded.

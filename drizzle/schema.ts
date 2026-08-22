@@ -1,4 +1,4 @@
-import { index, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { boolean, index, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin"]);
 export const roomMembershipStatus = pgEnum("room_membership_status", ["pending", "approved", "declined", "expired"]);
@@ -23,9 +23,10 @@ export type InsertUser = typeof users.$inferInsert;
 /** Opaque, cookie-bound browser guests. No email, credential, document, or chat content is stored here. */
 export const peerlockGuestSessions = pgTable("peerlock_guest_sessions", {
   id: varchar("id", { length: 64 }).primaryKey(),
+  accountId: varchar("account_id", { length: 36 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastSeenAt: timestamp("last_seen_at").defaultNow().$onUpdate(() => new Date()).notNull(),
-});
+}, table => [index("peerlock_guest_sessions_account_idx").on(table.accountId)]);
 
 /** Server metadata registry for room identity and access policy only. Document data stays in Yjs/IndexedDB/WebRTC. */
 export const peerlockRooms = pgTable("peerlock_rooms", {
@@ -63,6 +64,8 @@ export const peerlockAccounts = pgTable("peerlock_accounts", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
   lastSignedInAt: timestamp("last_signed_in_at"),
+  suspendedAt: timestamp("suspended_at"),
+  suspensionReason: varchar("suspension_reason", { length: 240 }),
 }, table => [
   uniqueIndex("peerlock_accounts_email_unique").on(table.email),
   uniqueIndex("peerlock_accounts_username_unique").on(table.username),
@@ -96,3 +99,26 @@ export const peerlockAccountTokens = pgTable("peerlock_account_tokens", {
   index("peerlock_account_tokens_account_purpose_idx").on(table.accountId, table.purpose),
   index("peerlock_account_tokens_expiry_idx").on(table.expiresAt),
 ]);
+
+/** Admin-created global notices. They contain operational text only, never document or chat content. */
+export const peerlockAnnouncements = pgTable("peerlock_announcements", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  title: varchar("title", { length: 120 }).notNull(),
+  message: varchar("message", { length: 480 }).notNull(),
+  tone: varchar("tone", { length: 16 }).notNull().default("info"),
+  active: boolean("active").notNull().default(true),
+  createdByAccountId: varchar("created_by_account_id", { length: 36 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+}, table => [index("peerlock_announcements_active_idx").on(table.active, table.createdAt)]);
+
+/** Immutable metadata-only history for accountable super-admin actions. */
+export const peerlockAdminAuditLogs = pgTable("peerlock_admin_audit_logs", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  actorAccountId: varchar("actor_account_id", { length: 36 }).notNull(),
+  action: varchar("action", { length: 64 }).notNull(),
+  targetType: varchar("target_type", { length: 32 }).notNull(),
+  targetId: varchar("target_id", { length: 64 }),
+  summary: varchar("summary", { length: 360 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, table => [index("peerlock_admin_audit_logs_created_idx").on(table.createdAt), index("peerlock_admin_audit_logs_target_idx").on(table.targetType, table.targetId)]);

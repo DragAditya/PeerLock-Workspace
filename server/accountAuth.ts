@@ -14,7 +14,7 @@ const recoveryAttempts = new Map<string, number[]>();
 const verificationAttempts = new Map<string, number[]>();
 let emailDeliveryStatus: { attemptedAt: string | null; configured: boolean; delivered: boolean | null; status: number | null; reason: string | null } = { attemptedAt: null, configured: false, delivered: null, status: null, reason: null };
 
-export type AccountIdentity = { id: string; email: string; username: string; emailVerifiedAt: Date | null };
+export type AccountIdentity = { id: string; email: string; username: string; emailVerifiedAt: Date | null; suspendedAt: Date | null };
 
 export function accountEmailDiagnostics() { return { ...emailDeliveryStatus, senderConfigured: Boolean(process.env.RESEND_FROM_EMAIL), baseUrlConfigured: Boolean(process.env.APP_BASE_URL) }; }
 
@@ -37,13 +37,13 @@ function passwordRecord(password: string) { const salt = randomBytes(16).toStrin
 function verifyPassword(password: string, salt: string, expectedHash: string) { const actual = scryptSync(password, salt, 64); const expected = Buffer.from(expectedHash, "hex"); return actual.length === expected.length && timingSafeEqual(actual, expected); }
 
 export function validatePassword(password: string) {
-  if (password.length < 10 || password.length > 128) return "Use 10–128 characters.";
+  if (password.length < 8 || password.length > 128) return "Use 8–128 characters.";
   if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) return "Use uppercase, lowercase, and a number.";
   return null;
 }
 
 function accountView(account: typeof peerlockAccounts.$inferSelect): AccountIdentity {
-  return { id: account.id, email: account.email, username: account.username, emailVerifiedAt: account.emailVerifiedAt };
+  return { id: account.id, email: account.email, username: account.username, emailVerifiedAt: account.emailVerifiedAt, suspendedAt: account.suspendedAt };
 }
 
 function requestOrigin(req: Request) {
@@ -145,6 +145,7 @@ export async function signInAccount(req: Request, res: Response, input: { email:
   const email = normalizeEmail(input.email);
   const [account] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.email, email)).limit(1);
   if (!account || !verifyPassword(input.password, account.passwordSalt, account.passwordHash)) throw new Error("Email or password is incorrect.");
+  if (account.suspendedAt) throw new Error("This account has been suspended. Contact the site administrator for help.");
   await db.update(peerlockAccounts).set({ lastSignedInAt: new Date() }).where(eq(peerlockAccounts.id, account.id));
   const sessionToken = await createSession(account.id); setAccountSession(res, req, sessionToken);
   return { account: accountView(account) };
@@ -167,6 +168,7 @@ export async function resolveAccount(req: Request): Promise<AccountIdentity | nu
   if (!session || session.expiresAt.getTime() <= Date.now()) return null;
   const [account] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, session.accountId)).limit(1);
   if (!account) return null;
+  if (account.suspendedAt) return null;
   await db.update(peerlockAccountSessions).set({ lastSeenAt: new Date() }).where(eq(peerlockAccountSessions.id, session.id));
   return accountView(account);
 }

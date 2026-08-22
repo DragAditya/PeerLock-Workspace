@@ -7,8 +7,9 @@ import { AcademyPage } from "@/pages/AcademyPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { AccountPage } from "@/pages/AccountPage";
 import { DevLogsPage } from "@/pages/DevLogsPage";
+import { AdminPage } from "@/pages/AdminPage";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 
 export default function App() {
-  return <WorkspaceProvider><NotificationProvider><Switch><Route path="/" component={HubPage} /><Route path="/account/:mode?" component={AccountPage} /><Route path="/devlogs" component={DevLogsPage} /><Route path="/studio/:id" component={StudioPage} /><Route path="/r/:roomCode" component={RoomRoute} /><Route path="/room/:roomCode" component={RoomRoute} /><Route path="/academy/:section?" component={AcademyPage} /><Route path="/settings" component={SettingsPage} /><Route component={HubPage} /></Switch></NotificationProvider></WorkspaceProvider>;
+  return <WorkspaceProvider><NotificationProvider><Switch><Route path="/" component={HubPage} /><Route path="/account/:mode?" component={AccountPage} /><Route path="/devlogs" component={DevLogsPage} /><Route path="/admin" component={AdminPage} /><Route path="/studio/:id" component={StudioPage} /><Route path="/r/:roomCode" component={RoomRoute} /><Route path="/room/:roomCode" component={RoomRoute} /><Route path="/academy/:section?" component={AcademyPage} /><Route path="/settings" component={SettingsPage} /><Route component={HubPage} /></Switch></NotificationProvider></WorkspaceProvider>;
 }

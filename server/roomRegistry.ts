@@ -16,6 +16,7 @@ const roomEvents = new EventEmitter();
 roomEvents.setMaxListeners(100);
 
 export type GuestIdentity = { name: string; color: string };
+type RoomContext = Pick<TrpcContext, "req" | "res"> & Partial<Pick<TrpcContext, "account">>;
 export function onRoomEvent(roomId: string, listener: () => void) { roomEvents.on(roomId, listener); return () => roomEvents.off(roomId, listener); }
 function emitRoomEvent(roomId: string) { roomEvents.emit(roomId); }
 
@@ -24,17 +25,18 @@ function secret() { return randomBytes(32).toString("hex"); }
 function passwordRecord(password: string) { const salt = randomBytes(16).toString("hex"); return { salt, hash: scryptSync(password, salt, 64).toString("hex") }; }
 export function verifyRoomPassword(password: string, salt: string, expectedHash: string) { const actual = scryptSync(password, salt, 64); const expected = Buffer.from(expectedHash, "hex"); return actual.length === expected.length && timingSafeEqual(actual, expected); }
 
-export async function ensureGuestSession(ctx: Pick<TrpcContext, "req" | "res">) {
+export async function ensureGuestSession(ctx: RoomContext) {
   const cookies = parseCookie(ctx.req.headers.cookie ?? "");
   let id = cookies[COOKIE_NAME];
+  const accountId = ctx.account?.id ?? null;
   const db = await getDb();
   if (!db) throw new Error("Room registry is temporarily unavailable.");
   if (!id || !/^[a-f0-9-]{36}$/i.test(id)) {
     id = randomUUID();
-    await db.insert(peerlockGuestSessions).values({ id });
+    await db.insert(peerlockGuestSessions).values({ id, accountId });
     (ctx.res as Response).cookie(COOKIE_NAME, id, { ...getSessionCookieOptions(ctx.req), maxAge: 1000 * 60 * 60 * 24 * 30 });
   } else {
-    await db.insert(peerlockGuestSessions).values({ id }).onConflictDoUpdate({ target: peerlockGuestSessions.id, set: { lastSeenAt: new Date() } });
+    await db.insert(peerlockGuestSessions).values({ id, accountId }).onConflictDoUpdate({ target: peerlockGuestSessions.id, set: { lastSeenAt: new Date(), accountId } });
   }
   return id;
 }
@@ -52,7 +54,7 @@ async function requireRoom(code: string) {
   return { db, room };
 }
 
-export async function createRegisteredRoom(ctx: Pick<TrpcContext, "req" | "res">, input: { protected: boolean; password?: string; identity: GuestIdentity }) {
+export async function createRegisteredRoom(ctx: RoomContext, input: { protected: boolean; password?: string; identity: GuestIdentity }) {
   const sessionId = await ensureGuestSession(ctx); const db = await getDb(); if (!db) throw new Error("Room registry is temporarily unavailable.");
   const pass = input.password?.trim() ?? "";
   if (input.protected && pass.length < 8) throw new Error("Password rooms need at least eight characters.");
@@ -68,7 +70,7 @@ export async function createRegisteredRoom(ctx: Pick<TrpcContext, "req" | "res">
   throw new Error("Could not allocate a unique room code. Please try again.");
 }
 
-export async function requestRoomJoin(ctx: Pick<TrpcContext, "req" | "res">, input: { code: string; password?: string; identity: GuestIdentity }) {
+export async function requestRoomJoin(ctx: RoomContext, input: { code: string; password?: string; identity: GuestIdentity }) {
   const sessionId = await ensureGuestSession(ctx); const { db, room } = await requireRoom(input.code);
   if (room.passwordHash && (!input.password || !room.passwordSalt || !verifyRoomPassword(input.password, room.passwordSalt, room.passwordHash))) throw new Error("The room password is incorrect.");
   const [existing] = await db.select().from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, room.id), eq(peerlockRoomMemberships.sessionId, sessionId))).limit(1);
@@ -82,7 +84,7 @@ export async function requestRoomJoin(ctx: Pick<TrpcContext, "req" | "res">, inp
   return { state: status, roomId: room.id, code: room.code, protected: Boolean(room.passwordHash) };
 }
 
-export async function roomAccess(ctx: Pick<TrpcContext, "req" | "res">, roomId: string) {
+export async function roomAccess(ctx: RoomContext, roomId: string) {
   const sessionId = await ensureGuestSession(ctx); const db = await getDb(); if (!db) throw new Error("Room registry is temporarily unavailable.");
   await db.update(peerlockRoomMemberships).set({ status: sql`CASE WHEN ${peerlockRoomMemberships.status} = 'pending' AND ${peerlockRoomMemberships.requestExpiresAt} < NOW() THEN 'expired' ELSE ${peerlockRoomMemberships.status} END` }).where(eq(peerlockRoomMemberships.roomId, roomId));
   const [membership] = await db.select().from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.sessionId, sessionId))).limit(1);
@@ -94,13 +96,13 @@ export async function roomAccess(ctx: Pick<TrpcContext, "req" | "res">, roomId: 
   return { state: "approved" as const, roomId, code: room.code, protected: Boolean(room.passwordHash), transportSecret: room.transportSecret, owner: room.ownerSessionId === sessionId };
 }
 
-export async function pendingRoomRequests(ctx: Pick<TrpcContext, "req" | "res">, roomId: string) {
+export async function pendingRoomRequests(ctx: RoomContext, roomId: string) {
   const sessionId = await ensureGuestSession(ctx); const { db, room } = await requireRoomById(roomId);
   if (room.ownerSessionId !== sessionId) throw new Error("Only the room owner can view join requests.");
   return db.select({ id: peerlockRoomMemberships.id, name: peerlockRoomMemberships.displayName, color: peerlockRoomMemberships.displayColor, expiresAt: peerlockRoomMemberships.requestExpiresAt }).from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.status, "pending"), gt(peerlockRoomMemberships.requestExpiresAt, new Date())));
 }
 
-export async function roomEventSnapshot(ctx: Pick<TrpcContext, "req" | "res">, roomId: string) {
+export async function roomEventSnapshot(ctx: RoomContext, roomId: string) {
   const sessionId = await ensureGuestSession(ctx); const { db, room } = await requireRoomById(roomId);
   const [membership] = await db.select().from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.sessionId, sessionId))).limit(1);
   if (!membership) throw new Error("Room membership was not found.");
@@ -113,7 +115,7 @@ export async function roomEventSnapshot(ctx: Pick<TrpcContext, "req" | "res">, r
 
 async function requireRoomById(id: string) { const db = await getDb(); if (!db) throw new Error("Room registry is temporarily unavailable."); const [room] = await db.select().from(peerlockRooms).where(eq(peerlockRooms.id, id)).limit(1); if (!room) throw new Error("Room was not found."); return { db, room }; }
 
-export async function decideRoomRequest(ctx: Pick<TrpcContext, "req" | "res">, input: { roomId: string; requestId: string; allow: boolean }) {
+export async function decideRoomRequest(ctx: RoomContext, input: { roomId: string; requestId: string; allow: boolean }) {
   const sessionId = await ensureGuestSession(ctx); const { db, room } = await requireRoomById(input.roomId); if (room.ownerSessionId !== sessionId) throw new Error("Only the room owner can decide join requests.");
   const [request] = await db.select().from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.id, input.requestId), eq(peerlockRoomMemberships.roomId, input.roomId))).limit(1);
   if (!request || request.status !== "pending") throw new Error("This join request is no longer pending.");

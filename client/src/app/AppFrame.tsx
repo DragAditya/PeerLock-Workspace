@@ -1,5 +1,5 @@
 import { useWorkspace } from "@/app/WorkspaceProvider";
-import { BookOpen, FolderOpen, Settings, UserRound, Users } from "lucide-react";
+import { BookOpen, FolderOpen, Settings, ShieldCheck, UserRound, Users } from "lucide-react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 
@@ -19,7 +19,7 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
     sessionStorage.setItem("peerlock-settings-return", location);
     navigate("/settings");
   };
-  return <div className="app-frame"><header className="app-header"><button className="app-logo" onClick={() => navigate("/")} aria-label="Go to workspace"><span>PL</span><b>Peerlock</b></button><nav>{links.map(link => <button className={location === link.href || (link.href !== "/" && location.startsWith(link.href)) ? "active" : ""} key={link.href} onClick={() => link.href === "/settings" ? toggleSettings() : navigate(link.href)}><link.icon size={16} />{link.label}</button>)}</nav><div className="app-header-actions"><button className="header-account" onClick={() => navigate("/account/sign-in")}><UserRound size={16} /><span>{account.data?.username ?? "Account"}</span></button><button className="header-settings" onClick={toggleSettings} aria-label={location.startsWith("/settings") ? "Close settings" : "Open settings"}><Settings size={16} /><span>Settings</span></button><span className="presence"><i style={{ backgroundColor: profile?.color }} />{profile?.name}</span></div></header><main>{children}</main></div>;
+  return <div className="app-frame"><header className="app-header"><button className="app-logo" onClick={() => navigate("/")} aria-label="Go to workspace"><span>PL</span><b>Peerlock</b></button><nav>{links.map(link => <button className={location === link.href || (link.href !== "/" && location.startsWith(link.href)) ? "active" : ""} key={link.href} onClick={() => link.href === "/settings" ? toggleSettings() : navigate(link.href)}><link.icon size={16} />{link.label}</button>)}</nav><div className="app-header-actions">{account.data?.isSuperAdmin && <button className="header-admin" onClick={() => navigate("/admin")}><ShieldCheck size={16} /><span>Control center</span></button>}<button className="header-account" onClick={() => navigate("/account/sign-in")}><UserRound size={16} /><span>{account.data?.username ?? "Account"}</span></button><button className="header-settings" onClick={toggleSettings} aria-label={location.startsWith("/settings") ? "Close settings" : "Open settings"}><Settings size={16} /><span>Settings</span></button><span className="presence"><i style={{ backgroundColor: profile?.color }} />{profile?.name}</span></div></header><main>{children}</main></div>;
 }
 
 export function RoomBadge({ connected }: { connected: boolean }) { return <span className={`room-badge ${connected ? "room-badge-live" : ""}`}><Users size={13} />{connected ? "Room connected" : "Local only"}</span>; }
