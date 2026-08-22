@@ -298,3 +298,7 @@
 - [x] Expand the Learning Kit into a richer, high-information PeerLock learning resource without changing collaboration behavior.
 - [x] Add a visible mobile navigation/settings entry for Learning Kit.
 - [x] Validate Learning Kit readability, mobile navigation, and responsive presentation before publishing.
+- [x] Fix Learning Kit mobile hero spacing and high-contrast heading treatment.
+- [x] Simplify mobile Learning Kit navigation density and refine compact header-control spacing.
+- [x] Improve long-form Learning Kit reading contrast and mobile type hierarchy.
+- [x] Validate the repaired Learning Kit at mobile and desktop breakpoints before publishing.

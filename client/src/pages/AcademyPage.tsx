@@ -78,14 +78,67 @@ const tabMeta: Array<{ key: SectionKey; label: string; icon: LucideIcon }> = [
   { key: "overview", label: "Study map", icon: BookOpen }, { key: "architecture", label: "Architecture", icon: Network }, { key: "report", label: "Report guide", icon: FileText }, { key: "presentation", label: "Demo run", icon: Presentation }, { key: "viva", label: "Viva practice", icon: MicVocal }, { key: "checklist", label: "Evidence checklist", icon: ClipboardCheck },
 ];
 
+const academyMobileRepairStyles = `
+@media (max-width: 850px) {
+  .academy-expanded { background: #f4f4ef; }
+  .academy-rail { min-height: 0; padding: 22px 20px 24px; color: #f4f8ef; background: radial-gradient(circle at 84% 4%, rgba(200,245,102,.18), transparent 31%), radial-gradient(circle at 7% 100%, rgba(57,99,84,.28), transparent 34%), #101a16; }
+  .academy-rail-mark { width: 34px; height: 34px; margin-bottom: 14px; }
+  .academy-rail .eyebrow { color: rgba(244,248,239,.7); font-size: 9px; }
+  .academy-rail h1 { margin: 9px 0 12px; font-size: clamp(2.72rem, 12vw, 3.7rem); letter-spacing: -.078em; line-height: .91; }
+  .academy-rail h1 span { display: block; padding-top: 2px; color: #c8f566; }
+  .academy-rail-copy { max-width: 330px; color: rgba(244,248,239,.76); font-size: 12px; line-height: 1.58; }
+  .academy-rail nav { gap: 8px; margin-top: 21px; }
+  .academy-rail nav button { grid-template-columns: 17px minmax(0,1fr); min-height: 46px; gap: 8px; padding: 9px 10px; border-color: rgba(244,248,239,.1); border-radius: 7px; color: rgba(244,248,239,.78); font-size: 11px; font-weight: 760; line-height: 1.18; }
+  .academy-rail nav button svg { color: rgba(200,245,102,.82); }
+  .academy-rail nav button.active { border-color: rgba(200,245,102,.58); color: #fbfff7; background: rgba(200,245,102,.16); box-shadow: inset 2px 0 0 #c8f566; }
+  .academy-content { padding: 30px 20px 46px; }
+  .academy-content > header { grid-template-columns: auto minmax(0,1fr); column-gap: 12px; row-gap: 15px; }
+  .academy-section-icon { width: 42px; height: 42px; }
+  .academy-content .eyebrow { margin-top: 3px; font-size: 9px; }
+  .academy-content h2 { margin-top: 7px; font-size: clamp(2.3rem, 10.4vw, 3.1rem); letter-spacing: -.077em; line-height: .91; }
+  .academy-metric { display: flex; grid-column: 1 / -1; align-items: baseline; justify-items: unset; gap: 8px; min-width: 0; margin-top: 1px; border-top: 1px solid #d7ddd5; padding-top: 11px; }
+  .academy-metric b { font-size: 24px; }
+  .academy-metric span { color: #4d5e53; font-size: 9px; text-align: left; }
+  .academy-lead { margin: 20px 0 26px; color: #45564b; font-size: 14px; line-height: 1.68; }
+  .academy-blocks > section { grid-template-columns: 30px minmax(0,1fr); gap: 11px; padding: 23px 0; }
+  .academy-block-index { font-size: 10px; }
+  .academy-blocks h3 { color: #15231b; font-size: 1.25rem; line-height: 1.08; }
+  .academy-blocks p { color: #445248; font-size: 13px; line-height: 1.68; }
+  .academy-blocks ul { gap: 9px; margin-top: 15px; }
+  .academy-blocks li { color: #2f4036; font-size: 12.5px; line-height: 1.48; }
+  .academy-blocks aside { margin-top: 15px; color: #4e510c; font-size: 11.5px; }
+  .academy-content footer { color: #4d5f53; font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .app-frame:has(.academy-expanded) .app-header { height: 62px; padding: 0 10px; }
+  .app-frame:has(.academy-expanded) .app-logo { gap: 7px; }
+  .app-frame:has(.academy-expanded) .app-logo .app-logo-mark { width: 30px; height: 30px; border-radius: 8px; }
+  .app-frame:has(.academy-expanded) .app-logo b { font-size: 11px; letter-spacing: .14em; }
+  .app-frame:has(.academy-expanded) .app-header-actions { gap: 4px; }
+  .app-frame:has(.academy-expanded) :is(.header-admin, .header-account, .header-learning, .header-settings) { width: 35px; min-width: 35px; height: 35px; min-height: 35px; border-radius: 8px; }
+  .app-frame:has(.academy-expanded) .header-learning { border-color: rgba(198,242,70,.44); background: rgba(198,242,70,.09); }
+  .app-frame:has(.academy-expanded) .header-learning.active { border-color: #92bf34; color: #385a0f; background: #dff6a9; box-shadow: 0 0 0 2px rgba(198,242,70,.16); }
+  .academy-rail { padding-right: 18px; padding-left: 18px; }
+  .academy-rail nav { gap: 7px; }
+  .academy-rail nav button { min-height: 48px; padding-right: 8px; padding-left: 8px; font-size: 10.5px; }
+}
+:root[data-peerlock-theme="dark"] .academy-expanded .academy-rail { color: #f4f8ef; background: radial-gradient(circle at 84% 4%, rgba(200,245,102,.18), transparent 31%), radial-gradient(circle at 7% 100%, rgba(57,99,84,.28), transparent 34%), #101a16; }
+:root[data-peerlock-theme="dark"] .academy-expanded .academy-rail-copy { color: rgba(244,248,239,.76); }
+:root[data-peerlock-theme="dark"] .academy-expanded .academy-rail nav button { color: rgba(244,248,239,.78); }
+:root[data-peerlock-theme="dark"] .academy-expanded .academy-rail nav button.active { color: #fbfff7; }
+:root[data-peerlock-theme="dark"] .academy-metric { border-color: rgba(238,244,235,.18); }
+:root[data-peerlock-theme="dark"] .academy-metric span { color: rgba(237,245,235,.72); }
+:root[data-peerlock-theme="dark"] .academy-blocks h3 { color: #f5faf1; }
+`;
+
 export function AcademyPage() {
   const [, params] = useRoute("/academy/:section?");
   const [, navigate] = useLocation();
   const section = tabs.includes(params?.section as SectionKey) ? params!.section as SectionKey : "overview";
   const current = content[section];
   const CurrentIcon = current.icon;
-  return <ProfileGate><AppFrame><div className="academy-page academy-expanded">
-    <aside className="academy-rail"><div className="academy-rail-mark"><BookOpen size={18} /></div><p className="eyebrow">PeerLock learning kit</p><h1>Make the system<br /><span>understandable.</span></h1><p className="academy-rail-copy">A structured study companion for your MCA report, live demonstration, and viva preparation.</p><nav aria-label="Learning Kit sections">{tabMeta.map(tab => { const Icon = tab.icon; return <button className={tab.key === section ? "active" : ""} onClick={() => navigate(`/academy/${tab.key}`)} key={tab.key}><Icon size={16} /><span>{tab.label}</span><b>→</b></button>; })}</nav><div className="academy-rail-foot"><ShieldCheck size={15} /><span>Technical facts, stated with privacy boundaries intact.</span></div></aside>
+  return <ProfileGate><AppFrame><style>{academyMobileRepairStyles}</style><div className="academy-page academy-expanded">
+    <aside className="academy-rail"><div className="academy-rail-mark"><BookOpen size={18} /></div><p className="eyebrow">PeerLock learning kit</p><h1>Make the system<br /><span>understandable.</span></h1><p className="academy-rail-copy">A structured study companion for your MCA report, live demonstration, and viva preparation.</p><nav aria-label="Learning Kit sections">{tabMeta.map(tab => { const Icon = tab.icon; const isActive = tab.key === section; return <button aria-current={isActive ? "page" : undefined} className={isActive ? "active" : ""} onClick={() => navigate(`/academy/${tab.key}`)} key={tab.key}><Icon size={16} /><span>{tab.label}</span><b>→</b></button>; })}</nav><div className="academy-rail-foot"><ShieldCheck size={15} /><span>Technical facts, stated with privacy boundaries intact.</span></div></aside>
     <article className="academy-content"><header><div className="academy-section-icon"><CurrentIcon size={22} /></div><div><p className="eyebrow">{current.label}</p><h2>{current.title}</h2></div><div className="academy-metric"><b>{current.metric}</b><span>{current.metricLabel}</span></div></header><p className="academy-lead">{current.lead}</p><div className="academy-blocks">{current.blocks.map((block, index) => <section key={block.title}><span className="academy-block-index">{String(index + 1).padStart(2, "0")}</span><div><h3>{block.title}</h3><p>{block.text}</p>{block.bullets && <ul>{block.bullets.map(bullet => <li key={bullet}><CheckCircle2 size={14} />{bullet}</li>)}</ul>}{block.note && <aside><Lightbulb size={15} /><span>{block.note}</span></aside>}</div></section>)}</div><footer><ShieldCheck size={16} />Use official documentation for citations: Yjs, y-indexeddb, y-webrtc, Tiptap, React, and WebRTC.</footer></article>
   </div></AppFrame></ProfileGate>;
 }
