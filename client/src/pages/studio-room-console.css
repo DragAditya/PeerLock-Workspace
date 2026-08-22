@@ -24,6 +24,17 @@
 .room-console .room-console-close:focus-visible { outline: 3px solid rgba(15, 118, 110, .36); outline-offset: 2px; }
 
 @media (max-width: 850px), (max-aspect-ratio: 3/4) {
+  .room-console[aria-hidden="true"] {
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, calc(100% + 2px), 0) !important;
+  }
+
+  .room-console[aria-hidden="false"] {
+    visibility: visible;
+    transform: translate3d(0, 0, 0) !important;
+  }
+
   .room-console-scrim {
     position: fixed;
     z-index: 29;

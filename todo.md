@@ -255,3 +255,5 @@
 - [x] Validate homepage interaction performance, accessibility, and responsive layout before publishing.
 - [x] Restore a reliable, touch-safe Room Console close action on the mobile document editor without obscuring the editor.
 - [x] Validate Room Console dismissal, editor access, and responsive behavior before publishing the repair.
+- [x] Ensure the mobile Room Console is closed by default and opens only after an explicit Room action.
+- [x] Revalidate the mobile Room Console close action and unobscured editor after fixing default visibility.
