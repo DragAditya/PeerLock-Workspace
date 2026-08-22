@@ -17,6 +17,13 @@ let emailDeliveryStatus: { attemptedAt: string | null; configured: boolean; deli
 export type AccountIdentity = { id: string; email: string; username: string; emailVerifiedAt: Date | null; suspendedAt: Date | null };
 
 export function accountEmailDiagnostics() { return { ...emailDeliveryStatus, senderConfigured: Boolean(process.env.RESEND_FROM_EMAIL), baseUrlConfigured: Boolean(process.env.APP_BASE_URL) }; }
+export function emailDeliveryGuidanceFor(status: { status: number | null; reason: string | null }) {
+  if (status.status === 403) return "Resend rejected this recipient. In test mode, Resend can send only to its own account email. To send verification codes to other users, verify a custom sender domain in Resend and set RESEND_FROM_EMAIL to that domain.";
+  if (status.reason === "Missing server email configuration") return "Email delivery is not configured on this deployment. Add the Resend API key and sender address, then redeploy.";
+  if (status.reason === "Network request to provider failed") return "The email provider could not be reached. Please try again shortly.";
+  return "The email provider did not accept this delivery request. Check the safe diagnostics page or your Resend sender-domain settings.";
+}
+function emailDeliveryGuidance() { return emailDeliveryGuidanceFor(emailDeliveryStatus); }
 
 export function safeAccountError(error: unknown) {
   const message = error instanceof Error ? error.message : "";
@@ -137,7 +144,7 @@ export async function registerAccount(req: Request, res: Response, input: { emai
   if (!account) throw new Error("Could not create account.");
   const sessionToken = await createSession(id); setAccountSession(res, req, sessionToken);
   const verificationSent = await sendVerification(account);
-  return { account: accountView(account), verificationSent };
+  return { account: accountView(account), verificationSent, emailDeliveryMessage: verificationSent ? null : emailDeliveryGuidance() };
 }
 
 export async function signInAccount(req: Request, res: Response, input: { email: string; password: string }) {
@@ -157,7 +164,7 @@ export async function sendVerificationEmail(req: Request, accountId: string) {
   if (!account) throw new Error("Account was not found.");
   if (account.emailVerifiedAt) return { sent: false as const, alreadyVerified: true as const };
   const sent = await sendVerification(account);
-  return { sent, alreadyVerified: false as const };
+  return { sent, alreadyVerified: false as const, emailDeliveryMessage: sent ? null : emailDeliveryGuidance() };
 }
 
 export async function resolveAccount(req: Request): Promise<AccountIdentity | null> {

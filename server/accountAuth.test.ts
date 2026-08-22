@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createVerificationOtp, safeAccountError, validatePassword } from "./accountAuth";
+import { createVerificationOtp, emailDeliveryGuidanceFor, safeAccountError, validatePassword } from "./accountAuth";
 
 describe("account password policy", () => {
   it("requires a practical minimum length plus uppercase, lowercase, and numeric characters", () => {
@@ -31,5 +31,10 @@ describe("safe account errors", () => {
 
   it("explains a missing Neon deployment connection instead of showing a generic unavailable message", () => {
     expect(safeAccountError(new Error("Accounts are temporarily unavailable."))).toContain("Neon PostgreSQL DATABASE_URL");
+  });
+
+  it("explains Resend test-mode recipient restrictions without exposing credentials", () => {
+    expect(emailDeliveryGuidanceFor({ status: 403, reason: "Sender or API key was rejected" })).toContain("test mode");
+    expect(emailDeliveryGuidanceFor({ status: null, reason: "Missing server email configuration" })).toContain("not configured");
   });
 });
