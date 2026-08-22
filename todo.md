@@ -220,3 +220,6 @@
 - [x] Validate account and public diagnostics recovery using the securely configured Neon fallback connection.
 - [x] Run a server-only Neon connectivity check and verify all Peerlock metadata tables are reachable through the configured fallback connection.
 - [x] Complete end-to-end recovery validation for public diagnostics, account database access, full test suite, production build, and GitHub release publication.
+- [x] Add a shared custom in-app notification center with accessible status variants, automatic dismissal, manual dismissal, and privacy-safe messages.
+- [x] Connect custom notifications to account, OTP, room join approval, connection, diagnostics, and recovery workflows without exposing private document or credential data.
+- [x] Validate notification interaction, reduced-motion behavior, keyboard accessibility, and phone layout before publishing.
