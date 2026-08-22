@@ -287,3 +287,6 @@
 - [x] Upgrade the account-check loader with meaningful branded progress and recovery feedback.
 - [x] Refine signed-in account overview and password-change controls, validation feedback, and mobile layout without changing authentication rules.
 - [x] Validate account behavior, responsive presentation, accessibility, and existing security boundaries before publishing.
+- [x] Fix the mobile account-brand header overlap, settings verified-badge clipping, and top-control hierarchy.
+- [x] Improve dark-mode surface and selected-state contrast across the settings and account surfaces.
+- [x] Validate the corrected mobile layouts and dark-mode accessibility before publishing and pushing GitHub.
