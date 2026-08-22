@@ -318,3 +318,5 @@
 - [x] Remove dark-mode Academy hero ghost-heading leakage and refine the learning-rail title hierarchy.
 - [x] Unify mobile Academy header controls and realign the two-column Learning Kit tab grid.
 - [x] Validate Academy light/dark mobile presentation and application regressions before publishing.
+- [x] Remove the Learning Kit mobile right-edge white background leak and constrain Academy horizontal overflow.
+- [x] Validate the repaired Learning Kit mobile edge behavior before publishing.

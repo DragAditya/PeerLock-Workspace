@@ -152,6 +152,11 @@ const academyMobileRepairStyles = `
 }
 :root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { border-color: rgba(232,242,232,.18); color: #edf5eb; background: rgba(22,36,30,.92); }
 :root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) .app-header-actions .header-learning.active { border-color: rgba(200,245,102,.48); color: #d8f88b; background: rgba(183,233,87,.12); }
+@media (max-width: 850px) {
+  .app-frame:has(.academy-expanded), .app-frame:has(.academy-expanded) main { min-width: 0; max-width: 100%; background: #f4f4ef; }
+  .app-frame:has(.academy-expanded) .academy-expanded, .app-frame:has(.academy-expanded) .academy-content { width: 100%; min-width: 0; max-width: 100%; overflow-x: clip; }
+}
+:root[data-peerlock-theme="dark"] body:has(.academy-expanded), :root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded), :root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) main { background: #101914; }
 `;
 
 export function AcademyPage() {
