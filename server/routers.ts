@@ -8,7 +8,7 @@ import { clearGuestSession, createRegisteredRoom, decideRoomRequest, liveRoomCou
 import { z } from "zod";
 import { getDevDiagnostics } from "./devDiagnostics";
 import { TRPCError } from "@trpc/server";
-import { activeAnnouncements, adminAuditTrail, adminCreateAnnouncement, adminDeleteRoom, adminListAccounts, adminListAnnouncements, adminListRooms, adminOverview, adminRevokeMembership, adminSetAccountSuspension, adminSetAnnouncementActive, requireSuperAdmin } from "./adminService";
+import { adminAuditTrail, adminDeleteRoom, adminListAccounts, adminListRooms, adminOverview, adminPermanentlyDeleteAccount, adminRevokeMembership, adminSetAccountSuspension, requireSuperAdmin } from "./adminService";
 import { isSuperAdminEmail } from "./adminAuthorization";
 
 function requireVerifiedAccount(ctx: { account: { id: string; email: string; username: string; emailVerifiedAt: Date | null; suspendedAt?: Date | null } | null }) {
@@ -50,19 +50,14 @@ export const appRouter = router({
   diagnostics: router({
     snapshot: publicProcedure.query(() => getDevDiagnostics()),
   }),
-  announcement: router({
-    active: publicProcedure.query(() => activeAnnouncements()),
-  }),
   admin: router({
     overview: publicProcedure.query(({ ctx }) => { requireAdmin(ctx); return adminOverview(); }),
     accounts: publicProcedure.query(({ ctx }) => { requireAdmin(ctx); return adminListAccounts(); }),
     setAccountSuspension: publicProcedure.input(z.object({ accountId: z.string().uuid(), suspended: z.boolean(), reason: z.string().max(240).optional() })).mutation(({ ctx, input }) => adminSetAccountSuspension(requireAdmin(ctx), input)),
+    permanentlyDeleteAccount: publicProcedure.input(z.object({ accountId: z.string().uuid() })).mutation(({ ctx, input }) => adminPermanentlyDeleteAccount(requireAdmin(ctx), input.accountId)),
     rooms: publicProcedure.query(({ ctx }) => { requireAdmin(ctx); return adminListRooms(); }),
     revokeMembership: publicProcedure.input(z.object({ roomId: z.string().uuid(), membershipId: z.string().uuid() })).mutation(({ ctx, input }) => adminRevokeMembership(requireAdmin(ctx), input)),
     deleteRoom: publicProcedure.input(z.object({ roomId: z.string().uuid() })).mutation(({ ctx, input }) => adminDeleteRoom(requireAdmin(ctx), input.roomId)),
-    announcements: publicProcedure.query(({ ctx }) => { requireAdmin(ctx); return adminListAnnouncements(); }),
-    createAnnouncement: publicProcedure.input(z.object({ title: z.string().min(2).max(120), message: z.string().min(2).max(480), tone: z.enum(["info", "success", "warning", "error"]).default("info"), expiresAt: z.coerce.date().optional().nullable() })).mutation(({ ctx, input }) => adminCreateAnnouncement(requireAdmin(ctx), input)),
-    setAnnouncementActive: publicProcedure.input(z.object({ id: z.string().uuid(), active: z.boolean() })).mutation(({ ctx, input }) => adminSetAnnouncementActive(requireAdmin(ctx), input.id, input.active)),
     audit: publicProcedure.query(({ ctx }) => { requireAdmin(ctx); return adminAuditTrail(); }),
   }),
   room: router({

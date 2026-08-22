@@ -234,3 +234,6 @@
 - [x] Change the account password policy to a secure eight-character minimum while retaining uppercase, lowercase, numeric, and symbol support.
 - [x] Build an advanced responsive admin control center with user, room, security, diagnostics, audit, and announcement workflows.
 - [x] Validate that non-admin accounts cannot access admin data or actions; ensure documents, chats, credentials, OTPs, and WebRTC secrets remain excluded.
+- [x] Add normal-dialog permanent user deletion that removes account metadata, sessions, tokens, account-linked room memberships, and audit-visible account data while preserving browser-local documents.
+- [x] Remove admin announcement data, server APIs, navigation, and UI to keep the control center focused on useful operational controls.
+- [x] Validate permanent deletion, same-email re-registration readiness, and non-admin access denial before publishing the focused admin revision.

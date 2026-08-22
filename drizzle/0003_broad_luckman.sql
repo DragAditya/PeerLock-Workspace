@@ -1,0 +1,1 @@
+DROP TABLE "peerlock_announcements" CASCADE;

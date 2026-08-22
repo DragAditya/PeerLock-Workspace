@@ -1,4 +1,4 @@
-import { boolean, index, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin"]);
 export const roomMembershipStatus = pgEnum("room_membership_status", ["pending", "approved", "declined", "expired"]);
@@ -99,18 +99,6 @@ export const peerlockAccountTokens = pgTable("peerlock_account_tokens", {
   index("peerlock_account_tokens_account_purpose_idx").on(table.accountId, table.purpose),
   index("peerlock_account_tokens_expiry_idx").on(table.expiresAt),
 ]);
-
-/** Admin-created global notices. They contain operational text only, never document or chat content. */
-export const peerlockAnnouncements = pgTable("peerlock_announcements", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  title: varchar("title", { length: 120 }).notNull(),
-  message: varchar("message", { length: 480 }).notNull(),
-  tone: varchar("tone", { length: 16 }).notNull().default("info"),
-  active: boolean("active").notNull().default(true),
-  createdByAccountId: varchar("created_by_account_id", { length: 36 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  expiresAt: timestamp("expires_at"),
-}, table => [index("peerlock_announcements_active_idx").on(table.active, table.createdAt)]);
 
 /** Immutable metadata-only history for accountable super-admin actions. */
 export const peerlockAdminAuditLogs = pgTable("peerlock_admin_audit_logs", {
