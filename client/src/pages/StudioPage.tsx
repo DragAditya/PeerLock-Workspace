@@ -27,7 +27,7 @@ export function StudioPage() {
   const [roomMode, setRoomMode] = useState<"open" | "protected">("open"); const [roomPassword, setRoomPassword] = useState(""); const [roomError, setRoomError] = useState("");
   const peer = usePeerDocument(record ?? { id: "loading", title: "", createdAt: 0, updatedAt: 0, externalAiEnabled: false }, profile);
   const ai = trpc.ai.format.useMutation({ onSuccess: value => { const target = value.action === "format_document" ? "document" : "selection"; setSuggestion({ text: value.formatted, target, label: target === "document" ? "Apply to document" : "Replace selected text" }); setAiError(""); }, onError: error => setAiError(`${error.message} You can safely retry or keep editing.`) });
-  const createRoom = trpc.room.create.useMutation({ onSuccess: value => { if (params?.id) void updateDocument(params.id, { roomId: value.id, roomCode: value.code, roomProtected: value.protected, roomTransportSecret: value.transportSecret }).then(() => setRoomOpen(true)); }, onError: issue => setRoomError(issue.message) });
+  const createRoom = trpc.room.create.useMutation({ onSuccess: value => { if (params?.id) void updateDocument(params.id, { roomId: value.id, roomCode: value.code, roomProtected: value.protected, roomTransportSecret: value.transportSecret }).then(() => setRoomOpen(false)); }, onError: issue => setRoomError(issue.message) });
   const activeRoomId = record?.roomId ?? "00000000-0000-0000-0000-000000000000";
   const pendingRequests = trpc.room.pendingRequests.useQuery({ roomId: activeRoomId }, { enabled: Boolean(record?.roomId), retry: false });
   const decideRequest = trpc.room.decideRequest.useMutation({ onSuccess: () => void pendingRequests.refetch() });

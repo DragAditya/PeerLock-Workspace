@@ -248,3 +248,5 @@
 - [x] Add shared fast, accessible micro-interaction tokens and motion primitives with complete reduced-motion support.
 - [x] Apply purposeful micro-interactions to account, workspace, room access, editor, settings, diagnostics, and admin interactions.
 - [x] Validate interaction feedback, keyboard focus, reduced-motion behavior, and phone layouts before publishing.
+- [x] Fix the mobile document-open state so the Room Console cannot trap users or obscure the editor.
+- [x] Validate mobile document entry, console dismissal, editor access, and no-overflow behavior before publishing.
