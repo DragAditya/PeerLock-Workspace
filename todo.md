@@ -290,3 +290,5 @@
 - [x] Fix the mobile account-brand header overlap, settings verified-badge clipping, and top-control hierarchy.
 - [x] Improve dark-mode surface and selected-state contrast across the settings and account surfaces.
 - [x] Validate the corrected mobile layouts and dark-mode accessibility before publishing and pushing GitHub.
+- [x] Fix dark-mode color leakage on light editor, Room Console, collaboration, chat, and AI paper surfaces.
+- [x] Validate dark-mode workspace contrast and mobile interaction readability before publishing and pushing GitHub.
