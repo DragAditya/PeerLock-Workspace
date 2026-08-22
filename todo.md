@@ -266,3 +266,6 @@
 - [x] Make workspace document cards more compact with clearer action affordances and metadata hierarchy.
 - [x] Clarify the live room status and simplify mobile join-progress labels for readability.
 - [x] Validate the enhanced workspace hub at mobile and desktop breakpoints before publishing.
+- [x] Redesign the signed-in workspace hub composition, visual identity, and interaction rhythm for a more distinctive premium feel without changing collaboration functionality.
+- [x] Add purposeful, reduced-motion-safe animation and depth to the redesigned workspace hub.
+- [x] Validate the redesigned workspace hub for usability, responsive layout, and accessibility before publishing.
