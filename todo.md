@@ -310,3 +310,7 @@
 - [x] Add a deliberate mobile swipe-to-delete affordance for local note and room cards.
 - [x] Require an explicit confirmation before swipe-revealed card deletion and preserve normal tap-to-open behavior.
 - [x] Validate swipe thresholds, cancellation, confirmation, desktop deletion controls, and workspace regressions before publishing.
+- [x] Unify mobile Hub header control dimensions, spacing, and dark-mode surface treatment.
+- [x] Correct dark-mode Hub room and note cards so local work is readable on dark surfaces without white-card leakage.
+- [x] Replace the oversized mobile delete confirmation with a compact, clearly ordered destructive confirmation dialog.
+- [x] Validate the repaired dark Hub, mobile header, confirmation, and swipe-deletion behavior before publishing.
