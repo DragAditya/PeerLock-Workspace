@@ -250,3 +250,6 @@
 - [x] Validate interaction feedback, keyboard focus, reduced-motion behavior, and phone layouts before publishing.
 - [x] Fix the mobile document-open state so the Room Console cannot trap users or obscure the editor.
 - [x] Validate mobile document entry, console dismissal, editor access, and no-overflow behavior before publishing.
+- [x] Package the proven Peerlock project-delivery workflow into a reusable skill for future privacy-first full-stack web application work.
+- [x] Add refined homepage scroll reveals, subtle depth/parallax, text entrances, hover effects, and animated links/buttons with reduced-motion support.
+- [x] Validate homepage interaction performance, accessibility, and responsive layout before publishing.
