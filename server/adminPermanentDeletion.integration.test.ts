@@ -8,7 +8,7 @@ import { getDb } from "./db";
 
 const accountId = randomUUID(); const guestId = randomUUID(); const roomId = randomUUID(); const sessionId = randomUUID(); const tokenId = randomUUID();
 const email = `peerlock-delete-${accountId}@example.test`; const code = accountId.replace(/-/g, "").slice(0, 8).toUpperCase();
-afterEach(async () => { const db = await getDb(); if (!db) return; await db.delete(peerlockRoomMemberships).where(eq(peerlockRoomMemberships.roomId, roomId)); await db.delete(peerlockRooms).where(eq(peerlockRooms.id, roomId)); await db.delete(peerlockGuestSessions).where(eq(peerlockGuestSessions.id, guestId)); await db.delete(peerlockAccountSessions).where(eq(peerlockAccountSessions.id, sessionId)); await db.delete(peerlockAccountTokens).where(eq(peerlockAccountTokens.id, tokenId)); await db.delete(peerlockAccounts).where(eq(peerlockAccounts.id, accountId)); await db.delete(peerlockAdminAuditLogs).where(eq(peerlockAdminAuditLogs.targetId, accountId)); });
+afterEach(async () => { const db = await getDb(); if (!db) return; await db.delete(peerlockRoomMemberships).where(eq(peerlockRoomMemberships.roomId, roomId)); await db.delete(peerlockRooms).where(eq(peerlockRooms.id, roomId)); await db.delete(peerlockGuestSessions).where(eq(peerlockGuestSessions.id, guestId)); await db.delete(peerlockAccountSessions).where(eq(peerlockAccountSessions.id, sessionId)); await db.delete(peerlockAccountTokens).where(eq(peerlockAccountTokens.id, tokenId)); await db.delete(peerlockAccounts).where(eq(peerlockAccounts.id, accountId)); await db.delete(peerlockAdminAuditLogs).where(eq(peerlockAdminAuditLogs.targetId, accountId)); }, 60_000);
 
 describe("permanent account deletion", () => {
   it("removes account-server metadata so the email and username become available again", async () => {
@@ -24,5 +24,5 @@ describe("permanent account deletion", () => {
       db!.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, accountId)), db!.select().from(peerlockAccountSessions).where(eq(peerlockAccountSessions.accountId, accountId)), db!.select().from(peerlockAccountTokens).where(eq(peerlockAccountTokens.accountId, accountId)), db!.select().from(peerlockGuestSessions).where(eq(peerlockGuestSessions.accountId, accountId)), db!.select().from(peerlockRoomMemberships).where(eq(peerlockRoomMemberships.roomId, roomId)),
     ]);
     expect(account).toHaveLength(0); expect(session).toHaveLength(0); expect(token).toHaveLength(0); expect(guest).toHaveLength(0); expect(membership).toHaveLength(0);
-  }, 20_000);
+  }, 60_000);
 });

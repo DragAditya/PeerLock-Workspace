@@ -245,3 +245,6 @@
 - [x] Add clear loading and success feedback for password-reset requests without revealing account existence.
 - [x] Add a 60-second verification resend cooldown with accessible timer messaging and disabled-state feedback.
 - [x] Validate templates, cooldown behavior, notification feedback, tests, and phone layout before publishing.
+- [x] Add shared fast, accessible micro-interaction tokens and motion primitives with complete reduced-motion support.
+- [x] Apply purposeful micro-interactions to account, workspace, room access, editor, settings, diagnostics, and admin interactions.
+- [x] Validate interaction feedback, keyboard focus, reduced-motion behavior, and phone layouts before publishing.
