@@ -257,3 +257,6 @@
 - [x] Validate Room Console dismissal, editor access, and responsive behavior before publishing the repair.
 - [x] Ensure the mobile Room Console is closed by default and opens only after an explicit Room action.
 - [x] Revalidate the mobile Room Console close action and unobscured editor after fixing default visibility.
+- [x] Remove the redundant password field from the first Room Join step and preserve secure password entry on the verified next screen.
+- [x] Refine the Room Join interface with clearer progressive guidance, smooth responsive feedback, and reduced-motion-safe animation.
+- [x] Validate code-only room entry and the protected-room password handoff before publishing.
