@@ -295,6 +295,3 @@
 - [x] Add slow, seamless, reduced-motion-safe motion only to the existing atom-style encrypted-network visualization on the workspace front page.
 - [x] Correct remaining dark-mode home/workspace paper-surface contrast without changing the front-page structure or visual composition.
 - [x] Validate the animated visualization loop, reduced-motion fallback, and mobile dark-mode readability before publishing and pushing GitHub.
-- [x] Create a reversible local-preview experiment inspired by selected supplied component-library references without changing application behavior.
-- [x] Validate the local visual experiment and keep it out of GitHub and production publication unless explicitly approved.
-- [x] Publish the user-approved liquid-metal button experiment and synchronize the release to GitHub.
