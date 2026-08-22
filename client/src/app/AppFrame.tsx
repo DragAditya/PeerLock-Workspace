@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 
 const links = [{ label: "Workspace", href: "/", icon: FolderOpen }, { label: "Learning kit", href: "/academy", icon: BookOpen }, { label: "Preferences", href: "/settings", icon: Settings }];
-const peerLockMark = "/manus-storage/peerlock-logo-mark_a3b9df29.png";
+const peerLockMark = "/brand/peerlock-mark.png";
 
 export function AppFrame({ children }: { children: React.ReactNode }) {
   const [location, navigate] = useLocation(); const { profile } = useWorkspace(); const account = trpc.auth.account.useQuery(undefined, { retry: false });

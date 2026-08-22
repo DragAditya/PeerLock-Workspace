@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useNotifications } from "@/contexts/NotificationContext";
 
-const peerLockMark = "/manus-storage/peerlock-logo-mark_a3b9df29.png";
+const peerLockMark = "/brand/peerlock-mark.png";
 
 export function RoomRoute() {
   const [, navigate] = useLocation(); const { profile, openRoom } = useWorkspace(); const { notify } = useNotifications(); const invite = readInvite();

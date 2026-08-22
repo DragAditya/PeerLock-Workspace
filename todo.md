@@ -276,3 +276,6 @@
 - [x] Add consistent lime-hover feedback to primary actions without compromising contrast or reduced-motion support.
 - [x] Add an accessible custom PeerLock logo loading animation for room-join verification and approval states.
 - [x] Validate primary hover behavior, room-join loading flow, and reduced-motion behavior before publishing.
+- [x] Add the supplied PeerLock logo to the repository’s deployable public assets and reference it with a Render-compatible path.
+- [x] Verify the full latest project state is committed and pushed to GitHub after the external-deployment asset repair.
+- [x] Validate the production build resolves the repository-owned logo asset before publishing.
