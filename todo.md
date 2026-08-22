@@ -283,3 +283,7 @@
 - [x] Add focused theme and curated accent personalization while retaining the supplied PeerLock brand system.
 - [x] Redesign the settings screen into a premium, compact identity, personalization, and privacy experience without adding low-value controls.
 - [x] Validate profile-image privacy/persistence, theme/accent persistence, accessibility, and mobile performance before publishing.
+- [x] Add the official PeerLock mark and a shared premium secure-account shell across account loading, overview, and password-change surfaces.
+- [x] Upgrade the account-check loader with meaningful branded progress and recovery feedback.
+- [x] Refine signed-in account overview and password-change controls, validation feedback, and mobile layout without changing authentication rules.
+- [x] Validate account behavior, responsive presentation, accessibility, and existing security boundaries before publishing.
