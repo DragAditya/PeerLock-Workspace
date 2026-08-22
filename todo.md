@@ -260,3 +260,5 @@
 - [x] Remove the redundant password field from the first Room Join step and preserve secure password entry on the verified next screen.
 - [x] Refine the Room Join interface with clearer progressive guidance, smooth responsive feedback, and reduced-motion-safe animation.
 - [x] Validate code-only room entry and the protected-room password handoff before publishing.
+- [ ] Refine the mobile account-required screen’s spacing, hierarchy, sign-in CTA, and privacy-panel typography without changing the established visual direction.
+- [ ] Validate the refined account-required screen at mobile and desktop breakpoints before publishing.
