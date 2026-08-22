@@ -262,3 +262,7 @@
 - [x] Validate code-only room entry and the protected-room password handoff before publishing.
 - [x] Refine the mobile account-required screen’s spacing, hierarchy, sign-in CTA, and privacy-panel typography without changing the established visual direction.
 - [x] Validate the refined account-required screen at mobile and desktop breakpoints before publishing.
+- [x] Tighten workspace hero spacing and improve mobile headline contrast while retaining the existing Peerlock visual direction.
+- [x] Make workspace document cards more compact with clearer action affordances and metadata hierarchy.
+- [x] Clarify the live room status and simplify mobile join-progress labels for readability.
+- [x] Validate the enhanced workspace hub at mobile and desktop breakpoints before publishing.
