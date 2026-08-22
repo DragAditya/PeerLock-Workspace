@@ -241,3 +241,7 @@
 - [x] Correct the live deployment email configuration or account delivery path and validate a real account email workflow.
 - [x] Verify a Resend sender domain and set RESEND_FROM_EMAIL to the verified domain before enabling delivery to email addresses other than the Resend account owner in test mode.
 - [x] Configure a verified `dragadi.art` Resend sender and validate real OTP delivery to an approved test recipient.
+- [x] Create responsive branded Peerlock HTML templates for OTP verification and password-recovery emails.
+- [x] Add clear loading and success feedback for password-reset requests without revealing account existence.
+- [x] Add a 60-second verification resend cooldown with accessible timer messaging and disabled-state feedback.
+- [x] Validate templates, cooldown behavior, notification feedback, tests, and phone layout before publishing.

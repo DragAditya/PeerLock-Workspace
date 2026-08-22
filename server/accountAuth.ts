@@ -5,6 +5,7 @@ import { parse as parseCookie } from "cookie";
 import { peerlockAccounts, peerlockAccountSessions, peerlockAccountTokens } from "../drizzle/schema";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { getDb } from "./db";
+import { passwordResetEmailTemplate, verificationEmailTemplate } from "./accountEmailTemplates";
 
 export const ACCOUNT_SESSION_COOKIE = "peerlock_account_session";
 const SESSION_MS = 1000 * 60 * 60 * 24 * 30;
@@ -63,7 +64,7 @@ function requestOrigin(req: Request) {
   return `${protocol}://${host}`;
 }
 
-async function sendAccountEmail(input: { to: string; subject: string; html: string }) {
+async function sendAccountEmail(input: { to: string; subject: string; html: string; text?: string }) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
   emailDeliveryStatus = { attemptedAt: new Date().toISOString(), configured: Boolean(apiKey && from), delivered: null, status: null, reason: null };
@@ -72,7 +73,7 @@ async function sendAccountEmail(input: { to: string; subject: string; html: stri
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: [input.to], subject: input.subject, html: input.html }),
+      body: JSON.stringify({ from, to: [input.to], subject: input.subject, html: input.html, text: input.text }),
     });
     if (!response.ok) { emailDeliveryStatus = { ...emailDeliveryStatus, delivered: false, status: response.status, reason: response.status === 403 ? "Sender or API key was rejected" : "Provider request was rejected" }; console.error("[Account] Email delivery failed", response.status); return false; }
     emailDeliveryStatus = { ...emailDeliveryStatus, delivered: true, status: response.status, reason: null };
@@ -124,10 +125,8 @@ async function issueToken(accountId: string, purpose: "verify_email" | "reset_pa
 async function sendVerification(account: typeof peerlockAccounts.$inferSelect) {
   const otp = createVerificationOtp();
   await issueToken(account.id, "verify_email", otp);
-  return sendAccountEmail({ to: account.email, subject: "Your Peerlock verification code", html: `<p>Hello ${escapeHtml(account.username)},</p><p>Enter this one-time code in Peerlock to verify your email:</p><p style="font-size:28px;font-weight:700;letter-spacing:6px">${otp}</p><p>This code expires in 10 minutes. Never share it with anyone.</p>` });
+  return sendAccountEmail({ to: account.email, ...verificationEmailTemplate({ username: account.username, otp }) });
 }
-
-function escapeHtml(value: string) { return value.replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char] ?? char); }
 
 export async function registerAccount(req: Request, res: Response, input: { email: string; username: string; password: string }) {
   const email = normalizeEmail(input.email); const username = normalizeUsername(input.username); const policyError = validatePassword(input.password);
@@ -188,7 +187,7 @@ export async function requestPasswordReset(req: Request, emailInput: string) {
   if (!account) return { accepted: true as const };
   const token = await issueToken(account.id, "reset_password");
   const link = `${requestOrigin(req)}/account/reset?token=${encodeURIComponent(token)}`;
-  await sendAccountEmail({ to: account.email, subject: "Reset your Peerlock password", html: `<p>Hello ${escapeHtml(account.username)},</p><p>Use this one-time link to reset your Peerlock password:</p><p><a href="${link}">Reset password</a></p><p>This link expires in 30 minutes.</p>` });
+  await sendAccountEmail({ to: account.email, ...passwordResetEmailTemplate({ username: account.username, resetUrl: link }) });
   return { accepted: true as const };
 }
 
