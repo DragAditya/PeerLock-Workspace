@@ -295,3 +295,6 @@
 - [x] Add slow, seamless, reduced-motion-safe motion only to the existing atom-style encrypted-network visualization on the workspace front page.
 - [x] Correct remaining dark-mode home/workspace paper-surface contrast without changing the front-page structure or visual composition.
 - [x] Validate the animated visualization loop, reduced-motion fallback, and mobile dark-mode readability before publishing and pushing GitHub.
+- [x] Expand the Learning Kit into a richer, high-information PeerLock learning resource without changing collaboration behavior.
+- [x] Add a visible mobile navigation/settings entry for Learning Kit.
+- [x] Validate Learning Kit readability, mobile navigation, and responsive presentation before publishing.
