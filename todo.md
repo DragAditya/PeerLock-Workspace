@@ -253,3 +253,5 @@
 - [x] Package the proven Peerlock project-delivery workflow into a reusable skill for future privacy-first full-stack web application work.
 - [x] Add refined homepage scroll reveals, subtle depth/parallax, text entrances, hover effects, and animated links/buttons with reduced-motion support.
 - [x] Validate homepage interaction performance, accessibility, and responsive layout before publishing.
+- [x] Restore a reliable, touch-safe Room Console close action on the mobile document editor without obscuring the editor.
+- [x] Validate Room Console dismissal, editor access, and responsive behavior before publishing the repair.

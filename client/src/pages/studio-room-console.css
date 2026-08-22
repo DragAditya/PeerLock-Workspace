@@ -1,0 +1,52 @@
+.room-console-scrim { display: none; }
+
+.room-console .room-console-close {
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  margin: -4px -4px 0 12px;
+  padding: 0;
+  border: 1px solid #bdc8c0;
+  border-radius: 50%;
+  color: #14231e;
+  background: #fcfcf8;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.room-console .room-console-close svg { pointer-events: none; }
+.room-console .room-console-close:focus-visible { outline: 3px solid rgba(15, 118, 110, .36); outline-offset: 2px; }
+
+@media (max-width: 850px), (max-aspect-ratio: 3/4) {
+  .room-console-scrim {
+    position: fixed;
+    z-index: 29;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(16, 29, 23, .24);
+    cursor: default;
+    touch-action: manipulation;
+  }
+
+  .room-console .room-console-close { display: inline-flex; }
+}
+
+@media (min-width: 851px) and (min-aspect-ratio: 3/4) {
+  .room-console .room-console-close { display: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .room-console-scrim { animation: room-console-scrim-in 160ms ease-out both; }
+  .room-console .room-console-close { transition: transform 150ms cubic-bezier(.23, 1, .32, 1), background-color 150ms ease, border-color 150ms ease; }
+  .room-console .room-console-close:active { transform: scale(.94); }
+  .room-console .room-console-close:hover { border-color: #0f766e; background: #e8f3ed; }
+}
+
+@keyframes room-console-scrim-in { from { opacity: 0; } to { opacity: 1; } }
