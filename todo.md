@@ -321,4 +321,4 @@
 - [x] Remove the Learning Kit mobile right-edge white background leak and constrain Academy horizontal overflow.
 - [x] Validate the repaired Learning Kit mobile edge behavior before publishing.
 - [x] Add the validated privacy-first delivery skill source to the repository for GitHub access.
-- [ ] Synchronize the skill source and latest PeerLock release state to GitHub.
+- [x] Synchronize the skill source and latest PeerLock release state to GitHub.
