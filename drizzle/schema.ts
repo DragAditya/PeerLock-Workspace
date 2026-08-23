@@ -60,6 +60,8 @@ export const peerlockAccounts = pgTable("peerlock_accounts", {
   username: varchar("username", { length: 48 }).notNull(),
   passwordSalt: varchar("password_salt", { length: 64 }).notNull(),
   passwordHash: varchar("password_hash", { length: 128 }).notNull(),
+  /** Account-owned S3 object key only; image bytes never enter PostgreSQL or collaboration state. */
+  avatarKey: text("avatar_key"),
   emailVerifiedAt: timestamp("email_verified_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),

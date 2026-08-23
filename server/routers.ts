@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { formatWithGemini } from "./aiFormatter";
-import { accountEmailDiagnostics, changeAccountPassword, clearAccountSession, registerAccount, requestPasswordReset, resetAccountPassword, safeAccountError, sendVerificationEmail, signInAccount, verifyAccountEmail } from "./accountAuth";
+import { accountEmailDiagnostics, changeAccountPassword, clearAccountSession, registerAccount, requestPasswordReset, resetAccountPassword, safeAccountError, sendVerificationEmail, signInAccount, verifyAccountEmail, updateAccountAvatar, removeAccountAvatar } from "./accountAuth";
 import { clearGuestSession, createRegisteredRoom, decideRoomRequest, liveRoomCount, pendingRoomRequests, requestRoomJoin, roomAccess } from "./roomRegistry";
 import { z } from "zod";
 import { getDevDiagnostics } from "./devDiagnostics";
@@ -42,6 +42,8 @@ export const appRouter = router({
       if (!ctx.account) throw new TRPCError({ code: "UNAUTHORIZED", message: "Sign in to resend verification." });
       return safeAccountCall(() => sendVerificationEmail(ctx.req, ctx.account!.id));
     }),
+    uploadAvatar: publicProcedure.input(z.object({ dataUrl: z.string().max(1_500_000) })).mutation(({ ctx, input }) => safeAccountCall(() => updateAccountAvatar(requireVerifiedAccount(ctx).id, input.dataUrl))),
+    removeAvatar: publicProcedure.mutation(({ ctx }) => safeAccountCall(() => removeAccountAvatar(requireVerifiedAccount(ctx).id))),
     logout: publicProcedure.mutation(({ ctx }) => { ctx.res.clearCookie(COOKIE_NAME, { ...getSessionCookieOptions(ctx.req), maxAge: -1 }); clearAccountSession(ctx.res, ctx.req); return { success: true } as const; }),
   }),
   ai: router({

@@ -331,3 +331,6 @@
 - [x] Audit and remove remaining route-specific mobile header rules that override the shared navigation system.
 - [x] Consolidate all mobile header geometry, surfaces, and active states into the shared header source of truth.
 - [x] Validate visually identical shared header geometry across target mobile routes before publishing.
+- [x] Add secure opt-in shared avatar storage and account metadata for a profile picture visible to PeerLock users.
+- [x] Add authenticated avatar upload, replacement, removal, validation, and profile display without placing images in room or document sync.
+- [x] Enforce privacy-safe avatar authorization and validate cross-device account profile behavior before publishing.

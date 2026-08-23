@@ -6,6 +6,7 @@ import { peerlockAccounts, peerlockAccountSessions, peerlockAccountTokens } from
 import { getSessionCookieOptions } from "./_core/cookies";
 import { getDb } from "./db";
 import { passwordResetEmailTemplate, verificationEmailTemplate } from "./accountEmailTemplates";
+import { storagePut } from "./storage";
 
 export const ACCOUNT_SESSION_COOKIE = "peerlock_account_session";
 const SESSION_MS = 1000 * 60 * 60 * 24 * 30;
@@ -15,7 +16,7 @@ const recoveryAttempts = new Map<string, number[]>();
 const verificationAttempts = new Map<string, number[]>();
 let emailDeliveryStatus: { attemptedAt: string | null; configured: boolean; delivered: boolean | null; status: number | null; reason: string | null } = { attemptedAt: null, configured: false, delivered: null, status: null, reason: null };
 
-export type AccountIdentity = { id: string; email: string; username: string; emailVerifiedAt: Date | null; suspendedAt: Date | null };
+export type AccountIdentity = { id: string; email: string; username: string; avatarUrl: string | null; emailVerifiedAt: Date | null; suspendedAt: Date | null };
 
 export function accountEmailDiagnostics() { return { ...emailDeliveryStatus, senderConfigured: Boolean(process.env.RESEND_FROM_EMAIL), baseUrlConfigured: Boolean(process.env.APP_BASE_URL) }; }
 export function emailDeliveryGuidanceFor(status: { status: number | null; reason: string | null }) {
@@ -51,7 +52,37 @@ export function validatePassword(password: string) {
 }
 
 function accountView(account: typeof peerlockAccounts.$inferSelect): AccountIdentity {
-  return { id: account.id, email: account.email, username: account.username, emailVerifiedAt: account.emailVerifiedAt, suspendedAt: account.suspendedAt };
+  return { id: account.id, email: account.email, username: account.username, avatarUrl: account.avatarKey ? `/manus-storage/${account.avatarKey}` : null, emailVerifiedAt: account.emailVerifiedAt, suspendedAt: account.suspendedAt };
+}
+
+export function parseSharedAvatar(dataUrl: string) {
+  const match = /^data:image\/webp;base64,([A-Za-z0-9+/]+={0,2})$/.exec(dataUrl);
+  if (!match) throw new Error("Choose a PNG, JPEG, or WebP image. PeerLock converts it to a safe WebP avatar before upload.");
+  const bytes = Buffer.from(match[1], "base64");
+  if (bytes.length === 0 || bytes.length > 1_000_000) throw new Error("Profile images must be smaller than 1 MB after preparation.");
+  if (bytes.subarray(0, 4).toString("ascii") !== "RIFF" || bytes.subarray(8, 12).toString("ascii") !== "WEBP") throw new Error("The profile image could not be validated.");
+  return bytes;
+}
+
+/** Stores only an account-owned object key in PostgreSQL. The avatar URL is safe identity metadata; no image bytes enter rooms or documents. */
+export async function updateAccountAvatar(accountId: string, dataUrl: string) {
+  const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
+  const [account] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, accountId)).limit(1);
+  if (!account || account.suspendedAt) throw new Error("Your account is unavailable.");
+  const upload = await storagePut(`peerlock-avatars/${account.id}/avatar.webp`, parseSharedAvatar(dataUrl), "image/webp");
+  await db.update(peerlockAccounts).set({ avatarKey: upload.key }).where(eq(peerlockAccounts.id, account.id));
+  const [updated] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, account.id)).limit(1);
+  if (!updated) throw new Error("The profile image could not be saved.");
+  return accountView(updated);
+}
+
+/** Storage is append-only; removing the database reference immediately removes the avatar from application views. */
+export async function removeAccountAvatar(accountId: string) {
+  const db = await getDb(); if (!db) throw new Error("Accounts are temporarily unavailable.");
+  await db.update(peerlockAccounts).set({ avatarKey: null }).where(eq(peerlockAccounts.id, accountId));
+  const [updated] = await db.select().from(peerlockAccounts).where(eq(peerlockAccounts.id, accountId)).limit(1);
+  if (!updated) throw new Error("Your account was not found.");
+  return accountView(updated);
 }
 
 function requestOrigin(req: Request) {

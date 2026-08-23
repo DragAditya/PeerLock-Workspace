@@ -1,0 +1,1 @@
+ALTER TABLE "peerlock_accounts" ADD COLUMN "avatar_key" text;
