@@ -325,3 +325,6 @@
 - [x] Refine the signed-in mobile account hero and account panel into one cohesive visual composition.
 - [x] Improve account identity, status, email, and action hierarchy without changing authentication or privacy behavior.
 - [x] Validate the refined signed-in account page at phone and desktop widths before publishing.
+- [x] Replace page-specific mobile navigation overrides with one consistent shared control system.
+- [x] Apply a single accessible active-state treatment while preserving route navigation behavior.
+- [x] Validate shared navigation consistency across Settings, Learning Kit, Account, Admin, and Hub mobile routes before publishing.
