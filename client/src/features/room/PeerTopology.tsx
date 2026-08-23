@@ -9,7 +9,7 @@ export function roomState(connection: string, peerCount: number) {
   return { label: "Local replica", detail: "This document is persisted locally and has no open peer room.", tone: "local" };
 }
 
-export function PeerTopology({ peers, connection, localColor }: { peers: PeerPresence[]; connection: string; localColor?: string }) {
+export function PeerTopology({ peers, connection, localColor, localAvatarUrl }: { peers: PeerPresence[]; connection: string; localColor?: string; localAvatarUrl?: string | null }) {
   const state = roomState(connection, peers.length);
-  return <section className={`peer-topology peer-topology-${state.tone}`}><header><p className="eyebrow">Peer topology</p><strong>{state.label}</strong></header><div className="peer-topology-map"><span className="topology-local" style={{ backgroundColor: localColor }} title="Local peer">You</span>{peers.filter(peer => peer.id !== peers[0]?.id).slice(0, 9).map((peer, index) => <span key={peer.id} className="topology-remote" style={{ backgroundColor: peer.color, "--node": index } as React.CSSProperties} title={peer.name}>{peer.name.slice(0, 1).toUpperCase()}</span>)}</div><p>{state.detail}</p></section>;
+  return <section className={`peer-topology peer-topology-${state.tone}`}><header><p className="eyebrow">Peer topology</p><strong>{state.label}</strong></header><div className="peer-topology-map"><span className="topology-local" style={{ backgroundColor: localColor }} title="Local peer">{localAvatarUrl ? <img src={localAvatarUrl} alt="Your profile" /> : "You"}</span>{peers.filter(peer => peer.id !== peers[0]?.id).slice(0, 9).map((peer, index) => <span key={peer.id} className="topology-remote" style={{ backgroundColor: peer.color, "--node": index } as React.CSSProperties} title={peer.name}>{peer.avatarUrl ? <img src={peer.avatarUrl} alt={`${peer.name} profile`} /> : peer.name.slice(0, 1).toUpperCase()}</span>)}</div><p>{state.detail}</p></section>;
 }

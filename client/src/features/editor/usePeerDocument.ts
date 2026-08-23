@@ -1,13 +1,14 @@
 import { ROOM_MAX_REMOTE_CONNECTIONS } from "@/features/room/capacity";
 import { opaqueRoomName, peerlockSignalingUrl } from "@/features/room/invite";
 import { createInitializationGate } from "@/features/workspace/initialization";
+import { toggleChatReaction } from "@/features/room/chatReactions";
 import type { LocalProfile, WorkspaceDocument } from "@/features/workspace/types";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { WebrtcProvider } from "y-webrtc";
 import * as Y from "yjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export type RoomMessage = { id: string; author: string; color: string; body: string; at: number };
+export type RoomMessage = { id: string; author: string; color: string; avatarUrl?: string | null; body: string; at: number; reactions?: Record<string, string[]> };
 /** Presence shares identity metadata only. avatarUrl is a storage URL, never image bytes or document state. */
 export type PeerPresence = { id: number; name: string; color: string; avatarUrl?: string | null };
 const validMessage = (value: unknown): value is RoomMessage => Boolean(value && typeof value === "object" && typeof (value as RoomMessage).id === "string" && typeof (value as RoomMessage).body === "string" && typeof (value as RoomMessage).author === "string" && typeof (value as RoomMessage).at === "number");
@@ -63,7 +64,14 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
     });
     return () => { cancelled = true; providerRef.current?.destroy(); providerRef.current = null; setProvider(null); };
   }, [document.roomId, document.roomTransportSecret, profile?.id, profile?.name, profile?.color, avatarUrl, ydoc]);
-  const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([{ id: crypto.randomUUID(), author: profile.name, color: profile.color, body: body.trim(), at: Date.now() }]); };
+  const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([{ id: crypto.randomUUID(), author: profile.name, color: profile.color, avatarUrl, body: body.trim(), at: Date.now(), reactions: {} }]); };
+  const react = (messageId: string, emoji: string) => {
+    if (!profile || !["👍", "❤", "😂", "🎉"].includes(emoji)) return;
+    const items = messages.toArray(); const index = items.findIndex(value => validMessage(value) && value.id === messageId);
+    const message = items[index]; if (index < 0 || !validMessage(message)) return;
+    const reactions = toggleChatReaction(message.reactions, emoji, profile.id);
+    ydoc.transact(() => { messages.delete(index, 1); messages.insert(index, [{ ...message, reactions }]); });
+  };
   const updateTitle = (next: string) => { setTitle(next); if (persistenceReady) metadata.set("title", next); };
-  return { ydoc, fragment, provider, connection, peers, chat, send, persistenceReady, persistenceRecovered, syncRevision, title, updateTitle };
+  return { ydoc, fragment, provider, connection, peers, chat, send, react, persistenceReady, persistenceRecovered, syncRevision, title, updateTitle };
 }

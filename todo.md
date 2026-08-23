@@ -334,3 +334,7 @@
 - [x] Add secure opt-in shared avatar storage and account metadata for a profile picture visible to PeerLock users.
 - [x] Add authenticated avatar upload, replacement, removal, validation, and profile display without placing images in room or document sync.
 - [x] Enforce privacy-safe avatar authorization and validate cross-device account profile behavior before publishing.
+- [x] Add side-by-side shared profile pictures to the live document collaborator experience.
+- [x] Show shared profile pictures in encrypted room chat and in the mesh/topology presence view.
+- [x] Add replicated emoji reactions to room-chat messages without changing document or room-access behavior.
+- [x] Validate collaborator identity, chat reactions, mesh view, and document-room regressions before publishing.
