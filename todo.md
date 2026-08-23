@@ -322,3 +322,6 @@
 - [x] Validate the repaired Learning Kit mobile edge behavior before publishing.
 - [x] Add the validated privacy-first delivery skill source to the repository for GitHub access.
 - [x] Synchronize the skill source and latest PeerLock release state to GitHub.
+- [x] Refine the signed-in mobile account hero and account panel into one cohesive visual composition.
+- [x] Improve account identity, status, email, and action hierarchy without changing authentication or privacy behavior.
+- [x] Validate the refined signed-in account page at phone and desktop widths before publishing.
