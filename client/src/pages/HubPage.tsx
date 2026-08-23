@@ -35,12 +35,6 @@ const hubMobileRepairStyles = `
   .hub-redesign .card-swipe-surface[data-dragging="false"] { transition: transform 190ms var(--ease-out-expo); }
 }
 @media (max-width: 480px) {
-  .app-frame:has(.hub-redesign) .app-header { height: 62px; padding: 0 10px; }
-  .app-frame:has(.hub-redesign) .app-logo { gap: 7px; }
-  .app-frame:has(.hub-redesign) .app-logo .app-logo-mark { width: 30px; height: 30px; border-radius: 8px; }
-  .app-frame:has(.hub-redesign) .app-logo b { font-size: 11px; letter-spacing: .14em; }
-  .app-frame:has(.hub-redesign) .app-header-actions { gap: 4px; }
-  .app-frame:has(.hub-redesign) :is(.header-admin, .header-account, .header-learning, .header-settings) { width: 35px; min-width: 35px; height: 35px; min-height: 35px; border-radius: 8px; }
   .hub-redesign .hub-layout { width: min(100% - 32px, 640px); padding-top: 24px; }
   .hub-redesign .hub-library > header { align-items: end; gap: 12px; padding-bottom: 15px; }
   .hub-redesign .hub-library > header > p { max-width: 136px; margin: 0; font-size: 11px; line-height: 1.35; text-align: right; }
@@ -53,8 +47,6 @@ const hubMobileRepairStyles = `
   .hub-redesign .workspace-document-card .room-badge { padding: 5px 7px; font-size: 9px; }
   .hub-redesign .workspace-document-card .document-card-footer > span { font-size: 10px; }
 }
-:root[data-peerlock-theme="dark"] .app-frame:has(.hub-redesign) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { border-color: rgba(232,242,232,.18); color: #edf5eb; background: rgba(22,36,30,.92); }
-:root[data-peerlock-theme="dark"] .app-frame:has(.hub-redesign) .app-header-actions .header-learning.active { border-color: rgba(200,245,102,.48); color: #d8f88b; background: rgba(183,233,87,.12); }
 :root[data-peerlock-theme="dark"] .hub-redesign .workspace-document-card { border-color: rgba(238,244,235,.16); background: #13211b; }
 :root[data-peerlock-theme="dark"] .hub-redesign .card-swipe-surface, :root[data-peerlock-theme="dark"] .hub-redesign .workspace-document-card .document-card-main { color: #f2f8ef; background: #13211b; }
 :root[data-peerlock-theme="dark"] .hub-redesign .workspace-document-card .document-card-type { color: #a9d66d; }
@@ -63,16 +55,6 @@ const hubMobileRepairStyles = `
 :root[data-peerlock-theme="dark"] .hub-redesign .workspace-document-card .document-card-footer { border-color: rgba(238,244,235,.14); }
 :root[data-peerlock-theme="dark"] .hub-redesign .workspace-document-card .room-badge { color: #cceaa2; background: rgba(200,245,102,.11); }
 :root[data-peerlock-theme="dark"] .hub-redesign .workspace-document-card .room-badge-live { color: #9fe7d8; background: rgba(79,179,156,.16); }
-@media (max-width: 850px) {
-  .app-frame:has(.hub-redesign) .app-header-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 40px; align-items: center; gap: 7px; }
-  .app-frame:has(.hub-redesign) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { display: grid; width: 40px; min-width: 40px; height: 40px; min-height: 40px; place-items: center; border: 1px solid rgba(14,20,18,.16); border-radius: 10px; padding: 0; color: #17221c; background: rgba(255,255,252,.7); box-shadow: none; }
-  .app-frame:has(.hub-redesign) .app-header-actions .header-learning.active { border-color: rgba(150,196,57,.72); color: #426617; background: rgba(198,242,70,.18); box-shadow: inset 0 0 0 1px rgba(198,242,70,.14); }
-  .app-frame:has(.hub-redesign) .app-header-actions .header-account .header-avatar { width: 22px; height: 22px; }
-}
-@media (max-width: 480px) {
-  .app-frame:has(.hub-redesign) .app-header-actions { grid-auto-columns: 36px; gap: 5px; }
-  .app-frame:has(.hub-redesign) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { width: 36px; min-width: 36px; height: 36px; min-height: 36px; border-radius: 9px; }
-}
 .hub-delete-dialog { width: min(332px,calc(100vw - 32px)); gap: 15px; border-color: rgba(237,244,234,.18); border-radius: 14px; padding: 20px; color: #f4f8f1; background: #14211b; box-shadow: 0 22px 60px rgba(0,0,0,.36); }
 .hub-delete-dialog [data-slot="alert-dialog-header"] { gap: 7px; text-align: left; }
 .hub-delete-dialog [data-slot="alert-dialog-title"] { color: #f6faf3; font-size: 19px; line-height: 1.1; letter-spacing: -.035em; }

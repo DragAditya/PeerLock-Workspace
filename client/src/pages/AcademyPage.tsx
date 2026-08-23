@@ -110,14 +110,6 @@ const academyMobileRepairStyles = `
   .academy-content footer { color: #4d5f53; font-size: 11px; }
 }
 @media (max-width: 480px) {
-  .app-frame:has(.academy-expanded) .app-header { height: 62px; padding: 0 10px; }
-  .app-frame:has(.academy-expanded) .app-logo { gap: 7px; }
-  .app-frame:has(.academy-expanded) .app-logo .app-logo-mark { width: 30px; height: 30px; border-radius: 8px; }
-  .app-frame:has(.academy-expanded) .app-logo b { font-size: 11px; letter-spacing: .14em; }
-  .app-frame:has(.academy-expanded) .app-header-actions { gap: 4px; }
-  .app-frame:has(.academy-expanded) :is(.header-admin, .header-account, .header-learning, .header-settings) { width: 35px; min-width: 35px; height: 35px; min-height: 35px; border-radius: 8px; }
-  .app-frame:has(.academy-expanded) .header-learning { border-color: rgba(198,242,70,.44); background: rgba(198,242,70,.09); }
-  .app-frame:has(.academy-expanded) .header-learning.active { border-color: #92bf34; color: #385a0f; background: #dff6a9; box-shadow: 0 0 0 2px rgba(198,242,70,.16); }
   .academy-rail { padding-right: 18px; padding-left: 18px; }
   .academy-rail nav { gap: 7px; }
   .academy-rail nav button { min-height: 48px; padding-right: 8px; padding-left: 8px; font-size: 10.5px; }
@@ -141,17 +133,10 @@ const academyMobileRepairStyles = `
   .academy-expanded > .academy-rail nav button svg { position: static !important; flex: 0 0 auto; color: #c8f566 !important; }
   .academy-expanded > .academy-rail nav button span { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .academy-expanded > .academy-rail nav button.active { border-color: rgba(200,245,102,.62) !important; color: #fbfff7 !important; background: rgba(200,245,102,.16) !important; }
-  .app-frame:has(.academy-expanded) .app-header-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 40px; align-items: center; gap: 7px; }
-  .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { display: grid; width: 40px; min-width: 40px; height: 40px; min-height: 40px; place-items: center; border: 1px solid rgba(14,20,18,.16); border-radius: 10px; padding: 0; color: #17221c; background: rgba(255,255,252,.7); box-shadow: none; }
-  .app-frame:has(.academy-expanded) .app-header-actions .header-learning.active { border-color: rgba(150,196,57,.72); color: #426617; background: rgba(198,242,70,.18); }
 }
 @media (max-width: 480px) {
-  .app-frame:has(.academy-expanded) .app-header-actions { grid-auto-columns: 36px; gap: 5px; }
-  .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { width: 36px; min-width: 36px; height: 36px; min-height: 36px; border-radius: 9px; }
   .academy-expanded > .academy-rail nav button { min-height: 47px; padding: 9px 8px; font-size: 10.5px; }
 }
-:root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) .app-header-actions :is(.header-admin, .header-account, .header-learning, .header-settings) { border-color: rgba(232,242,232,.18); color: #edf5eb; background: rgba(22,36,30,.92); }
-:root[data-peerlock-theme="dark"] .app-frame:has(.academy-expanded) .app-header-actions .header-learning.active { border-color: rgba(200,245,102,.48); color: #d8f88b; background: rgba(183,233,87,.12); }
 @media (max-width: 850px) {
   .app-frame:has(.academy-expanded), .app-frame:has(.academy-expanded) main { min-width: 0; max-width: 100%; background: #f4f4ef; }
   .app-frame:has(.academy-expanded) .academy-expanded, .app-frame:has(.academy-expanded) .academy-content { width: 100%; min-width: 0; max-width: 100%; overflow-x: clip; }

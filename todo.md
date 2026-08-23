@@ -328,3 +328,6 @@
 - [x] Replace page-specific mobile navigation overrides with one consistent shared control system.
 - [x] Apply a single accessible active-state treatment while preserving route navigation behavior.
 - [x] Validate shared navigation consistency across Settings, Learning Kit, Account, Admin, and Hub mobile routes before publishing.
+- [x] Audit and remove remaining route-specific mobile header rules that override the shared navigation system.
+- [x] Consolidate all mobile header geometry, surfaces, and active states into the shared header source of truth.
+- [x] Validate visually identical shared header geometry across target mobile routes before publishing.
