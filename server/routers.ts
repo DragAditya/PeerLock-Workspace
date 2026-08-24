@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { formatWithGemini } from "./aiFormatter";
 import { accountEmailDiagnostics, changeAccountPassword, clearAccountSession, registerAccount, requestPasswordReset, resetAccountPassword, safeAccountError, sendVerificationEmail, signInAccount, verifyAccountEmail, updateAccountAvatar, removeAccountAvatar } from "./accountAuth";
-import { clearGuestSession, createRegisteredRoom, decideRoomRequest, liveRoomCount, pendingRoomRequests, requestRoomJoin, roomAccess } from "./roomRegistry";
+import { clearGuestSession, createRegisteredRoom, decideRoomRequest, liveRoomCount, pendingRoomRequests, requestRoomJoin, roomAccess, roomCollaborators } from "./roomRegistry";
 import { z } from "zod";
 import { getDevDiagnostics } from "./devDiagnostics";
 import { TRPCError } from "@trpc/server";
@@ -67,6 +67,7 @@ export const appRouter = router({
     requestJoin: publicProcedure.input(z.object({ code: z.string().regex(/^[A-Z0-9]{8}$/), password: z.string().max(256).optional(), identity: z.object({ name: z.string().min(1).max(64), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) }) })).mutation(({ ctx, input }) => { const account = requireVerifiedAccount(ctx); return requestRoomJoin(ctx, { ...input, identity: { ...input.identity, name: account.username } }); }),
     logout: publicProcedure.mutation(({ ctx }) => clearGuestSession(ctx)),
     access: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return roomAccess(ctx, input.roomId); }),
+    collaborators: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return roomCollaborators(ctx, input.roomId); }),
     pendingRequests: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return pendingRoomRequests(ctx, input.roomId); }),
     decideRequest: publicProcedure.input(z.object({ roomId: z.string().uuid(), requestId: z.string().uuid(), allow: z.boolean() })).mutation(({ ctx, input }) => { requireVerifiedAccount(ctx); return decideRoomRequest(ctx, input); }),
     liveCount: publicProcedure.query(({ ctx }) => { requireVerifiedAccount(ctx); return liveRoomCount(); }),

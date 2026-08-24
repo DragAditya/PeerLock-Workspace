@@ -6,7 +6,7 @@ import type { Response } from "express";
 import type { TrpcContext } from "./_core/context";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { getDb } from "./db";
-import { peerlockGuestSessions, peerlockRoomMemberships, peerlockRooms } from "../drizzle/schema";
+import { peerlockAccounts, peerlockGuestSessions, peerlockRoomMemberships, peerlockRooms } from "../drizzle/schema";
 
 export const COOKIE_NAME = "peerlock_guest_session";
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -24,6 +24,7 @@ function roomCode() { return Array.from(randomBytes(8), byte => CODE_ALPHABET[by
 function secret() { return randomBytes(32).toString("hex"); }
 function passwordRecord(password: string) { const salt = randomBytes(16).toString("hex"); return { salt, hash: scryptSync(password, salt, 64).toString("hex") }; }
 export function verifyRoomPassword(password: string, salt: string, expectedHash: string) { const actual = scryptSync(password, salt, 64); const expected = Buffer.from(expectedHash, "hex"); return actual.length === expected.length && timingSafeEqual(actual, expected); }
+export function canViewCollaboratorProfiles(status: string | null | undefined) { return status === "approved"; }
 
 export async function ensureGuestSession(ctx: RoomContext) {
   const cookies = parseCookie(ctx.req.headers.cookie ?? "");
@@ -100,6 +101,26 @@ export async function pendingRoomRequests(ctx: RoomContext, roomId: string) {
   const sessionId = await ensureGuestSession(ctx); const { db, room } = await requireRoomById(roomId);
   if (room.ownerSessionId !== sessionId) throw new Error("Only the room owner can view join requests.");
   return db.select({ id: peerlockRoomMemberships.id, name: peerlockRoomMemberships.displayName, color: peerlockRoomMemberships.displayColor, expiresAt: peerlockRoomMemberships.requestExpiresAt }).from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.status, "pending"), gt(peerlockRoomMemberships.requestExpiresAt, new Date())));
+}
+
+/** Approved room members can view safe collaborator display metadata, but never email or workspace content. */
+export async function roomCollaborators(ctx: RoomContext, roomId: string) {
+  const sessionId = await ensureGuestSession(ctx); const { db } = await requireRoomById(roomId);
+  const [viewer] = await db.select({ status: peerlockRoomMemberships.status }).from(peerlockRoomMemberships).where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.sessionId, sessionId))).limit(1);
+  if (!canViewCollaboratorProfiles(viewer?.status)) throw new Error("Only approved room members can view collaborator profiles.");
+  const rows = await db.select({
+    sessionId: peerlockRoomMemberships.sessionId,
+    displayName: peerlockRoomMemberships.displayName,
+    displayColor: peerlockRoomMemberships.displayColor,
+    accountId: peerlockGuestSessions.accountId,
+    username: peerlockAccounts.username,
+    avatarKey: peerlockAccounts.avatarKey,
+    verifiedAt: peerlockAccounts.emailVerifiedAt,
+  }).from(peerlockRoomMemberships)
+    .leftJoin(peerlockGuestSessions, eq(peerlockRoomMemberships.sessionId, peerlockGuestSessions.id))
+    .leftJoin(peerlockAccounts, eq(peerlockGuestSessions.accountId, peerlockAccounts.id))
+    .where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.status, "approved")));
+  return rows.map(row => ({ accountId: row.accountId, name: row.username ?? row.displayName, color: row.displayColor, avatarUrl: row.avatarKey ? `/manus-storage/${row.avatarKey}` : null, verified: Boolean(row.verifiedAt) }));
 }
 
 export async function roomEventSnapshot(ctx: RoomContext, roomId: string) {

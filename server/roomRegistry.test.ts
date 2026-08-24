@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { verifyRoomPassword } from "./roomRegistry";
+import { canViewCollaboratorProfiles, verifyRoomPassword } from "./roomRegistry";
 import { randomBytes, scryptSync } from "node:crypto";
 
 describe("room password verification", () => {
@@ -7,5 +7,15 @@ describe("room password verification", () => {
     const salt = randomBytes(16).toString("hex"); const hash = scryptSync("correct-horse-battery", salt, 64).toString("hex");
     expect(verifyRoomPassword("correct-horse-battery", salt, hash)).toBe(true);
     expect(verifyRoomPassword("incorrect-password", salt, hash)).toBe(false);
+  });
+});
+
+describe("collaborator profile access", () => {
+  it("allows shared profile metadata only for approved room memberships", () => {
+    expect(canViewCollaboratorProfiles("approved")).toBe(true);
+    expect(canViewCollaboratorProfiles("pending")).toBe(false);
+    expect(canViewCollaboratorProfiles("declined")).toBe(false);
+    expect(canViewCollaboratorProfiles("expired")).toBe(false);
+    expect(canViewCollaboratorProfiles(null)).toBe(false);
   });
 });

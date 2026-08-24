@@ -338,3 +338,7 @@
 - [x] Show shared profile pictures in encrypted room chat and in the mesh/topology presence view.
 - [x] Add replicated emoji reactions to room-chat messages without changing document or room-access behavior.
 - [x] Validate collaborator identity, chat reactions, mesh view, and document-room regressions before publishing.
+- [x] Add an approved-room identity lookup so collaborator names can resolve current shared avatar metadata reliably.
+- [x] Add a privacy-safe click-to-open collaborator profile sheet with shared account photo and verified public identity details.
+- [x] Make live collaborators, room chat, and mesh nodes use resolved shared avatar data with safe initials fallback.
+- [x] Validate identity authorization, avatar resolution, profile interactions, and document-room regressions before publishing.
