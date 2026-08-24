@@ -1,0 +1,48 @@
+.devlogs-page {
+  min-height: 100vh;
+  padding-inline: min(4vw, 56px);
+  color: #eaf3ed;
+  background: radial-gradient(circle at 84% 7%, rgba(171, 235, 101, .13), transparent 28%), linear-gradient(135deg, #0b1712 0%, #102019 58%, #0b1511 100%);
+}
+
+.devlogs-header { border-color: rgba(220, 241, 226, .18); }
+.devlogs-header h1, .devlogs-state h1, .admin-state h1 { color: #f0f7f1; }
+.devlogs-header h1 em { color: #c8f566; }
+.devlogs-header p:not(.eyebrow), .devlogs-state p:not(.eyebrow), .admin-state p:not(.eyebrow) { color: rgba(230, 242, 234, .72); }
+
+.devlogs-actions button, .devlogs-grid header button, .devlogs-state button {
+  border-color: rgba(220, 241, 226, .2);
+  color: #eaf4ed;
+  background: rgba(255, 255, 255, .035);
+}
+
+.devlogs-actions .devlogs-copy, .devlogs-state button, .admin-state button {
+  border-color: #c8f566;
+  color: #102018;
+  background: #c8f566;
+}
+
+.devlogs-overview { border-color: rgba(220, 241, 226, .16); background: rgba(220, 241, 226, .16); }
+.devlogs-overview > div, .devlogs-grid article { background: rgba(15, 30, 23, .88); }
+.devlogs-overview span, .devlogs-overview small { color: rgba(225, 239, 229, .58); }
+.devlogs-overview b, .devlogs-grid h2 { color: #edf6ef; }
+.devlogs-overview b.good { color: #99e0ce; }
+.devlogs-overview b.bad { color: #f2a194; }
+.devlogs-overview b.neutral { color: #f2d277; }
+.devlogs-grid article, .devlogs-grid article header { border-color: rgba(220, 241, 226, .16); }
+.devlogs-grid pre { color: #c9ded0; background: rgba(4, 13, 9, .5); }
+.devlogs-boundary { border-color: rgba(153, 224, 206, .27); color: #c7dfce; background: rgba(33, 89, 70, .23); }
+.devlogs-boundary svg { color: #99e0ce; }
+
+.devlogs-state, .admin-state {
+  color: #eaf3ed;
+  background: radial-gradient(circle at 78% 12%, rgba(171, 235, 101, .12), transparent 30%), #0b1712;
+}
+
+.devlogs-state > div { border-color: rgba(220, 241, 226, .2); }
+.admin-state > div { color: #c8f566; }
+
+@media (max-width: 760px) {
+  .devlogs-page { padding-inline: 0; }
+  .devlogs-state { min-height: 100svh !important; }
+}

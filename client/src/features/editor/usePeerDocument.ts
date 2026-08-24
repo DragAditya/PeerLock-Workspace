@@ -8,11 +8,13 @@ import { WebrtcProvider } from "y-webrtc";
 import * as Y from "yjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+/** avatarUrl is accepted only to render older replicated messages; new messages never persist it. */
 export type RoomMessage = { id: string; author: string; color: string; avatarUrl?: string | null; body: string; at: number; reactions?: Record<string, string[]> };
 /** Presence shares identity metadata only. avatarUrl is a storage URL, never image bytes or document state. */
 export type PeerPresence = { id: number; name: string; color: string; avatarUrl?: string | null; verified?: boolean };
 export type CollaboratorIdentity = { name: string; color: string; avatarUrl: string | null; verified: boolean };
 const validMessage = (value: unknown): value is RoomMessage => Boolean(value && typeof value === "object" && typeof (value as RoomMessage).id === "string" && typeof (value as RoomMessage).body === "string" && typeof (value as RoomMessage).author === "string" && typeof (value as RoomMessage).at === "number");
+export const createRoomMessage = (body: string, profile: LocalProfile): RoomMessage => ({ id: crypto.randomUUID(), author: profile.name, color: profile.color, body: body.trim(), at: Date.now(), reactions: {} });
 
 export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfile | null, avatarUrl: string | null = null, collaborators: CollaboratorIdentity[] = []) {
   const ydoc = useMemo(() => new Y.Doc(), [document.id]);
@@ -27,6 +29,18 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
   const [syncRevision, setSyncRevision] = useState(0);
   const [title, setTitle] = useState(document.title);
   const providerRef = useRef<WebrtcProvider | null>(null);
+  const collaboratorsRef = useRef<CollaboratorIdentity[]>(collaborators);
+
+  useEffect(() => {
+    collaboratorsRef.current = collaborators;
+    const activeProvider = providerRef.current;
+    if (!activeProvider) return;
+    setPeers(Array.from(activeProvider.awareness.getStates().entries()).map(([id, state]) => {
+      const name = (state.user as { name?: string } | undefined)?.name ?? "Anonymous peer";
+      const match = collaboratorsRef.current.find(item => item.name === name);
+      return { id, name, color: (state.user as { color?: string } | undefined)?.color ?? match?.color ?? "#607064", avatarUrl: (state.user as { avatarUrl?: string | null } | undefined)?.avatarUrl ?? match?.avatarUrl ?? null, verified: match?.verified ?? false };
+    }));
+  }, [collaborators]);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,12 +74,12 @@ export function usePeerDocument(document: WorkspaceDocument, profile: LocalProfi
       const refreshAfterRemoteSync = ({ synced }: { synced: boolean }) => { if (synced) setSyncRevision(value => value + 1); };
       nextProvider.on("synced", refreshAfterRemoteSync); nextProvider.connect();
       nextProvider.awareness.setLocalStateField("user", { name: profile.name, color: profile.color, id: profile.id, avatarUrl });
-      const updatePeers = () => setPeers(Array.from(nextProvider.awareness.getStates().entries()).map(([id, state]) => { const name = (state.user as { name?: string } | undefined)?.name ?? "Anonymous peer"; const match = collaborators.find(item => item.name === name); return { id, name, color: (state.user as { color?: string } | undefined)?.color ?? match?.color ?? "#607064", avatarUrl: (state.user as { avatarUrl?: string | null } | undefined)?.avatarUrl ?? match?.avatarUrl ?? null, verified: match?.verified ?? false }; }));
+      const updatePeers = () => setPeers(Array.from(nextProvider.awareness.getStates().entries()).map(([id, state]) => { const name = (state.user as { name?: string } | undefined)?.name ?? "Anonymous peer"; const match = collaboratorsRef.current.find(item => item.name === name); return { id, name, color: (state.user as { color?: string } | undefined)?.color ?? match?.color ?? "#607064", avatarUrl: (state.user as { avatarUrl?: string | null } | undefined)?.avatarUrl ?? match?.avatarUrl ?? null, verified: match?.verified ?? false }; }));
       nextProvider.awareness.on("change", updatePeers); nextProvider.on("status", event => setConnection(event.connected ? "connected" : "connecting")); updatePeers();
     });
     return () => { cancelled = true; providerRef.current?.destroy(); providerRef.current = null; setProvider(null); };
-  }, [document.roomId, document.roomTransportSecret, profile?.id, profile?.name, profile?.color, avatarUrl, collaborators, ydoc]);
-  const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([{ id: crypto.randomUUID(), author: profile.name, color: profile.color, avatarUrl, body: body.trim(), at: Date.now(), reactions: {} }]); };
+  }, [document.roomId, document.roomTransportSecret, profile?.id, profile?.name, profile?.color, avatarUrl, ydoc]);
+  const send = (body: string) => { if (!body.trim() || !profile) return; messages.push([createRoomMessage(body, profile)]); };
   const react = (messageId: string, emoji: string) => {
     if (!profile || !["👍", "❤", "😂", "🎉"].includes(emoji)) return;
     const items = messages.toArray(); const index = items.findIndex(value => validMessage(value) && value.id === messageId);

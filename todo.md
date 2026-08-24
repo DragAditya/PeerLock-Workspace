@@ -344,3 +344,20 @@
 - [x] Validate identity authorization, avatar resolution, profile interactions, and document-room regressions before publishing.
 - [x] Review recent runtime logs for reported glitches before the exact GitHub synchronization.
 - [x] Synchronize the confirmed stable project state and tracker record exactly to GitHub.
+- [ ] Complete a route-by-route desktop and mobile visual, layout, interaction, and accessibility audit.
+- [ ] Complete a core workflow audit covering account, room, persistence, collaboration, API, and privacy behavior.
+- [ ] Implement and test confirmed high-impact UI, logic, accessibility, and reliability repairs without changing privacy boundaries.
+- [ ] Run comprehensive responsive, functional, security, type, test, and production-build validation before publishing the audit release.
+- [x] Prevent collaborator-directory refreshes from recreating the active WebRTC provider and interrupting peer synchronization.
+- [x] Replace Admin browser confirmation prompts with accessible, consistent destructive dialogs and mutation-safe feedback.
+- [x] Move shared-auth browser persistence out of render-derived state and preserve account profile preferences during gate synchronization.
+- [x] Add safe clipboard failure feedback and a clear not-found route instead of silently routing invalid paths to the workspace.
+- [x] Enforce verified-account authorization at the server-side Gemini formatting procedure to prevent direct unauthenticated API use.
+- [x] Style and validate the new not-found recovery route as a responsive PeerLock surface rather than unstyled fallback content.
+- [x] Add clipboard-permission failure handling to encrypted room invite copying without exposing invite secrets in notifications.
+- [x] Replace Studio browser confirmation for external AI consent with an accessible in-app approval dialog.
+- [x] Reduce the oversized initial production bundle by code-splitting noninitial application routes with a stable loading state.
+- [x] Align DevLogs and control-center loading/fallback surfaces with the dark PeerLock brand without changing public diagnostic visibility.
+- [x] Add direct authorization coverage for the approved-room collaborator directory endpoint.
+- [x] Minimize encrypted chat metadata by preventing new messages from persisting avatar URLs already available through approved presence or directory data.
+- [ ] Manually verify authenticated owner, approved-peer, and super-admin data states in two real accounts on desktop and mobile; the automated audit browser only reached public and account-gated shells.

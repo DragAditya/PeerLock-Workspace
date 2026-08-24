@@ -1,0 +1,26 @@
+.admin-destructive-dialog {
+  border-color: rgba(198, 242, 70, 0.3);
+  color: #eef6ec;
+  background: #112219;
+}
+
+.admin-destructive-dialog [data-slot="alert-dialog-title"] {
+  color: #f4faf1;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.admin-destructive-dialog [data-slot="alert-dialog-description"] {
+  color: rgba(238, 246, 236, 0.73);
+  line-height: 1.5;
+}
+
+.admin-destructive-confirm {
+  border: 1px solid rgba(255, 144, 128, 0.44) !important;
+  color: #fff1ed !important;
+  background: #8f342b !important;
+}
+
+.admin-destructive-confirm:disabled {
+  opacity: 0.58;
+}
