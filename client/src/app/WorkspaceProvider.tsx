@@ -31,7 +31,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     return () => { active = false; gate.dispose(); };
   }, []);
   useEffect(() => {
-    const preference = profile?.theme ?? "system";
+    const preference = profile?.theme ?? "dark";
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => { document.documentElement.dataset.peerlockTheme = preference === "system" ? (media.matches ? "dark" : "light") : preference; };
     apply();

@@ -3,7 +3,7 @@ import { BookOpen, FolderOpen, Settings, ShieldCheck, UserRound, Users } from "l
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 
-const links = [{ label: "Workspace", href: "/", icon: FolderOpen }, { label: "Learning kit", href: "/academy", icon: BookOpen }, { label: "Preferences", href: "/settings", icon: Settings }];
+const links = [{ label: "Workspace", href: "/", icon: FolderOpen }, { label: "Learning kit", href: "/academy", icon: BookOpen }];
 const peerLockMark = "/brand/peerlock-mark.png";
 const mobileNavigationStyles = `
 @media (max-width: 850px) {

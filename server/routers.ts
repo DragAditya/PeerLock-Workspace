@@ -20,6 +20,7 @@ function requireVerifiedAccount(ctx: { account: { id: string; email: string; use
 function requireAdmin(ctx: { account: { id: string; email: string; username: string; emailVerifiedAt: Date | null; suspendedAt?: Date | null } | null }) { const account = requireVerifiedAccount(ctx); try { return requireSuperAdmin({ ...account, suspendedAt: account.suspendedAt ?? null }); } catch (error) { throw new TRPCError({ code: "FORBIDDEN", message: error instanceof Error ? error.message : "Admin access is unavailable." }); } }
 
 async function safeAccountCall<T>(work: () => Promise<T>) { try { return await work(); } catch (error) { throw new TRPCError({ code: "BAD_REQUEST", message: safeAccountError(error) }); } }
+async function safeRoomCall<T>(work: () => Promise<T>) { try { return await work(); } catch (error) { const message = error instanceof Error ? error.message : ""; if (/password/i.test(message)) throw new TRPCError({ code: "BAD_REQUEST", message: "The room password is incorrect." }); if (/does not exist|was not found|membership was not found/i.test(message)) throw new TRPCError({ code: "NOT_FOUND", message: "This room is no longer available to this browser." }); if (/only the room owner|only approved room members/i.test(message)) throw new TRPCError({ code: "FORBIDDEN", message: "You do not have permission for this room action." }); if (/temporarily unavailable/i.test(message)) throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: "The room registry is temporarily unavailable. Please try again shortly." }); throw new TRPCError({ code: "BAD_REQUEST", message: "The room action could not be completed. Please try again." }); } }
 
 export const appRouter = router({
   system: systemRouter,
@@ -63,13 +64,13 @@ export const appRouter = router({
     audit: publicProcedure.query(({ ctx }) => { requireAdmin(ctx); return adminAuditTrail(); }),
   }),
   room: router({
-    create: publicProcedure.input(z.object({ protected: z.boolean(), password: z.string().max(256).optional(), identity: z.object({ name: z.string().min(1).max(64), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) }) })).mutation(({ ctx, input }) => { const account = requireVerifiedAccount(ctx); return createRegisteredRoom(ctx, { ...input, identity: { ...input.identity, name: account.username } }); }),
-    requestJoin: publicProcedure.input(z.object({ code: z.string().regex(/^[A-Z0-9]{8}$/), password: z.string().max(256).optional(), identity: z.object({ name: z.string().min(1).max(64), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) }) })).mutation(({ ctx, input }) => { const account = requireVerifiedAccount(ctx); return requestRoomJoin(ctx, { ...input, identity: { ...input.identity, name: account.username } }); }),
+    create: publicProcedure.input(z.object({ protected: z.boolean(), password: z.string().max(256).optional(), identity: z.object({ name: z.string().min(1).max(64), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) }) })).mutation(({ ctx, input }) => { const account = requireVerifiedAccount(ctx); return safeRoomCall(() => createRegisteredRoom(ctx, { ...input, identity: { ...input.identity, name: account.username } })); }),
+    requestJoin: publicProcedure.input(z.object({ code: z.string().regex(/^[A-Z0-9]{8}$/), password: z.string().max(256).optional(), identity: z.object({ name: z.string().min(1).max(64), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) }) })).mutation(({ ctx, input }) => { const account = requireVerifiedAccount(ctx); return safeRoomCall(() => requestRoomJoin(ctx, { ...input, identity: { ...input.identity, name: account.username } })); }),
     logout: publicProcedure.mutation(({ ctx }) => clearGuestSession(ctx)),
-    access: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return roomAccess(ctx, input.roomId); }),
-    collaborators: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return roomCollaborators(ctx, input.roomId); }),
-    pendingRequests: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return pendingRoomRequests(ctx, input.roomId); }),
-    decideRequest: publicProcedure.input(z.object({ roomId: z.string().uuid(), requestId: z.string().uuid(), allow: z.boolean() })).mutation(({ ctx, input }) => { requireVerifiedAccount(ctx); return decideRoomRequest(ctx, input); }),
+    access: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return safeRoomCall(() => roomAccess(ctx, input.roomId)); }),
+    collaborators: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return safeRoomCall(() => roomCollaborators(ctx, input.roomId)); }),
+    pendingRequests: publicProcedure.input(z.object({ roomId: z.string().uuid() })).query(({ ctx, input }) => { requireVerifiedAccount(ctx); return safeRoomCall(() => pendingRoomRequests(ctx, input.roomId)); }),
+    decideRequest: publicProcedure.input(z.object({ roomId: z.string().uuid(), requestId: z.string().uuid(), allow: z.boolean() })).mutation(({ ctx, input }) => { requireVerifiedAccount(ctx); return safeRoomCall(() => decideRoomRequest(ctx, input)); }),
     liveCount: publicProcedure.query(({ ctx }) => { requireVerifiedAccount(ctx); return liveRoomCount(); }),
   }),
 });

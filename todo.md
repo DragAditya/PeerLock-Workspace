@@ -364,3 +364,26 @@
 - [x] Manually verify the authenticated owner desktop studio, avatar/profile sheet, settings return path, and explicit AI-consent cancel path without submitting document text.
 - [x] Manually verify the configured super-admin desktop overview and account metadata list without invoking destructive mutations.
 - [ ] Manually verify a second approved peer and the authenticated owner/peer/admin phone layouts with real sessions.
+- [x] Conduct a second exhaustive component-by-component line and state audit across every active page at desktop and phone breakpoints; repair only confirmed UI, accessibility, runtime, logic, authorization, persistence, collaboration, and privacy defects.
+- [x] Prevent AccountForm footer navigation controls from submitting the active authentication form and preserve local theme, color, and avatar preferences when adopting a verified account identity.
+- [x] Add explicit accessible labeling and button semantics to the encrypted room-chat composer.
+- [x] Preserve supported Markdown heading levels during rich-editor replacement and add accessible labels to every toolbar action.
+- [x] Correct peer-topology rendering so an arbitrary remote participant is never hidden when awareness-state ordering changes.
+- [x] Upgrade the collaborator profile overlay to a focus-managed, keyboard-dismissable modal without expanding shared identity disclosure.
+- [x] Add bounded recovery actions for delayed or failed account-session checks so protected routes never trap users on an indefinite loader.
+- [x] Handle canonical room-opening failures and duplicate approval events without leaving room-entry users on an unrecoverable loading state.
+- [x] Ensure public diagnostics recovery states never render raw server error text, even when a snapshot query fails.
+- [x] Ensure Studio Markdown export preserves rich-document structure and AI error states never display raw provider or server details.
+- [x] Bound Admin and public-diagnostics loading states and keep public app-frame routes dark by default when no saved appearance preference exists.
+- [x] Keep delayed ProfileGate recovery on the dark default surface instead of showing the legacy white account gate.
+- [x] Replace the confirmed white Studio canvas, collaboration, and Room Console surfaces under the dark default with coherent high-contrast dark treatments.
+- [x] Correct the default-dark account-session card’s phone contrast so headings, copy, and status rows never render light on a light card.
+- [x] Align Room Console aria visibility with responsive rendering so desktop controls remain accessible and closed phone drawers remain hidden.
+- [x] Remove internal account identifiers from approved-room collaborator directory responses and cover the privacy-minimized response shape.
+- [x] Prevent local profile metadata refreshes from recreating the active encrypted WebRTC provider; update awareness identity without disrupting document synchronization.
+- [x] Ensure unexpected account-service exceptions are replaced with a generic safe recovery message rather than being returned through authentication APIs.
+- [x] Remove duplicate shared-header Settings navigation so desktop users encounter a single consistent preferences control.
+- [x] Replace broad Admin UI `any` types with tRPC contract-derived metadata types to keep client rendering aligned with privacy-safe server responses.
+- [x] Validate and normalize browser-local document records at the IndexedDB boundary so malformed or legacy entries cannot break workspace rendering.
+- [x] Map room-registry failures to typed, privacy-safe tRPC responses so stale room metadata does not produce unhandled internal-server errors in active clients.
+- [x] Defer awareness-driven peer state updates out of the RichEditor render path to remove the confirmed React render-phase update warning.

@@ -1,0 +1,20 @@
+:root[data-peerlock-theme="dark"] .studio-layout { color: #eaf3ed; background: #0d1712; }
+:root[data-peerlock-theme="dark"] .studio-top { border-color: rgba(239,246,236,.11); background: #0f1b16; }
+:root[data-peerlock-theme="dark"] .studio-top button, :root[data-peerlock-theme="dark"] .studio-top input { border-color: rgba(239,246,236,.16); color: #eff8ef; background: rgba(255,255,255,.035); }
+:root[data-peerlock-theme="dark"] .studio-canvas, :root[data-peerlock-theme="dark"] .studio-live, :root[data-peerlock-theme="dark"] .room-console { border-color: rgba(239,246,236,.14); color: #eaf3ed; background: linear-gradient(145deg, #16271e 0%, #102018 100%); box-shadow: 0 20px 44px rgba(0,0,0,.22); }
+:root[data-peerlock-theme="dark"] .canvas-meta, :root[data-peerlock-theme="dark"] .studio-canvas footer { border-color: rgba(239,246,236,.11); color: rgba(234,243,237,.64); background: #13231a; }
+:root[data-peerlock-theme="dark"] .rich-editor-shell, :root[data-peerlock-theme="dark"] .rich-editor-shell .ProseMirror { color: #eff8ef; background: #0e1b14; }
+:root[data-peerlock-theme="dark"] .rich-editor-shell .ProseMirror { border-color: rgba(239,246,236,.12); }
+:root[data-peerlock-theme="dark"] .rich-toolbar { border-color: rgba(239,246,236,.12); background: #13231a; }
+:root[data-peerlock-theme="dark"] .rich-toolbar button, :root[data-peerlock-theme="dark"] .ai-toolbar button, :root[data-peerlock-theme="dark"] .export-action { border-color: rgba(239,246,236,.16); color: #dbeadf; background: rgba(255,255,255,.035); }
+:root[data-peerlock-theme="dark"] .rich-toolbar button.active, :root[data-peerlock-theme="dark"] .ai-toolbar .ai-primary { border-color: #c8f566; color: #142018; background: #c8f566; }
+:root[data-peerlock-theme="dark"] .studio-live-head, :root[data-peerlock-theme="dark"] .live-chat header, :root[data-peerlock-theme="dark"] .live-peer-name { border-color: rgba(239,246,236,.12); color: #eaf3ed; }
+:root[data-peerlock-theme="dark"] .live-chat-log, :root[data-peerlock-theme="dark"] .live-chat form input, :root[data-peerlock-theme="dark"] .live-join-requests article { border-color: rgba(239,246,236,.12); color: #eaf3ed; background: rgba(4,13,9,.28); }
+:root[data-peerlock-theme="dark"] .live-chat form button, :root[data-peerlock-theme="dark"] .join-allow { color: #142018; background: #c8f566; }
+:root[data-peerlock-theme="dark"] .room-console header, :root[data-peerlock-theme="dark"] .invite-card, :root[data-peerlock-theme="dark"] .room-status, :root[data-peerlock-theme="dark"] .peer-list { border-color: rgba(239,246,236,.13); }
+:root[data-peerlock-theme="dark"] .room-console header { color: #eef7ef; background: #13231a; }
+:root[data-peerlock-theme="dark"] .room-console header h2 { color: #f4fbf2; }
+:root[data-peerlock-theme="dark"] .invite-card, :root[data-peerlock-theme="dark"] .room-status, :root[data-peerlock-theme="dark"] .peer-list p { color: #eaf3ed; background: rgba(4,13,9,.25); }
+:root[data-peerlock-theme="dark"] .room-console .room-console-close { border-color: rgba(239,246,236,.2); color: #eef6ec; background: rgba(255,255,255,.045); }
+:root[data-peerlock-theme="dark"] .ai-boundary { border-color: rgba(153,224,206,.26); color: #d6eadc; background: rgba(35,101,78,.2); }
+@media (max-width: 850px), (max-aspect-ratio: 3/4) { :root[data-peerlock-theme="dark"] .room-console { background: #13231a; } }

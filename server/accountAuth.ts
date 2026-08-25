@@ -34,7 +34,7 @@ export function safeAccountError(error: unknown) {
   if (/peerlock_accounts|relation .* does not exist|Failed query/i.test(message)) return "Account setup is incomplete. The latest database migration has not been applied yet. Redeploy on Render with the documented build command, then try again.";
   if (/Accounts are temporarily unavailable|DATABASE_URL|Neon PostgreSQL/i.test(message)) return "The account database is not connected in this deployment. Add a Neon PostgreSQL DATABASE_URL in your host settings, then redeploy with the documented migration build command.";
   if (/fetch failed|ECONN|ETIMEDOUT|network/i.test(message)) return "The account service could not reach its email provider. Try again shortly or check the protected diagnostics page.";
-  return message || "The account service is temporarily unavailable. Please try again shortly.";
+  return "The account service is temporarily unavailable. Please try again shortly.";
 }
 
 function normalizeEmail(email: string) { return email.trim().toLowerCase(); }

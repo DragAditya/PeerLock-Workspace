@@ -1,0 +1,21 @@
+:root[data-peerlock-theme="dark"] .account-page .account-session-card { border-color: rgba(239,246,236,.15); color: #eef6ec; background: linear-gradient(145deg, #1d2d24 0%, #132019 100%); box-shadow: 0 20px 44px rgba(0,0,0,.34); }
+:root[data-peerlock-theme="dark"] .account-page .account-card { border-color: rgba(239,246,236,.15); color: #eef6ec; background: linear-gradient(145deg, #1d2d24 0%, #132019 100%); box-shadow: 0 20px 44px rgba(0,0,0,.34); }
+:root[data-peerlock-theme="dark"] .account-page .account-card h2 { color: #f3faf1; }
+:root[data-peerlock-theme="dark"] .account-page .account-form > p { color: rgba(238,246,235,.72); }
+:root[data-peerlock-theme="dark"] .account-page .account-form label { color: rgba(238,246,235,.74); }
+:root[data-peerlock-theme="dark"] .account-page .account-form input { border-color: rgba(239,246,236,.18); color: #eff8ef; background: rgba(4,12,8,.42); }
+:root[data-peerlock-theme="dark"] .account-page .account-form input:focus { border-color: rgba(200,245,102,.72); }
+:root[data-peerlock-theme="dark"] .account-page .account-form-footer { color: rgba(238,246,235,.64); }
+:root[data-peerlock-theme="dark"] .account-page .account-form-footer button { color: #9fe7d8; }
+:root[data-peerlock-theme="dark"] .account-page .account-primary { color: #142018; background: #c8f566; }
+:root[data-peerlock-theme="dark"] .account-page .account-secondary { border-color: rgba(239,246,236,.2); color: #eef6ec; background: rgba(255,255,255,.03); }
+:root[data-peerlock-theme="dark"] .account-page .account-session-card h2 { color: #f3faf1; }
+:root[data-peerlock-theme="dark"] .account-page .account-session-card > p { color: rgba(238,246,235,.72); }
+:root[data-peerlock-theme="dark"] .account-page .account-session-status { border-color: rgba(239,246,236,.14); }
+:root[data-peerlock-theme="dark"] .account-page .account-session-status span { border-color: rgba(239,246,236,.14); color: rgba(238,246,235,.74); }
+:root[data-peerlock-theme="dark"] .profile-gate.account-gate { color: #eef6ec; background: radial-gradient(circle at 90% 5%, rgba(200,245,102,.13), transparent 32%), #0d1712; }
+:root[data-peerlock-theme="dark"] .profile-gate.account-gate .gate-content { color: #eef6ec; background: linear-gradient(145deg, #1d2d24 0%, #132019 100%); }
+:root[data-peerlock-theme="dark"] .profile-gate.account-gate .gate-content h1 { color: #f4fbf2; }
+:root[data-peerlock-theme="dark"] .profile-gate.account-gate .gate-copy, :root[data-peerlock-theme="dark"] .profile-gate.account-gate .gate-assurance { color: rgba(238,246,235,.72); }
+:root[data-peerlock-theme="dark"] .profile-gate.account-gate .gate-icon { border-color: rgba(200,245,102,.36); color: #c8f566; background: rgba(200,245,102,.1); }
+:root[data-peerlock-theme="dark"] .profile-gate.account-gate .gate-primary-action { color: #142018; background: #c8f566; }

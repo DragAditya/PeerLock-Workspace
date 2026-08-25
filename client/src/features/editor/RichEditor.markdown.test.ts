@@ -10,4 +10,11 @@ describe("Gemini rich Markdown application", () => {
     expect(html).toContain("language-python");
     expect(html).toContain("print('hello')");
   });
+
+  it("preserves each supported Markdown heading level instead of flattening document hierarchy", () => {
+    const html = markdownToHtml("# Title\n\n### Detail\n\n###### Fine print");
+    expect(html).toContain("<h1>Title</h1>");
+    expect(html).toContain("<h3>Detail</h3>");
+    expect(html).toContain("<h6>Fine print</h6>");
+  });
 });
