@@ -361,3 +361,6 @@
 - [x] Add direct authorization coverage for the approved-room collaborator directory endpoint.
 - [x] Minimize encrypted chat metadata by preventing new messages from persisting avatar URLs already available through approved presence or directory data.
 - [ ] Manually verify authenticated owner, approved-peer, and super-admin data states in two real accounts on desktop and mobile; the automated audit browser only reached public and account-gated shells.
+- [x] Manually verify the authenticated owner desktop studio, avatar/profile sheet, settings return path, and explicit AI-consent cancel path without submitting document text.
+- [x] Manually verify the configured super-admin desktop overview and account metadata list without invoking destructive mutations.
+- [ ] Manually verify a second approved peer and the authenticated owner/peer/admin phone layouts with real sessions.
