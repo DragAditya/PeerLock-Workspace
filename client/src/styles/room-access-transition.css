@@ -2,7 +2,7 @@ html[data-room-access-transition="active"] .hub-join-terminal,
 html[data-room-access-transition="active"] .room-entry-card { view-transition-name: peerlock-room-access-shell; }
 
 ::view-transition-group(root) { animation-duration: 1080ms; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
-::view-transition-old(root), ::view-transition-new(root) { animation-duration: 1080ms; animation-timing-function: cubic-bezier(.16, 1, .3, 1); transform-origin: 50% 70%; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 1080ms; animation-fill-mode: both; animation-timing-function: cubic-bezier(.16, 1, .3, 1); transform-origin: 50% 70%; }
 ::view-transition-old(root) { animation-name: room-access-environment-out; }
 ::view-transition-new(root) { animation-name: room-access-environment-in; }
 ::view-transition-group(peerlock-room-access-shell) { animation-duration: 1180ms; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
