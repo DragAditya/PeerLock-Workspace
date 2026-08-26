@@ -1,0 +1,130 @@
+/* Semantic color layer: paired light/dark surfaces, status colors, and accessible controls. */
+:root {
+  --pl-bg: #0a1410;
+  --pl-surface: #102018;
+  --pl-surface-raised: #172b21;
+  --pl-surface-soft: #1d3428;
+  --pl-text: #eef7ef;
+  --pl-muted: #b6c8bb;
+  --pl-subtle: #8fa397;
+  --pl-border: rgba(235, 247, 237, .16);
+  --pl-border-strong: rgba(235, 247, 237, .28);
+  --pl-action: #c6f246;
+  --pl-action-ink: #122117;
+  --pl-signal: #c6f246;
+  --pl-success: #7fe0c2;
+  --pl-warning: #f0cf71;
+  --pl-danger: #f3a69a;
+  --pl-focus: #c6f246;
+  color: var(--pl-text);
+  background: var(--pl-bg);
+  color-scheme: dark;
+}
+
+:root[data-peerlock-theme="light"] {
+  --pl-bg: #f2f6f1;
+  --pl-surface: #ffffff;
+  --pl-surface-raised: #e8f0e8;
+  --pl-surface-soft: #dce9df;
+  --pl-text: #16251c;
+  --pl-muted: #52645a;
+  --pl-subtle: #6a7b70;
+  --pl-border: rgba(28, 53, 39, .17);
+  --pl-border-strong: rgba(28, 53, 39, .3);
+  --pl-action: #315f43;
+  --pl-action-ink: #ffffff;
+  --pl-signal: #5f8120;
+  --pl-success: #087a69;
+  --pl-warning: #876311;
+  --pl-danger: #b2463d;
+  --pl-focus: #245f49;
+  color-scheme: light;
+}
+
+:root[data-peerlock-theme="dark"] { color-scheme: dark; }
+
+body, .app-frame, .settings-page, .hub-redesign, .academy-expanded, .studio-layout {
+  color: var(--pl-text);
+  background: var(--pl-bg);
+}
+
+button:focus-visible, input:focus-visible, textarea:focus-visible, [role="button"]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--pl-focus) 72%, transparent) !important;
+  outline-offset: 3px;
+}
+
+.app-header {
+  border-color: var(--pl-border);
+  background: color-mix(in srgb, var(--pl-bg) 88%, transparent);
+}
+
+.app-logo, .app-logo b, .header-account, .header-settings { color: var(--pl-text); }
+.header-admin, .header-account, .header-settings, .header-learning {
+  border-color: var(--pl-border) !important;
+  color: var(--pl-text) !important;
+  background: color-mix(in srgb, var(--pl-surface-raised) 86%, transparent) !important;
+}
+.header-admin { color: var(--pl-signal) !important; border-color: color-mix(in srgb, var(--pl-signal) 38%, var(--pl-border)) !important; }
+.app-header nav button { color: var(--pl-muted); }
+.app-header nav button.active, .app-header nav button:hover, .header-settings:hover, .header-learning.active {
+  border-color: color-mix(in srgb, var(--pl-signal) 50%, var(--pl-border)) !important;
+  color: var(--pl-text) !important;
+  background: color-mix(in srgb, var(--pl-signal) 14%, var(--pl-surface-raised)) !important;
+}
+
+.settings-hero, .settings-profile-panel, .settings-preference-card, .settings-signout { border-color: var(--pl-border); }
+.settings-hero h1, .settings-identity-copy h2, .settings-preference-card h2, .settings-signout h2 { color: var(--pl-text); }
+.settings-hero h1 span, .settings-identity-copy small, .settings-privacy-panel .eyebrow { color: var(--pl-signal); }
+.settings-hero > p:last-child, .settings-identity-copy > span, .settings-preference-card p, .settings-signout p { color: var(--pl-muted); }
+.settings-preference-card { border-color: var(--pl-border); background: var(--pl-surface); }
+.theme-choice button, .account-input-wrap input, .account-form input {
+  border-color: var(--pl-border) !important;
+  color: var(--pl-text) !important;
+  background: var(--pl-surface-raised) !important;
+}
+.theme-choice button.active { border-color: color-mix(in srgb, var(--pl-signal) 60%, var(--pl-border)) !important; color: var(--pl-text) !important; background: color-mix(in srgb, var(--pl-signal) 16%, var(--pl-surface-raised)) !important; }
+.settings-avatar-actions > button:first-child, .account-primary, .gate-primary-action, .room-entry-card button[type="submit"] { color: var(--pl-action-ink); background: var(--pl-action); border-color: var(--pl-action); }
+.settings-signout .reset-profile, .settings-text-action { color: var(--pl-danger); border-color: color-mix(in srgb, var(--pl-danger) 58%, var(--pl-border)); }
+
+.account-page, .account-session-check, .profile-gate.account-gate, .room-entry { color: var(--pl-text); background: var(--pl-bg); }
+.account-card, .account-session-card, .profile-gate.account-gate .gate-content, .room-entry-card { border-color: var(--pl-border); color: var(--pl-text); background: var(--pl-surface); box-shadow: 0 20px 46px color-mix(in srgb, var(--pl-bg) 36%, transparent); }
+.account-card h2, .account-card h1, .account-card p, .account-form label, .account-form h2, .account-form > p { color: var(--pl-text); }
+.account-card p, .account-form > p, .account-session-card > p, .account-session-status span { color: var(--pl-muted); }
+.account-session-status, .account-session-status span { border-color: var(--pl-border); }
+
+.studio-top, .studio-canvas, .studio-live, .room-console { border-color: var(--pl-border); color: var(--pl-text); background: var(--pl-surface); }
+.studio-top > button, .studio-top > input, .studio-top > div > button, .rich-toolbar, .rich-editor-shell, .rich-editor-shell .ProseMirror, .live-chat-log, .live-chat form input, .room-chat form input, .invite-card, .room-status, .peer-list, .peer-topology { border-color: var(--pl-border); color: var(--pl-text); background: var(--pl-surface-raised); }
+.canvas-meta, .studio-canvas footer, .studio-live-head, .live-chat header, .live-peers { border-color: var(--pl-border); }
+.canvas-meta, .studio-canvas footer, .live-empty, .live-chat-log p, .invite-card p, .room-status p, .peer-list > p:not(.eyebrow), .peer-topology > p { color: var(--pl-muted) !important; }
+.rich-toolbar button, .studio-canvas footer button, .live-peer-name, .room-console .room-console-close { border-color: var(--pl-border); color: var(--pl-text); background: transparent; }
+.rich-toolbar button.active, .rich-toolbar button:hover, .ai-primary, .live-chat form button, .join-allow, .invite-card button { color: var(--pl-action-ink); background: var(--pl-action); border-color: var(--pl-action); }
+.ai-boundary { border-color: color-mix(in srgb, var(--pl-success) 42%, var(--pl-border)); color: var(--pl-text); background: color-mix(in srgb, var(--pl-success) 12%, var(--pl-surface-raised)); }
+.ai-boundary p { color: var(--pl-muted); }
+
+.hub-redesign .workspace-document-card, .hub-redesign .card-swipe-surface, .hub-redesign .workspace-document-card .document-card-main, .hub-empty-library { border-color: var(--pl-border); color: var(--pl-text); background: var(--pl-surface); }
+.hub-redesign .workspace-document-card .document-card-heading h3, .hub-empty-library h3 { color: var(--pl-text); }
+.hub-redesign .workspace-document-card .document-card-date, .hub-redesign .workspace-document-card .document-card-footer > span, .hub-empty-library p:not(.eyebrow) { color: var(--pl-muted); }
+.hub-redesign .workspace-document-card .document-card-type, .hub-empty-library .eyebrow { color: var(--pl-signal); }
+
+.academy-expanded { background: var(--pl-bg); }
+.academy-content { color: var(--pl-text); }
+.academy-content h2, .academy-blocks h3 { color: var(--pl-text); }
+.academy-lead, .academy-blocks p, .academy-blocks li, .academy-content footer, .academy-metric span { color: var(--pl-muted); }
+.academy-blocks, .academy-blocks > section { border-color: var(--pl-border); }
+.academy-content .eyebrow, .academy-metric b, .academy-block-index, .academy-blocks li svg, .academy-content footer svg { color: var(--pl-signal); }
+.academy-blocks aside { border-color: color-mix(in srgb, var(--pl-warning) 45%, var(--pl-border)); color: var(--pl-text); background: color-mix(in srgb, var(--pl-warning) 12%, var(--pl-surface)); }
+
+.devlogs-page, .devlogs-state, .admin-state { color: var(--pl-text); background: radial-gradient(circle at 84% 7%, color-mix(in srgb, var(--pl-signal) 12%, transparent), transparent 27%), var(--pl-bg); }
+.devlogs-overview, .devlogs-grid article, .admin-panel, .admin-feature, .admin-audit-preview { border-color: var(--pl-border); color: var(--pl-text); background: var(--pl-surface); }
+.devlogs-overview span, .devlogs-overview small, .devlogs-header p:not(.eyebrow), .devlogs-state p:not(.eyebrow), .admin-state p:not(.eyebrow) { color: var(--pl-muted); }
+.devlogs-grid pre { color: var(--pl-text); background: var(--pl-surface-raised); }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :is(.settings-avatar-actions > button:first-child, .account-primary, .gate-primary-action, .ai-primary, .live-chat form button, .join-allow, .invite-card button):not(:disabled):hover { filter: brightness(1.05); box-shadow: 0 10px 24px color-mix(in srgb, var(--pl-action) 20%, transparent); transform: translateY(-1px); }
+}
+
+@media (prefers-contrast: more) {
+  :root { --pl-border: rgba(255,255,255,.42); --pl-muted: #d0ddd2; }
+  :root[data-peerlock-theme="light"] { --pl-border: rgba(20,44,31,.44); --pl-muted: #2e4235; }
+  .settings-preference-card, .studio-canvas, .studio-live, .room-console, .account-card { border-width: 2px; }
+}

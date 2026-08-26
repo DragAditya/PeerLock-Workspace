@@ -388,3 +388,4 @@
 - [x] Map room-registry failures to typed, privacy-safe tRPC responses so stale room metadata does not produce unhandled internal-server errors in active clients.
 - [x] Defer awareness-driven peer state updates out of the RichEditor render path to remove the confirmed React render-phase update warning.
 - [x] Record that the user elected to defer the remaining real second-approved-peer and authenticated-phone session verification; retain the unperformed checks above as explicit future follow-up.
+- [x] Audit and refine PeerLock’s dark and light semantic palettes, component states, typography contrast, and responsive surfaces using the requested platform-design guidance without changing encrypted workspace behavior.

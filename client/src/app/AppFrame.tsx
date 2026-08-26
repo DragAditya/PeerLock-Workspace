@@ -8,17 +8,15 @@ const peerLockMark = "/brand/peerlock-mark.png";
 const mobileNavigationStyles = `
 @media (max-width: 850px) {
   .app-frame .app-header-actions { display: flex !important; align-items: center !important; flex: 0 0 auto !important; gap: 7px !important; }
-  .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings) { box-sizing: border-box; display: grid !important; flex: 0 0 40px !important; width: 40px !important; min-width: 40px !important; height: 40px !important; min-height: 40px !important; place-items: center !important; gap: 0 !important; border: 1px solid rgba(14,20,18,.16) !important; border-radius: 10px !important; padding: 0 !important; color: #17221c !important; background: rgba(255,255,252,.72) !important; box-shadow: none !important; }
+  .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings) { box-sizing: border-box; display: grid !important; flex: 0 0 40px !important; width: 40px !important; min-width: 40px !important; height: 40px !important; min-height: 40px !important; place-items: center !important; gap: 0 !important; border: 1px solid var(--pl-border) !important; border-radius: 10px !important; padding: 0 !important; color: var(--pl-text) !important; background: var(--pl-surface-raised) !important; box-shadow: none !important; }
   .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings) > span { display: none !important; }
-  .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings).active { border-color: rgba(150,196,57,.74) !important; color: #426617 !important; background: rgba(198,242,70,.18) !important; box-shadow: inset 0 0 0 1px rgba(198,242,70,.14) !important; }
+  .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings).active { border-color: color-mix(in srgb, var(--pl-signal) 58%, var(--pl-border)) !important; color: var(--pl-text) !important; background: color-mix(in srgb, var(--pl-signal) 15%, var(--pl-surface-raised)) !important; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pl-signal) 14%, transparent) !important; }
   .app-frame .app-header-actions .header-account .header-avatar { width: 23px !important; height: 23px !important; }
 }
 @media (max-width: 540px) {
   .app-frame .app-header-actions { gap: 5px !important; }
   .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings) { flex-basis: 38px !important; width: 38px !important; min-width: 38px !important; height: 38px !important; min-height: 38px !important; border-radius: 9px !important; }
 }
-:root[data-peerlock-theme="dark"] .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings) { border-color: rgba(232,242,232,.18) !important; color: #edf5eb !important; background: #17241e !important; }
-:root[data-peerlock-theme="dark"] .app-frame .app-header-actions > :is(.header-admin, .header-learning, .header-account, .header-settings).active { border-color: rgba(200,245,102,.5) !important; color: #d8f88b !important; background: rgba(183,233,87,.13) !important; }
 `;
 
 export function AppFrame({ children }: { children: React.ReactNode }) {
