@@ -25,7 +25,6 @@ function secret() { return randomBytes(32).toString("hex"); }
 function passwordRecord(password: string) { const salt = randomBytes(16).toString("hex"); return { salt, hash: scryptSync(password, salt, 64).toString("hex") }; }
 export function verifyRoomPassword(password: string, salt: string, expectedHash: string) { const actual = scryptSync(password, salt, 64); const expected = Buffer.from(expectedHash, "hex"); return actual.length === expected.length && timingSafeEqual(actual, expected); }
 export function canViewCollaboratorProfiles(status: string | null | undefined) { return status === "approved"; }
-export function safeCollaboratorProfile(row: { displayName: string; displayColor: string; username: string | null; avatarKey: string | null; verifiedAt: Date | null }) { return { name: row.username ?? row.displayName, color: row.displayColor, avatarUrl: row.avatarKey ? `/manus-storage/${row.avatarKey}` : null, verified: Boolean(row.verifiedAt) }; }
 
 export async function ensureGuestSession(ctx: RoomContext) {
   const cookies = parseCookie(ctx.req.headers.cookie ?? "");
@@ -121,7 +120,7 @@ export async function roomCollaborators(ctx: RoomContext, roomId: string) {
     .leftJoin(peerlockGuestSessions, eq(peerlockRoomMemberships.sessionId, peerlockGuestSessions.id))
     .leftJoin(peerlockAccounts, eq(peerlockGuestSessions.accountId, peerlockAccounts.id))
     .where(and(eq(peerlockRoomMemberships.roomId, roomId), eq(peerlockRoomMemberships.status, "approved")));
-  return rows.map(safeCollaboratorProfile);
+  return rows.map(row => ({ accountId: row.accountId, name: row.username ?? row.displayName, color: row.displayColor, avatarUrl: row.avatarKey ? `/manus-storage/${row.avatarKey}` : null, verified: Boolean(row.verifiedAt) }));
 }
 
 export async function roomEventSnapshot(ctx: RoomContext, roomId: string) {
