@@ -392,3 +392,6 @@
 - [x] Evaluate available 21st component-library capabilities and integrate only high-value, Apple-guided workspace UI enhancements with fluid, accessible, reduced-motion-safe interaction.
 - [x] Add an MCP-inspired, keyboard-accessible PeerLock command palette plus restrained shared motion states for navigation and primary workspace controls.
 - [x] Redesign the encrypted room chat with an MCP-informed compact bubble layout, on-demand reactions, collapsible collaborator detail, bounded mobile scrolling, and matched light/dark surfaces without changing message encryption or replication.
+- [ ] Rebuild the Studio mobile surface system to remove white fallback blocks and low-contrast text in dark mode, align light-mode cards and controls, and make the Room Console, peer topology, AI panel, editor chrome, and chat consistently premium rather than fragmented.
+- [ ] Refine room chat to a true polished messenger layout with natural bubble grouping, reaction affordances that do not visually dominate, and compact phone composition validated against the reported screenshots.
+- [ ] Remove Studio mobile header clutter and rebuild Room Console, peer topology, AI boundary, editor chrome, and chat bubbles as one theme-safe premium mobile composition.
