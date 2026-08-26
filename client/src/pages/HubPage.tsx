@@ -7,6 +7,7 @@ import { ArrowUpRight, FilePlus2, Link2, LockKeyhole, Radio, ShieldCheck, Sparkl
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { navigateWithRoomAccessTransition } from "@/lib/roomAccessTransition";
 import "./guest-room-access.css";
 
 const hubMobileRepairStyles = `
@@ -70,7 +71,7 @@ export function HubPage() {
   const sharedDocumentCount = useMemo(() => documents.filter(document => Boolean(document.roomId)).length, [documents]);
   useEffect(() => { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return; const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("hub-reveal-visible"); observer.unobserve(entry.target); } }), { threshold: .12 }); document.querySelectorAll(".hub-reveal").forEach(element => observer.observe(element)); return () => observer.disconnect(); }, []);
   const create = async () => { const document = await createDocument(); navigate(`/studio/${document.id}`); };
-  const join = (event: React.FormEvent) => { event.preventDefault(); setJoinError(""); if (!/^[A-Z0-9]{8}$/i.test(roomCode)) { setJoinError("Enter the eight-character code from a real room invite."); return; } navigate(`/r/${roomCode.toUpperCase()}`); };
+  const join = (event: React.FormEvent) => { event.preventDefault(); setJoinError(""); if (!/^[A-Z0-9]{8}$/i.test(roomCode)) { setJoinError("Enter the eight-character code from a real room invite."); return; } navigateWithRoomAccessTransition(navigate, `/r/${roomCode.toUpperCase()}`); };
   const tiltHero = (event: React.PointerEvent<HTMLElement>) => { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const bounds = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--hub-pointer-x", `${((event.clientX - bounds.left) / bounds.width - .5) * 9}px`); event.currentTarget.style.setProperty("--hub-pointer-y", `${((event.clientY - bounds.top) / bounds.height - .5) * 8}px`); };
   const resetHero = (event: React.PointerEvent<HTMLElement>) => { event.currentTarget.style.setProperty("--hub-pointer-x", "0px"); event.currentTarget.style.setProperty("--hub-pointer-y", "0px"); };
   const requestRemoval = (id: string, title: string) => { setPendingRemoval({ id, title }); setSwipedDocumentId(null); };

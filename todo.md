@@ -364,3 +364,4 @@
 - [x] Manually verify the authenticated owner desktop studio, avatar/profile sheet, settings return path, and explicit AI-consent cancel path without submitting document text.
 - [x] Manually verify the configured super-admin desktop overview and account metadata list without invoking destructive mutations.
 - [ ] Manually verify a second approved peer and the authenticated owner/peer/admin phone layouts with real sessions.
+- [ ] Create a continuous, reduced-motion-safe handshake-to-room-entry transition that expands the verified room-access state into the entry form without an abrupt page swap or change to access-control logic.
