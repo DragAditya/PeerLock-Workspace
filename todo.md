@@ -391,3 +391,4 @@
 - [x] Audit and refine PeerLock’s dark and light semantic palettes, component states, typography contrast, and responsive surfaces using the requested platform-design guidance without changing encrypted workspace behavior.
 - [x] Evaluate available 21st component-library capabilities and integrate only high-value, Apple-guided workspace UI enhancements with fluid, accessible, reduced-motion-safe interaction.
 - [x] Add an MCP-inspired, keyboard-accessible PeerLock command palette plus restrained shared motion states for navigation and primary workspace controls.
+- [x] Redesign the encrypted room chat with an MCP-informed compact bubble layout, on-demand reactions, collapsible collaborator detail, bounded mobile scrolling, and matched light/dark surfaces without changing message encryption or replication.
