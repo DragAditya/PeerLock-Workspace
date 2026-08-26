@@ -389,3 +389,5 @@
 - [x] Defer awareness-driven peer state updates out of the RichEditor render path to remove the confirmed React render-phase update warning.
 - [x] Record that the user elected to defer the remaining real second-approved-peer and authenticated-phone session verification; retain the unperformed checks above as explicit future follow-up.
 - [x] Audit and refine PeerLock’s dark and light semantic palettes, component states, typography contrast, and responsive surfaces using the requested platform-design guidance without changing encrypted workspace behavior.
+- [x] Evaluate available 21st component-library capabilities and integrate only high-value, Apple-guided workspace UI enhancements with fluid, accessible, reduced-motion-safe interaction.
+- [x] Add an MCP-inspired, keyboard-accessible PeerLock command palette plus restrained shared motion states for navigation and primary workspace controls.
