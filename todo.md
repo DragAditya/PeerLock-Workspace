@@ -395,3 +395,5 @@
 - [ ] Rebuild the Studio mobile surface system to remove white fallback blocks and low-contrast text in dark mode, align light-mode cards and controls, and make the Room Console, peer topology, AI panel, editor chrome, and chat consistently premium rather than fragmented.
 - [ ] Refine room chat to a true polished messenger layout with natural bubble grouping, reaction affordances that do not visually dominate, and compact phone composition validated against the reported screenshots.
 - [ ] Remove Studio mobile header clutter and rebuild Room Console, peer topology, AI boundary, editor chrome, and chat bubbles as one theme-safe premium mobile composition.
+- [ ] Reduce the excessive empty-document and empty-chat mobile heights, strengthen light-mode typography hierarchy, and replace the generic chat empty state with a compact actionable room invitation state.
+- [ ] Enforce the Studio-only mobile header reduction and compact solo-topology/empty-chat states that remain oversized in the authenticated device screenshots.

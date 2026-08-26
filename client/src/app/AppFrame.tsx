@@ -14,8 +14,9 @@ const mobileNavigationStyles = `
   .app-frame .app-header-actions > :is(.header-admin, .header-command, .header-learning, .header-account, .header-settings) > span { display: none !important; }
   .app-frame .app-header-actions > .header-command > kbd { display: none !important; }
   .app-frame .app-header-actions > :is(.header-admin, .header-command, .header-learning, .header-account, .header-settings).active { border-color: color-mix(in srgb, var(--pl-signal) 58%, var(--pl-border)) !important; color: var(--pl-text) !important; background: color-mix(in srgb, var(--pl-signal) 15%, var(--pl-surface-raised)) !important; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pl-signal) 14%, transparent) !important; }
-  .app-frame .app-header-actions .header-account .header-avatar { width: 23px !important; height: 23px !important; }
-}
+	  .app-frame .app-header-actions .header-account .header-avatar { width: 23px !important; height: 23px !important; }
+	  .app-frame.app-frame-studio .app-header-actions > :is(.header-admin, .header-command, .header-learning) { display: none !important; }
+	}
 @media (max-width: 540px) {
   .app-frame .app-header-actions { gap: 5px !important; }
   .app-frame .app-header-actions > :is(.header-admin, .header-command, .header-learning, .header-account, .header-settings) { flex-basis: 38px !important; width: 38px !important; min-width: 38px !important; height: 38px !important; min-height: 38px !important; border-radius: 9px !important; }
