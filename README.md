@@ -25,6 +25,8 @@ Instead of making centralized storage the center of the experience, Peerlock foc
 > **Connect. Collaborate. Encrypt. Stay in control.**
 
 ---
+### ✦  [→ Documentation Guide ](https://deepwiki.com/DragAditya/PeerLock-Workspace)
+---
 
 ## ⚡ Features
 
