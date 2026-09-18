@@ -1,3 +1,19 @@
+<h2>🎬 PeerLock Demo</h2>
+
+<p>
+  <video
+    src="./assets/intro.mp4"
+    controls
+    muted
+    loop
+    playsinline
+    width="100%">
+  </video>
+</p>
+
+<p>
+  <strong>PeerLock</strong> — Secure, private peer-to-peer workspace.
+</p>
 # 🔐 Peerlock
 
 ### Private collaboration. Directly between peers.
