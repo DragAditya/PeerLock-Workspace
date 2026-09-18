@@ -1,19 +1,13 @@
-<h2>🎬 PeerLock Demo</h2>
+<video
+  src="https://github.com/user-attachments/assets/458404fa-ac35-4aea-bb65-d1906aaef5ac"
+  autoplay
+  muted
+  loop
+  playsinline
+  width="100%">
+</video>
 
-<p>
-  <video
-    src="./assets/intro.mp4"
-    controls
-    muted
-    loop
-    playsinline
-    width="100%">
-  </video>
-</p>
 
-<p>
-  <strong>PeerLock</strong> — Secure, private peer-to-peer workspace.
-</p>
 # 🔐 Peerlock
 
 ### Private collaboration. Directly between peers.
