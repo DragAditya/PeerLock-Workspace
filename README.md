@@ -4,7 +4,8 @@
   muted
   loop
   playsinline
-  width="100%">
+  preload="auto"
+  style="width:100%; height:auto; display:block;">
 </video>
 
 
